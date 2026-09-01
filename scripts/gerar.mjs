@@ -269,6 +269,82 @@ function blocoTerritorioNota() {
     + `    <h3 class="terr__t">Os ${c.semZonaRural} bairros e a zona rural</h3>`;
 }
 
+/* --- recursos que chegam a Picos ----------------------------------------
+ *
+ * Vereador não apresenta emenda parlamentar. Emenda individual, de bancada, de
+ * comissão e de relator são instrumentos de deputado e senador — publicar
+ * "R$ X trazidos pelo vereador" seria atribuir a ele número de outra pessoa,
+ * conferível em portal público em trinta segundos.
+ *
+ * Então esta seção não é do mandato: é do território. Ela mostra de onde vem o
+ * dinheiro que chega à cidade, com autor e situação, e não atribui nada a
+ * ninguém. É a mesma regra do mapa e do chat, aplicada a dinheiro.
+ *
+ * Empenhado não é pago: a situação entra sempre, e separada.
+ */
+const brl = (n) => n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const milhoes = (n) => (n / 1e6).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
+function blocoEmendas() {
+  const arq = path.join(RAIZ, 'dados', 'emendas.csv');
+  if (!fs.existsSync(arq)) return '';
+
+  const linhas = fs.readFileSync(arq, 'utf8').trim().split(/\r?\n/);
+  const cab = linhas[0].split(';').map((c) => c.trim());
+  const regs = linhas.slice(1).map((l) => {
+    const c = l.split(';');
+    const o = {};
+    cab.forEach((k, i) => { o[k] = (c[i] || '').trim(); });
+    o.v = Number(o.valor_reais) || 0;
+    return o;
+  });
+
+  const total = regs.reduce((s, r) => s + r.v, 0);
+  const anos = [...new Set(regs.map((r) => r.ano))].sort();
+  const faltando = [];
+  for (let a = Number(anos[0]); a <= Number(anos[anos.length - 1]); a++) {
+    if (!anos.includes(String(a))) faltando.push(String(a));
+  }
+  const zerados = regs.filter((r) => r.v === 0);
+
+  const agrupar = (campo) => {
+    const m = new Map();
+    for (const r of regs) {
+      const a = m.get(r[campo]) || { v: 0, n: 0 };
+      a.v += r.v; a.n++;
+      m.set(r[campo], a);
+    }
+    return [...m].sort((x, y) => y[1].v - x[1].v);
+  };
+
+  const situacoes = agrupar('status');
+  const origens = agrupar('parlamentar').slice(0, 6);
+  const concluida = situacoes.filter(([k]) => /conclu/i.test(k)).reduce((s, [, a]) => s + a.v, 0);
+
+  /* Os nomes saem do portal em caixa alta e sem acento — "COM. DA SAUDE",
+   * "BANCADA DO PIAUI". Não corrijo: reescrever nome de órgão é inventar
+   * grafia que a fonte não tem. A nota embaixo avisa que vêm como estão. */
+  const capitular = (s) => s;
+
+  return `      <ul class="rec__n">
+        <li><b>R$&nbsp;${milhoes(total)}&nbsp;mi</b><span>destinados a Picos entre ${anos[0]} e ${anos[anos.length - 1]}</span></li>
+        <li><b>${regs.length}</b><span>emendas no portal da Prefeitura</span></li>
+        <li><b>R$&nbsp;${milhoes(concluida)}&nbsp;mi</b><span>com situação concluída — o resto ainda não é dinheiro na conta</span></li>
+      </ul>
+
+      <h3 class="rec__t">Em que pé está</h3>
+      <ul class="rec__l">
+${situacoes.map(([k, a]) => `        <li><span class="rec__r">${escapar(capitular(k))}</span><span class="rec__q">${a.n}</span><span class="rec__v">R$ ${brl(a.v)}</span></li>`).join('\n')}
+      </ul>
+
+      <h3 class="rec__t">De quem partiu — as seis maiores origens</h3>
+      <ul class="rec__l">
+${origens.map(([k, a]) => `        <li><span class="rec__r">${escapar(capitular(k))}</span><span class="rec__q">${a.n}</span><span class="rec__v">R$ ${brl(a.v)}</span></li>`).join('\n')}
+      </ul>
+
+      <p class="rec__f"><b>O que este número não é.</b> ${faltando.length ? `O portal não traz nenhum registro de ${faltando.join(', ')}, ` : ''}${zerados.length ? `${zerados.length} ${zerados.length === 1 ? 'emenda aparece' : 'emendas aparecem'} com valor zero, ` : ''}e o beneficiário nem sempre é a Prefeitura — há associação e entidade com endereço na cidade. ${regs.length} registros para ${Number(anos[anos.length - 1]) - Number(anos[0]) + 1} anos é o que a Prefeitura publicou, não o universo do que chegou.<br><span>Fonte: Portal de Transparência da Prefeitura Municipal de Picos — Emendas Parlamentares. Coleta de ${regs[0].coletado_em ? dataCurta(regs[0].coletado_em) : 'setembro de 2026'}, conferida linha a linha.</span></p>`;
+}
+
 function blocoResumo(acoes) {
   const anos = acoes.map((a) => a.ano).sort();
   const bairrosAlcancados = new Set();
@@ -333,6 +409,7 @@ html = trocar(html, 'retrato', retrato);
 html = trocar(html, 'mapa', blocoMapa(acoes));
 html = trocar(html, 'numeros', blocoNumeros(acoes));
 html = trocar(html, 'terrnota', blocoTerritorioNota());
+html = trocar(html, 'emendas', blocoEmendas());
 html = versionarAssets(html);
 fs.writeFileSync(HTML, html, 'utf8');
 

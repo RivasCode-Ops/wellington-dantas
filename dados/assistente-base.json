@@ -234,6 +234,31 @@
       ]
     },
     {
+      "id": "emendas",
+      "titulo": "Emendas e recursos",
+      "gatilhos": [
+        "emenda",
+        "emendas",
+        "dinheiro",
+        "recurso",
+        "recursos",
+        "verba",
+        "investimento",
+        "quanto trouxe",
+        "milhoes"
+      ],
+      "resposta": "Vereador não apresenta emenda parlamentar — emenda individual, de bancada, de comissão e de relator são instrumentos de deputado e de senador. Então nenhuma cifra de emenda é do vereador. O que o site publica é de onde o dinheiro vem: o portal da Prefeitura registra R$ 107,7 milhões destinados a Picos entre 2020 e 2026, em 60 emendas, das quais R$ 59,5 milhões constam como concluídas. Empenhado não é dinheiro na conta.",
+      "fonte": {
+        "rotulo": "Portal de Transparência da Prefeitura Municipal de Picos — Emendas Parlamentares",
+        "url": ""
+      },
+      "seguintes": [
+        "atuacao-bairros",
+        "fontes",
+        "demanda"
+      ]
+    },
+    {
       "id": "mapa",
       "titulo": "Mapa de Picos",
       "gatilhos": [

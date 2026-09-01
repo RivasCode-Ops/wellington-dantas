@@ -273,6 +273,68 @@
   .mapa__leg { font-size: 12px; }
 }
 
+/* recursos que chegam a Picos
+ * Seção de contexto, não de mandato: por isso não usa o vermelho dos cartões
+ * de resultado do vereador. O aviso vem antes dos números, não depois. */
+.rec { background: var(--branco); border-block: 1px solid var(--linha); padding: clamp(50px, 7vw, 88px) 0; }
+.rec .olho { margin-bottom: 16px; }
+.rec h2 { margin-bottom: 14px; }
+.rec .lide { margin-bottom: 26px; }
+
+.rec__aviso {
+  border-left: 3px solid var(--pt-vermelho);
+  padding: 12px 0 12px 16px;
+  margin-bottom: 38px;
+  max-width: 82ch;
+  font-size: 15px;
+  color: var(--aco);
+}
+.rec__aviso strong { color: var(--tinta); font-weight: 600; }
+
+.rec__n {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid var(--linha);
+  margin-bottom: 44px;
+}
+.rec__n li { padding: 26px 22px 24px 0; border-left: 1px solid var(--linha); }
+.rec__n li:first-child { border-left: 0; }
+.rec__n li:not(:first-child) { padding-left: 22px; }
+.rec__n b {
+  display: block; font-size: clamp(26px, 3.4vw, 40px); font-weight: 600;
+  letter-spacing: -.03em; line-height: 1; font-variant-numeric: tabular-nums;
+}
+/* O maior número desta seção não é conquista do vereador — então não usa a
+ * cor com que o site marca o que é dele. Nesta seção o vermelho aparece só no
+ * filete do aviso. Cor também atribui. */
+.rec__n b { color: var(--tinta); }
+.rec__n span { display: block; font-size: 13.5px; color: var(--aco); margin-top: 9px; max-width: 30ch; }
+
+.rec__t {
+  font-size: 13px; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--aco); margin-bottom: 10px;
+}
+.rec__l { list-style: none; border-top: 1px solid var(--linha); margin-bottom: 34px; }
+.rec__l li {
+  display: grid; grid-template-columns: 1fr auto 190px; gap: 18px; align-items: baseline;
+  padding: 13px 0; border-bottom: 1px solid var(--linha);
+}
+.rec__r { font-size: 15px; letter-spacing: -.01em; }
+.rec__q { font-size: 13px; color: var(--aco); font-variant-numeric: tabular-nums; }
+.rec__v { font-size: 15px; text-align: right; font-variant-numeric: tabular-nums; }
+
+.rec__f { font-size: 14px; color: var(--aco); max-width: 82ch; line-height: 1.55; }
+.rec__f b { color: var(--tinta); font-weight: 600; }
+.rec__f span { display: block; margin-top: 8px; font-size: 12.5px; color: var(--aco-claro); }
+
+@media (max-width: 820px) {
+  .rec__n { grid-template-columns: 1fr; }
+  .rec__n li { border-left: 0; border-bottom: 1px solid var(--linha); padding-left: 0 !important; }
+  .rec__l li { grid-template-columns: 1fr auto; }
+  .rec__v { grid-column: 1 / -1; text-align: left; color: var(--tinta); font-weight: 600; }
+}
+
 /* lançador do assistente
  * Só o botão vive na página. O chat inteiro — iframe, CSS, motor e base — só
  * entra no primeiro clique. */

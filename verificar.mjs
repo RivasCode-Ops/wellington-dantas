@@ -214,6 +214,29 @@ if (!/bairros desta lista/.test(html)) {
   reprovar('a nota de território não foi gerada — a página perdeu a contagem que diz o que está medindo.');
 }
 
+/* 12a-bis. emenda parlamentar não é do vereador --------------------------
+ * Vereador não apresenta emenda parlamentar. Publicar a cifra como conquista
+ * dele seria atribuir número de outra pessoa — e é conferível em portal
+ * público em trinta segundos. A seção de recursos é de contexto: mostra de
+ * onde o dinheiro vem, e não diz que alguém o trouxe. */
+if (existe('dados/emendas.csv')) {
+  if (!/Nada disto é emenda do vereador/.test(html)) {
+    reprovar('a seção de recursos perdeu o aviso de que a emenda não é do vereador. Sem ele, a seção vira apropriação.');
+  }
+  const ATRIBUICAO = [
+    /emendas?[^.]{0,60}(trazidas?|conquistadas?|garantidas?) por (wellington|ele)/i,
+    /(wellington|o vereador)[^.]{0,40}(trouxe|conquistou|garantiu|destinou)[^.]{0,30}(emenda|R\$)/i,
+    /R\$[^.]{0,40}(trazidos|conquistados) (por|pelo)/i,
+  ];
+  for (const re of ATRIBUICAO) {
+    if (re.test(html)) reprovar(`o site atribui emenda parlamentar ao vereador ("${re.source}"). Ele não é autor de emenda.`);
+  }
+  /* Empenhado não é pago: os dois números têm que aparecer juntos. */
+  if (!/ainda não é dinheiro na conta/.test(html)) {
+    reprovar('a seção de recursos publica o total sem separar o que está concluído. Empenhado não é dinheiro na conta.');
+  }
+}
+
 /* 12b. o assistente ------------------------------------------------------
  * As três regras que o tornam publicável num site de mandato: nada sem fonte,
  * nada de propaganda eleitoral, e nada que atribua realização onde o CSV
