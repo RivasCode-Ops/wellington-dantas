@@ -1,0 +1,381 @@
+{
+  "_leia": "Base de conhecimento do assistente. É a ÚNICA fonte de texto que o chat emite — o motor não gera frase nenhuma. Regra que não se dobra: registro factual sem fonte.rotulo preenchido não carrega, e o console diz qual foi descartado. Nenhum número aqui pode ser diferente do que está em dados/acoes.csv, no briefing ou nos Boletins da Câmara.",
+  "versao": "1.0.0",
+  "atualizado_em": "2026-09-01",
+  "identidade": {
+    "nome_bot": "Dantas.IA",
+    "subtitulo": "Assistente automatizado · não é o vereador",
+    "aviso_fixo": "Respostas automáticas a partir de informações públicas · não é o vereador",
+    "abertura": "Oi. Eu organizo o que é público sobre o mandato do vereador Wellington Dantas em Picos: as 27 ações registradas, os bairros, as fontes de cada informação. Se eu não souber, eu digo que não sei — e te ofereço registrar a demanda do seu bairro."
+  },
+  "limiar": 0.6,
+  "canal": {
+    "pendente": true,
+    "tipo": null,
+    "valor": null,
+    "_leia": "Quando o gabinete definir o canal oficial, preencher tipo com \"whatsapp\" e valor com o número em formato internacional (ex.: 5589999999999), ou tipo \"email\" e valor com o endereço. O botão de envio da demanda passa a abrir o canal direto e este aviso some sozinho."
+  },
+  "chips": [
+    "quem-e",
+    "atuacao-bairros",
+    "mapa",
+    "mulheres",
+    "demanda",
+    "fontes"
+  ],
+  "registros": [
+    {
+      "id": "identidade-bot",
+      "titulo": "O que é este assistente",
+      "sistema": true,
+      "gatilhos": [
+        "voce e o wellington",
+        "e o vereador",
+        "voce e humano",
+        "e um robo",
+        "e uma ia",
+        "quem e voce",
+        "voce e uma pessoa",
+        "falo com o vereador",
+        "e o proprio"
+      ],
+      "resposta": "Sou o Dantas.IA, um assistente automatizado. Não sou o vereador Wellington Dantas e não falo por ele: eu organizo informações públicas do mandato dele em Picos. Para falar com o gabinete, uso outro caminho — é só pedir.",
+      "fonte": {
+        "rotulo": "",
+        "url": ""
+      },
+      "seguintes": [
+        "quem-e",
+        "contato",
+        "fontes"
+      ]
+    },
+    {
+      "id": "quem-e",
+      "titulo": "Quem é Wellington Dantas",
+      "gatilhos": [
+        "quem e",
+        "quem e ele",
+        "biografia",
+        "sobre ele",
+        "perfil",
+        "historia",
+        "trajetoria",
+        "vereador wellington"
+      ],
+      "resposta": "Francisco Wellington Gonçalves Dantas é vereador de Picos (PI) pelo PT. Em 2024 recebeu 2.254 votos: foi o vereador mais votado da cidade pela terceira vez e o primeiro colocado entre os 17 eleitos.",
+      "fonte": {
+        "rotulo": "TSE — Divulgação de Candidaturas 2024",
+        "url": ""
+      },
+      "seguintes": [
+        "origem",
+        "camara",
+        "atuacao-bairros"
+      ],
+      "rotulo_curto": "Quem é o Wellington"
+    },
+    {
+      "id": "origem",
+      "titulo": "De onde ele veio",
+      "gatilhos": [
+        "origem",
+        "como comecou",
+        "movimento",
+        "famcc",
+        "moradia",
+        "de onde veio",
+        "antes da politica",
+        "associacao de moradores"
+      ],
+      "resposta": "A trajetória dele começa no movimento por moradia digna. Presidiu a FAMCC — Federação das Associações de Moradores e Conselhos Comunitários — e atuou no MPA, Movimento dos Pequenos Agricultores, e na Frente Brasil Popular. Hoje é Diretor Regional da FAMCC.",
+      "fonte": {
+        "rotulo": "Perfil público do mandato",
+        "url": ""
+      },
+      "seguintes": [
+        "formacao",
+        "atuacao-bairros",
+        "opa"
+      ]
+    },
+    {
+      "id": "formacao",
+      "titulo": "Formação",
+      "gatilhos": [
+        "formacao",
+        "estudou",
+        "faculdade",
+        "ufpi",
+        "graduacao",
+        "onde estudou"
+      ],
+      "resposta": "É formado em Letras pela UFPI.",
+      "fonte": {
+        "rotulo": "Perfil público do mandato",
+        "url": ""
+      },
+      "seguintes": [
+        "quem-e",
+        "origem"
+      ]
+    },
+    {
+      "id": "camara",
+      "titulo": "A Câmara de Picos",
+      "gatilhos": [
+        "camara",
+        "cadeiras",
+        "vereadores",
+        "quantos vereadores",
+        "votos",
+        "eleicao",
+        "quantos votos"
+      ],
+      "resposta": "A Câmara Municipal de Picos tem 17 cadeiras. Em 2024 ele foi o primeiro colocado entre os 17 eleitos, com 2.254 votos.",
+      "fonte": {
+        "rotulo": "TSE — Divulgação de Candidaturas 2024",
+        "url": ""
+      },
+      "seguintes": [
+        "quem-e",
+        "atuacao-bairros"
+      ]
+    },
+    {
+      "id": "atuacao-bairros",
+      "titulo": "Atuação nos bairros",
+      "gatilhos": [
+        "bairro",
+        "obra",
+        "onde atuou",
+        "acoes",
+        "o que ele fez",
+        "entregas",
+        "atuacao",
+        "trabalho"
+      ],
+      "resposta": "O mandato tem 27 ações documentadas em bairros e povoados de Picos, cada uma com local, data, instrumento e situação. A categoria mais frequente é iluminação pública: 8 das 27. Quer ver o mapa por bairro?",
+      "fonte": {
+        "rotulo": "Boletins Informativos da Câmara Municipal de Picos",
+        "url": ""
+      },
+      "seguintes": [
+        "mapa",
+        "iluminacao",
+        "demanda"
+      ],
+      "rotulo_curto": "Atuação nos bairros"
+    },
+    {
+      "id": "iluminacao",
+      "titulo": "Iluminação pública",
+      "gatilhos": [
+        "poste",
+        "luz",
+        "iluminacao",
+        "escuro",
+        "lampada",
+        "sem luz",
+        "iluminacao publica"
+      ],
+      "resposta": "Iluminação pública é a pauta mais recorrente do mandato: 8 das 27 ações documentadas. Se a sua rua está no escuro, dá para registrar aqui e o gabinete recebe com bairro e rua.",
+      "fonte": {
+        "rotulo": "Boletins Informativos da Câmara Municipal de Picos",
+        "url": ""
+      },
+      "seguintes": [
+        "demanda",
+        "mapa"
+      ]
+    },
+    {
+      "id": "mulheres",
+      "titulo": "Mulheres Vivas, Livres e Respeitadas",
+      "gatilhos": [
+        "mulher",
+        "mulheres",
+        "violencia",
+        "feminicidio",
+        "mulheres vivas",
+        "agosto lilas",
+        "violencia domestica"
+      ],
+      "resposta": "A bandeira \"Mulheres Vivas, Livres e Respeitadas\" é articulada pelo mandato junto ao poder público — o vereador entra como articulador, não como realizador das ações. Em 2025 o Piauí registrou 37 feminicídios, 22 deles dentro de casa.",
+      "fonte": {
+        "rotulo": "Boletim de Feminicídio · SSP-PI (GACE/SUCID), 31/03/2026",
+        "url": ""
+      },
+      "seguintes": [
+        "atuacao-bairros",
+        "fontes"
+      ],
+      "rotulo_curto": "Mulheres Vivas"
+    },
+    {
+      "id": "opa",
+      "titulo": "Como a demanda vira obra",
+      "gatilhos": [
+        "opa",
+        "orcamento participativo",
+        "como funciona",
+        "como faz",
+        "processo",
+        "como chega na obra"
+      ],
+      "resposta": "São quatro passos. 1. A comunidade se reúne: o conselho comunitário do bairro levanta a demanda com os moradores. 2. A demanda vira proposta: o mandato protocola, cobra e acompanha na Câmara e na prefeitura. 3. O bairro vota: no Orçamento Participativo, quem decide a prioridade é quem mora ali. 4. A obra sai e fica registrada: entra no site com bairro, data e situação — inclusive se atrasar.",
+      "fonte": {
+        "rotulo": "Site do mandato — bloco \"Como funciona\"",
+        "url": ""
+      },
+      "seguintes": [
+        "demanda",
+        "atuacao-bairros"
+      ]
+    },
+    {
+      "id": "mapa",
+      "titulo": "Mapa de Picos",
+      "gatilhos": [
+        "mapa",
+        "ver bairros",
+        "onde fica",
+        "mapa de picos",
+        "meu bairro no mapa"
+      ],
+      "resposta": "O mapa de atuação mostra os bairros de Picos com as ações registradas em cada um. Bairro em vermelho tem ação documentada; clicar abre o que foi pedido, o que tramita e de onde veio a informação.",
+      "fonte": {
+        "rotulo": "Levantamento de 27 ações do mandato",
+        "url": ""
+      },
+      "acao": {
+        "tipo": "ir",
+        "alvo": "#entregas",
+        "rotulo": "Abrir o mapa no site"
+      },
+      "seguintes": [
+        "atuacao-bairros",
+        "demanda"
+      ],
+      "rotulo_curto": "Mapa de Picos"
+    },
+    {
+      "id": "demanda",
+      "titulo": "Registrar demanda do bairro",
+      "sistema": true,
+      "gatilhos": [
+        "quero pedir",
+        "reclamar",
+        "buraco",
+        "demanda",
+        "minha rua",
+        "na minha rua",
+        "registrar",
+        "solicitar",
+        "pedir"
+      ],
+      "resposta": "Você pode registrar a demanda do seu bairro. Preciso de três coisas: bairro, rua e o que está acontecendo. Isso vai para o gabinete com o local nomeado.",
+      "fonte": {
+        "rotulo": "",
+        "url": ""
+      },
+      "acao": {
+        "tipo": "formulario",
+        "rotulo": "Registrar demanda"
+      },
+      "seguintes": [
+        "opa",
+        "atuacao-bairros"
+      ],
+      "rotulo_curto": "Registrar demanda"
+    },
+    {
+      "id": "contato",
+      "titulo": "Falar com o gabinete",
+      "sistema": true,
+      "pendente": true,
+      "gatilhos": [
+        "contato",
+        "gabinete",
+        "telefone",
+        "falar",
+        "whatsapp",
+        "numero",
+        "email"
+      ],
+      "resposta": null,
+      "fonte": {
+        "rotulo": "",
+        "url": ""
+      },
+      "seguintes": []
+    },
+    {
+      "id": "instagram",
+      "titulo": "Redes do mandato",
+      "gatilhos": [
+        "instagram",
+        "redes",
+        "rede social",
+        "perfil",
+        "seguir"
+      ],
+      "resposta": "O perfil do mandato é @wellingtondantaspicos.",
+      "fonte": {
+        "rotulo": "Perfil público do mandato",
+        "url": "https://www.instagram.com/wellingtondantaspicos/"
+      },
+      "seguintes": [
+        "contato",
+        "demanda"
+      ]
+    },
+    {
+      "id": "outros-mandatos",
+      "titulo": "Sobre outros mandatos",
+      "sistema": true,
+      "gatilhos": [
+        "outro vereador",
+        "prefeito",
+        "adversario",
+        "partido dele e melhor",
+        "o que acha do",
+        "opiniao sobre",
+        "comparar"
+      ],
+      "resposta": "Não comento outros mandatos, partidos nem disputas. Posso te mostrar o que este aqui fez.",
+      "fonte": {
+        "rotulo": "",
+        "url": ""
+      },
+      "seguintes": [
+        "atuacao-bairros",
+        "mapa"
+      ]
+    },
+    {
+      "id": "fontes",
+      "titulo": "De onde vêm os dados",
+      "sistema": true,
+      "gatilhos": [
+        "fonte",
+        "de onde vem",
+        "como sabe",
+        "checar",
+        "conferir",
+        "fontes",
+        "dados"
+      ],
+      "resposta": "Tudo que eu respondo vem de quatro lugares: TSE, para o resultado de 2024; Boletins Informativos da Câmara Municipal de Picos, para as proposições; SSP-PI, para os dados de violência contra a mulher; e o levantamento das 27 ações do mandato. Cada resposta mostra a fonte dela embaixo.",
+      "fonte": {
+        "rotulo": "",
+        "url": ""
+      },
+      "seguintes": [
+        "atuacao-bairros",
+        "mapa"
+      ],
+      "rotulo_curto": "De onde vêm os dados"
+    }
+  ]
+}

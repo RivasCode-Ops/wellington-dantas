@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dantas.IA — assistente do mandato</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="stylesheet" href="css/fontes.css">
+<link rel="stylesheet" href="css/assistente.css">
+</head>
+<body>
+
+<header class="cab">
+  <div class="cab__id">
+    <span class="cab__selo" aria-hidden="true">WD</span>
+    <div>
+      <p class="cab__nome" id="bot-nome">Dantas.IA</p>
+      <p class="cab__sub" id="bot-sub">Assistente automatizado · não é o vereador</p>
+    </div>
+  </div>
+  <button type="button" class="cab__x" id="fechar" aria-label="Fechar o assistente">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
+  </button>
+</header>
+
+<p class="aviso" id="aviso">Respostas automáticas a partir de informações públicas · não é o vereador</p>
+
+<div class="log" id="log" role="log" aria-live="polite" aria-relevant="additions" aria-label="Conversa com o assistente"></div>
+<div class="digitando" id="digitando" hidden aria-hidden="true"><span></span><span></span><span></span></div>
+
+<div class="pe">
+  <div class="chips" id="chips" role="group" aria-label="Perguntas frequentes"></div>
+  <form class="campo" id="form" autocomplete="off">
+    <label class="sr" for="pergunta">Escreva sua pergunta</label>
+    <input type="text" id="pergunta" placeholder="Pergunte sobre o mandato…" maxlength="240">
+    <button type="submit" id="enviar" aria-label="Enviar pergunta">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+    </button>
+  </form>
+  <p class="rodape">Conteúdo automatizado · sem coleta de dados pessoais</p>
+</div>
+
+<script src="js/assistente-motor.js"></script>
+<script src="js/assistente-ui.js"></script>
+</body>
+</html>

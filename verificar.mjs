@@ -203,6 +203,63 @@ if (!/@media \(max-width:\s*7\d\dpx\)/.test(css)) {
   reprovar('não há ponto de quebra abaixo de 800px — a faixa onde estão os celulares fica sem regra.');
 }
 
+/* 12b. o assistente ------------------------------------------------------
+ * As três regras que o tornam publicável num site de mandato: nada sem fonte,
+ * nada de propaganda eleitoral, e nada que atribua realização onde o CSV
+ * registra requerimento. Ele não é candidato nesta eleição. */
+if (existe('dados/assistente-base.json')) {
+  const base = JSON.parse(ler('dados/assistente-base.json'));
+  const ia = ler('assistente.html');
+  const lanc = ler('js/assistente-launcher.js');
+
+  for (const r of base.registros) {
+    const factual = !r.sistema && !r.pendente;
+    if (factual && !(r.fonte && String(r.fonte.rotulo || '').trim())) {
+      reprovar(`assistente: registro "${r.id}" afirma fato sem fonte. Registro sem fonte é mentira no chat.`);
+    }
+    if (r.resposta && /<[a-z]/i.test(r.resposta)) {
+      reprovar(`assistente: registro "${r.id}" tem HTML na resposta — o texto é renderizado como texto, marcação ali só serve para quebrar.`);
+    }
+  }
+
+  const todoTexto = base.registros.map((r) => r.resposta || '').join(' \n ');
+  const PROPAGANDA = [
+    [/\bvote\b/i, 'pedido de voto'],
+    [/\bvota[r]? (em|no)\b/i, 'pedido de voto'],
+    [/\beleja\b/i, 'pedido de voto'],
+    [/\bmeu n[úu]mero [ée]\b/i, 'número como pedido de voto'],
+    [/\bvou (fazer|construir|entregar|garantir)\b/i, 'promessa futura'],
+    [/\bprometo\b/i, 'promessa futura'],
+    [/\beu fiz\b/i, 'primeira pessoa pelo vereador'],
+    [/\beu vou\b/i, 'primeira pessoa pelo vereador'],
+  ];
+  for (const [re, oque] of PROPAGANDA) {
+    if (re.test(todoTexto)) reprovar(`assistente: ${oque} no texto do bot ("${re.source}"). Ele não é candidato nesta eleição.`);
+  }
+
+  /* O CSV distingue requerimento de entrega. O bot não pode confundir. */
+  for (const r of base.registros) {
+    if (r.resposta && /\b(entregou|realizou|construiu)\b/i.test(r.resposta)) {
+      reprovar(`assistente: registro "${r.id}" atribui realização ao vereador. O verbo tem que ser o da coluna "instrumento" do CSV.`);
+    }
+  }
+
+  for (const id of base.chips || []) {
+    const r = base.registros.find((x) => x.id === id);
+    if (!r) reprovar(`assistente: chip "${id}" não existe na base.`);
+    else if (r.pendente) reprovar(`assistente: chip "${id}" está pendente e não pode ser oferecido.`);
+  }
+
+  if (!/sandbox/.test(lanc)) reprovar('assistente: iframe sem sandbox.');
+  if (!/event\.origin !== location\.origin|e\.origin !== location\.origin/.test(lanc)) {
+    reprovar('assistente: postMessage sem checagem de origem.');
+  }
+  if (!/name="robots" content="noindex/.test(ia)) reprovar('assistente.html está indexável.');
+  if (/innerHTML\s*=/.test(ler('js/assistente-ui.js').replace(/botao\.innerHTML[^\n]*/g, ''))) {
+    reprovar('assistente: innerHTML na renderização de mensagem — o texto da base tem que ir por textContent.');
+  }
+}
+
 /* 13. enquanto é apresentação, não indexa -------------------------------- */
 if (!/name="robots" content="noindex/.test(html)) {
   avisar('index.html está indexável. Certo depois da aprovação — errado enquanto é versão de apresentação.');

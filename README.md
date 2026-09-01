@@ -35,6 +35,31 @@ js/app.js             só filtra a lista que já está no HTML
 verificar.mjs         a régua de prova
 ```
 
+## O assistente (Dantas.IA)
+
+Recuperação sobre base curada, **sem LLM e sem chave de API**. O motor não
+escreve frase nenhuma: toda resposta está em `dados/assistente-base.json`, e
+**registro factual sem `fonte` não carrega** — o console diz qual foi
+descartado. É a regra do mapa aplicada ao texto.
+
+```
+js/assistente-launcher.js  botão na página; o chat só existe depois do 1º clique
+assistente.html            documento do chat, dentro de <iframe sandbox>
+js/assistente-motor.js     função pura: pergunta → registro. Testável sem navegador
+js/assistente-ui.js        balões, chips, formulário de demanda
+dados/assistente-base.json os 15 registros. É aqui que se edita o que o bot sabe
+```
+
+Três comportamentos que o distinguem do assistente que serviu de referência:
+**pergunta composta** não é respondida pela metade em silêncio — ele avisa o que
+ficou de fora; **"você é o vereador?"** tem registro próprio, em vez de cair no
+genérico; e o **fallback tem saída** — quem pergunta o que ele não sabe é
+convidado a registrar a demanda com bairro e rua.
+
+Conformidade travada: ele não pede voto, não usa o número como pedido, não
+promete obra futura, não fala em primeira pessoa pelo vereador e **não atribui
+realização onde o CSV registra requerimento**. A régua reprova cada um desses.
+
 ## As decisões que valem a pena saber
 
 **O conteúdo já vem no HTML.** Nada é buscado no navegador. A página funciona
