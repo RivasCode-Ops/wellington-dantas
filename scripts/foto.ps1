@@ -9,6 +9,8 @@
 #
 # -Foco  0..1  onde está o rosto na horizontal (0.5 = centro)
 # -Topo  0..1  quanto cortar do alto antes de recortar (0 = nada)
+# -Fundo 0..1  quanto cortar da base — serve para tirar tripé, base de microfone
+#              e o que mais apareça no pé do enquadramento
 #
 # Sem dependência instalada: usa o System.Drawing do próprio Windows.
 # O teto é 250 KB por arquivo — é o que a régua (verificar.mjs) aceita.
@@ -19,6 +21,7 @@ param(
   [Parameter(Mandatory = $true)][string]$Origem,
   [double]$Foco = 0.5,
   [double]$Topo = 0.0,
+  [double]$Fundo = 0.0,
   [int]$Qualidade = 82,
   # Aceita imagem gerada por IA COMO PROVISÓRIA. Os arquivos saem com
   # "provisorio" no nome, o site publica a legenda dizendo o que é, e a régua
@@ -57,7 +60,8 @@ $src = [System.Drawing.Image]::FromFile((Resolve-Path $Origem))
 try {
   # --- recorte 3:4, ancorado no rosto -------------------------------------
   $cortaTopo = [int]($src.Height * $Topo)
-  $alturaUtil = $src.Height - $cortaTopo
+  $cortaFundo = [int]($src.Height * $Fundo)
+  $alturaUtil = $src.Height - $cortaTopo - $cortaFundo
   $larguraCorte = [int]($alturaUtil * 0.75)
 
   if ($larguraCorte -gt $src.Width) {

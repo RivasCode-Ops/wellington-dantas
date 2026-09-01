@@ -29,38 +29,62 @@
  * arquivo não estiver no repositório. `1fr auto` cuida dos dois casos sem
  * precisar de classe condicional.
  */
+/* As duas colunas compartilham as duas linhas: o topo do retrato na altura do
+ * olho, a base do retrato na base dos botões. Antes o retrato ia do topo da
+ * seção até o rodapé do texto e o texto ficava colado embaixo — 191px de
+ * desencontro, e a foto parecia pendurada em vez de composta. */
 .hero__in {
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: clamp(28px, 5vw, 72px);
-  align-items: end;
+  gap: clamp(28px, 5vw, 64px);
+  align-items: stretch;
 }
 /* Com o retrato ao lado, a coluna de texto encurta: o `max-width:16ch` e o
  * corpo de 92px do mockup, feitos para a largura inteira, passam a quebrar a
  * manchete no lugar errado. Aqui quem manda na quebra é o <br> da frase. */
+/* A altura da linha é dada pelo retrato. Sem isto o texto encosta no topo e
+ * sobra um vão morto embaixo: os quadros alinham, o conteúdo não. Com o
+ * `margin-top:auto`, os botões fecham na mesma base da foto e o ar fica onde
+ * ar de manchete deve ficar — entre o título e a linha de apoio. */
+.hero__txt { display: flex; flex-direction: column; }
 .hero__txt h1 { max-width: none; font-size: clamp(36px, 5.1vw, 66px); }
+.hero__txt .hero__pe { margin-top: auto; }
 
-.hero__retrato { margin: 0; }
+.hero__retrato {
+  position: relative;
+  margin: 0;
+  width: clamp(230px, 27vw, 340px);
+}
 .hero__retrato img {
   display: block;
-  width: clamp(240px, 30vw, 390px);
-  /* `height:auto` é obrigatório: o atributo height="1600" do HTML vale como
-     declaração de CSS e, com as duas dimensões fixas, o `aspect-ratio` é
-     ignorado — a imagem sairia com 380 de largura por 1600 de altura. */
-  height: auto;
-  aspect-ratio: 3 / 4;
+  width: 100%;
+  /* `height:auto` não serve aqui: o atributo height="1600" do HTML vale como
+     declaração de CSS, e é ele que precisa ser anulado. A altura vem da coluna
+     de texto — é o que faz as duas colunas fecharem na mesma linha. */
+  height: 100%;
   object-fit: cover;
-  object-position: 50% 22%;
-  border: 1px solid var(--linha);
+  /* o enquadramento fica no alto: corta a base do microfone, não a testa */
+  object-position: 50% 16%;
   background: var(--papel);
+  /* Preto e branco por disciplina de paleta, não por estilo: a madeira do
+   * plenário entra como um bloco laranja saturado do tamanho de um terço da
+   * dobra, e a regra do projeto é vermelho em no máximo ~10% da tela, com o
+   * resto em tinta, aço e papel. Em cinza, a única cor da dobra volta a ser o
+   * vermelho do filete e do botão — que é onde ela tem trabalho a fazer.
+   * Para voltar ao colorido: apagar esta linha. */
+  filter: grayscale(1) contrast(1.06) brightness(1.02);
 }
+/* A legenda sai do bloco alinhado e desce para o respiro da seção: se ela
+ * ocupasse altura dentro da coluna, roubaria da foto e desalinharia a base. */
 .hero__retrato figcaption {
-  margin-top: 10px;
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  width: 100%;
   font-size: 12px;
   letter-spacing: .06em;
   text-transform: uppercase;
   color: var(--aco);
-  max-width: 34ch;
 }
 
 /* Retrato provisório: a legenda não pode passar despercebida, mas também não
@@ -78,8 +102,10 @@
 
 @media (max-width: 900px) {
   .hero__in { grid-template-columns: 1fr; }
-  .hero__retrato { order: -1; }
-  .hero__retrato img { width: min(280px, 62vw); }
+  .hero__retrato { order: -1; width: min(300px, 66vw); }
+  .hero__retrato img { height: auto; aspect-ratio: 5 / 6; }
+  /* em coluna única não há base para alinhar: a legenda volta ao fluxo */
+  .hero__retrato figcaption { position: static; margin-top: 10px; }
 }
 
 /* entregas — resumo, filtro, fonte, vazio */
