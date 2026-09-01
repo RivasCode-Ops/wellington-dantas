@@ -302,6 +302,19 @@ if (existe('dados/assistente-base.json')) {
     reprovar('assistente: postMessage sem checagem de origem.');
   }
   if (!/name="robots" content="noindex/.test(ia)) reprovar('assistente.html está indexável.');
+
+  /* Pedir nome e telefone sem dizer para quê é coleta escondida. E enquanto
+   * não há backend, a promessa que vale é a verdadeira: nada sai do aparelho
+   * sozinho. */
+  const ui = ler('js/assistente-ui.js');
+  if (/d-nome|d-zap/.test(ui)) {
+    if (!/servem só para o gabinete te responder/.test(ui)) {
+      reprovar('o assistente pede nome e WhatsApp sem declarar a finalidade ao lado do botão.');
+    }
+    if (!/o texto é montado neste aparelho e quem envia é você/.test(ui)) {
+      reprovar('o assistente pede dado pessoal sem dizer que nada é enviado daqui. Enquanto não há backend, essa frase é o que torna o pedido honesto.');
+    }
+  }
   if (/innerHTML\s*=/.test(ler('js/assistente-ui.js').replace(/botao\.innerHTML[^\n]*/g, ''))) {
     reprovar('assistente: innerHTML na renderização de mensagem — o texto da base tem que ir por textContent.');
   }

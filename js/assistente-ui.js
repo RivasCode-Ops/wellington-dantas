@@ -192,11 +192,18 @@
 
   /* --- formulário de demanda -------------------------------------------- */
 
+  /* O chat é anônimo enquanto é pergunta. No instante em que vira pedido, ele
+   * para e pede identificação — dizendo para quê. Pergunta anônima não serve
+   * ao gabinete se era um pedido de rua e não se sabe de quem, e pedir nome
+   * sem dizer o motivo é coleta escondida. */
   function abrirFormulario() {
-    var m = balaoBot('Me diga três coisas e eu monto o texto para o gabinete:');
+    var m = balaoBot('Isso eu não respondo pelo site, mas o gabinete responde. '
+      + 'Me diga como te chamar e o WhatsApp para a resposta chegar em você — e onde é o problema.');
     var f = no('form', 'form-demanda');
 
     var campos = [
+      { id: 'd-nome', rotulo: 'Como te chamar', tag: 'input' },
+      { id: 'd-zap', rotulo: 'WhatsApp com DDD', tag: 'input' },
       { id: 'd-bairro', rotulo: 'Bairro', tag: 'input' },
       { id: 'd-rua', rotulo: 'Rua ou ponto de referência', tag: 'input' },
       { id: 'd-texto', rotulo: 'O que está acontecendo', tag: 'textarea' }
@@ -217,28 +224,52 @@
     enviar.type = 'submit';
     f.appendChild(enviar);
 
+    /* Finalidade declarada, embaixo do botão, onde a pessoa decide. */
+    f.appendChild(no('p', 'form-demanda__aviso',
+      'Nome e WhatsApp servem só para o gabinete te responder. Nada é enviado daqui: '
+      + 'o texto é montado neste aparelho e quem envia é você.'));
+
     f.addEventListener('submit', function (e) {
       e.preventDefault();
-      var bairro = document.getElementById('d-bairro').value.trim();
-      var rua = document.getElementById('d-rua').value.trim();
-      var texto = document.getElementById('d-texto').value.trim();
-      if (!bairro || !rua || !texto) return;
+      var d = {};
+      var faltou = false;
+      campos.forEach(function (c) {
+        d[c.id] = document.getElementById(c.id).value.trim();
+        if (!d[c.id]) faltou = true;
+      });
+      if (faltou) return;
       f.remove();
-      montarDemanda(bairro, rua, texto);
+      montarDemanda(d);
     });
 
     m.appendChild(f);
     aoFim();
-    document.getElementById('d-bairro').focus();
+    document.getElementById('d-nome').focus();
   }
 
-  function montarDemanda(bairro, rua, texto) {
-    var msg = 'Demanda do bairro ' + bairro + '\n'
-      + 'Local: ' + rua + '\n'
-      + 'Descrição: ' + texto + '\n'
-      + '— enviado pelo site do mandato';
+  /* Código da mensagem: data mais quatro caracteres. Não é protocolo de fila —
+   * fila exige banco, e prometer número de acompanhamento que ninguém consulta
+   * é pior que não ter. É identificador da mensagem, e a legenda diz isso. */
+  function codigo() {
+    var d = new Date();
+    var iso = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    var letras = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    var s = '';
+    for (var i = 0; i < 4; i++) s += letras.charAt(Math.floor(Math.random() * letras.length));
+    return 'PIC-' + iso + '-' + s;
+  }
 
-    var m = balaoBot('Pronto. É este o texto, com o bairro e a rua nomeados:');
+  function montarDemanda(d) {
+    var cod = codigo();
+    var msg = 'Demanda ' + cod + '\n'
+      + 'Bairro: ' + d['d-bairro'] + '\n'
+      + 'Local: ' + d['d-rua'] + '\n'
+      + 'Descrição: ' + d['d-texto'] + '\n'
+      + 'De: ' + d['d-nome'] + ' — WhatsApp ' + d['d-zap'] + '\n'
+      + 'Canal: assistente do site';
+
+    var m = balaoBot('Pronto. Guarde o código ' + cod + ' — é por ele que você cobra a resposta. '
+      + 'O texto abaixo já vai com bairro, rua e o seu contato:');
     m.appendChild(no('div', 'balao', msg));
 
     var canal = BASE.canal || {};
@@ -260,7 +291,7 @@
         acao: function () {
           parent.postMessage({
             tipo: 'abrir',
-            url: 'mailto:' + canal.valor + '?subject=' + encodeURIComponent('Demanda — ' + bairro) + '&body=' + encodeURIComponent(msg)
+            url: 'mailto:' + canal.valor + '?subject=' + encodeURIComponent('Demanda ' + cod + ' — ' + d['d-bairro']) + '&body=' + encodeURIComponent(msg)
           }, location.origin);
         }
       });
