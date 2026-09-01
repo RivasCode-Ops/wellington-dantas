@@ -287,14 +287,34 @@
 }
 #mapa { display: block; width: 100%; height: auto; }
 
-.reg { fill: #fff; stroke: #9AA0A6; stroke-width: 2; stroke-linejoin: round; cursor: pointer; transition: fill .12s; }
-.reg.nn { fill: #EDEFF2; cursor: default; }
-.reg.on { fill: var(--pt-vermelho); stroke: var(--pt-vermelho-fundo); stroke-width: 2.5; }
-.reg:hover { fill: #DCE0E5; }
+/* O mapa estava praticamente invisível, e por dois motivos somados.
+ *
+ * 1. `fill:#fff` dentro de um cartão de fundo branco: contraste 1:1. O único
+ *    separador era o traço — e polígono branco em fundo branco não é desenho,
+ *    é a memória de um desenho.
+ * 2. O traço media 2 unidades num viewBox de 2146 renderizado a ~640px, ou
+ *    seja 0,6px na tela. `vector-effect: non-scaling-stroke` faz a espessura
+ *    valer em pixel de tela, não em unidade do desenho — sem isso, foco e
+ *    seleção também encolhiam 3,3× e sumiam.
+ *
+ * Agora o polígono sem registro tem fundo próprio contra o cartão, e o traço
+ * é escuro o bastante para passar do mínimo de 3:1 de elemento gráfico. */
+.reg {
+  fill: #E8EBEF;
+  stroke: #6A6B6B;
+  stroke-width: 1.25;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  cursor: pointer;
+  transition: fill .12s;
+}
+.reg.nn { fill: #F7F8F9; stroke: #9AA0A6; cursor: default; }
+.reg.on { fill: var(--pt-vermelho); stroke: var(--pt-vermelho-fundo); stroke-width: 1.5; }
+.reg:hover { fill: #CBD2D9; }
 .reg.on:hover, .reg.on.is-sel { fill: var(--pt-vermelho-fundo); }
-.reg.is-sel { fill: #C9CFD6; stroke: var(--tinta); stroke-width: 3.5; }
+.reg.is-sel { fill: #A8B2BC; stroke: var(--tinta); stroke-width: 2.5; }
 .reg:focus { outline: none; }
-.reg:focus-visible { stroke: var(--tinta); stroke-width: 5; }
+.reg:focus-visible { stroke: var(--tinta); stroke-width: 3.5; }
 
 /* Os rótulos vivem em unidades do viewBox (2146 de largura). A 19, como vinham
    do desenho, saíam a menos de 7px na tela — ilegíveis no desktop e piores no
@@ -522,4 +542,18 @@
 @media (max-width: 820px) {
   .terr__g--sec { grid-template-columns: repeat(2, 1fr); }
   .ent__resumo { margin-top: -10px; }
+}
+
+/* Quem pediu menos movimento no sistema recebe menos movimento aqui.
+ * O `scroll-behavior:smooth` do mockup e as transições de cor do mapa são
+ * exatamente o tipo de animação que causa desconforto vestibular — e o site
+ * não perde nada sem elas. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

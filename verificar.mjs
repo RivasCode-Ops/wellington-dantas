@@ -184,6 +184,34 @@ if (!/<svg id="mapa"/.test(html)) reprovar('o SVG do mapa não está inline no H
 if (!/data-k="/.test(html)) reprovar('o mapa não tem polígonos com data-k — nada para o JS ligar.');
 if (!/id="mapa-dados"/.test(html)) reprovar('faltam os dados do mapa (script application/json).');
 
+/* O mapa vivia branco sobre branco, com contraste 1:1, e o traço media 0,6px
+ * na tela porque a espessura escalava junto com o viewBox de 2146. */
+if (!/vector-effect:\s*non-scaling-stroke/.test(css)) {
+  reprovar('o traço do mapa escala com o viewBox: 2 unidades num viewBox de 2146 viram 0,6px na tela. Falta vector-effect: non-scaling-stroke.');
+}
+const fillReg = /\.reg\s*\{[^}]*fill:\s*(#[0-9a-f]{3,6})/i.exec(css);
+if (fillReg && /^#(fff|ffffff)$/i.test(fillReg[1])) {
+  reprovar('os polígonos do mapa são brancos dentro de um cartão branco — contraste 1:1, o desenho some.');
+}
+
+/* A caixa reservada da imagem vem da proporção declarada: se ela mentir, a
+ * página pula no carregamento e o object-fit corta em outro lugar. */
+const heroImg = /<img src="img\/(wellington[a-z-]*)-1200\.jpg"[^>]*width="(\d+)" height="(\d+)"/.exec(html);
+if (heroImg) {
+  const arq = path.join(RAIZ, 'img', `${heroImg[1]}-1200.jpg`);
+  const b = fs.readFileSync(arq);
+  let i = 2, real = null;
+  while (i < b.length - 9 && !real) {
+    if (b[i] !== 0xFF) { i++; continue; }
+    const m = b[i + 1];
+    if (m >= 0xC0 && m <= 0xCF && m !== 0xC4 && m !== 0xC8 && m !== 0xCC) real = { h: b.readUInt16BE(i + 5), w: b.readUInt16BE(i + 7) };
+    else i += 2 + b.readUInt16BE(i + 2);
+  }
+  if (real && (real.w !== Number(heroImg[2]) || real.h !== Number(heroImg[3]))) {
+    reprovar(`o retrato declara ${heroImg[2]}×${heroImg[3]} e o arquivo tem ${real.w}×${real.h}. Proporção declarada errada faz a página pular e o recorte sair de onde foi desenhado.`);
+  }
+}
+
 const app = ler('js/app.js');
 if (!/Enviar uma demanda deste bairro/.test(app)) {
   reprovar('o painel do mapa não tem estado vazio com chamada — bairro sem registro vira buraco em vez de contato.');
@@ -321,6 +349,23 @@ if (existe('dados/assistente-base.json')) {
     reprovar('assistente: postMessage sem checagem de origem.');
   }
   if (!/name="robots" content="noindex/.test(ia)) reprovar('assistente.html está indexável.');
+
+  /* Recusa antes do casamento por palavra-chave. Sem isto, "em quem devo
+   * votar?" casava com o gatilho "quem e" e o bot respondia com o número de
+   * votos dele — orientação de voto emitida por acidente. */
+  if (!base.bloqueios || !base.bloqueios.length) {
+    reprovar('o assistente não tem lista de recusa. Pergunta sobre voto e eleição tem que ser recusada antes de qualquer casamento por palavra-chave.');
+  } else {
+    const termos = base.bloqueios.flatMap((b) => b.termos);
+    for (const exigido of ['devo votar', 'em quem votar', 'candidatura', 'eleicao']) {
+      if (!termos.includes(exigido)) reprovar(`a lista de recusa do assistente não cobre "${exigido}".`);
+    }
+  }
+
+  /* O recorte por bairro vem do mesmo CSV que pinta o mapa. */
+  if (!existe('dados/assistente-bairros.json')) {
+    reprovar('falta dados/assistente-bairros.json — o assistente devolveria a média das 27 ações a quem perguntou por um bairro. Rode: node scripts/gerar.mjs');
+  }
 
   /* Pedir nome e telefone sem dizer para quê é coleta escondida. E enquanto
    * não há backend, a promessa que vale é a verdadeira: nada sai do aparelho

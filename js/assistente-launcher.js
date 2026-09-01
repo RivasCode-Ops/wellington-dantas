@@ -101,6 +101,12 @@
     if (d.tipo === 'fechar') fechar();
     if (d.tipo === 'ir' && typeof d.alvo === 'string' && d.alvo.charAt(0) === '#') {
       fechar();
+      /* leva o filtro junto: o chat manda para a lista JÁ filtrada pelo bairro
+         que a pessoa perguntou, em vez de despejá-la nas 27 */
+      if (d.filtro) {
+        var gatilho = document.querySelector('[data-filtro="' + d.filtro + '"]');
+        if (gatilho) { gatilho.click(); }
+      }
       var alvo = document.querySelector(d.alvo);
       if (alvo) alvo.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }

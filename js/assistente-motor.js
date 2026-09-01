@@ -87,10 +87,67 @@
     return base;
   }
 
+  /* Recusa antes de qualquer casamento por palavra-chave.
+   *
+   * Sem isto, "Em quem devo votar?" casava com o gatilho "quem e" do registro
+   * de biografia e o assistente respondia com o número de votos dele — o que,
+   * num site de mandato de quem não é candidato, é orientação de voto emitida
+   * por acidente. A recusa vem primeiro porque o motor não pode ter chance de
+   * acertar aqui: tem que não tentar.
+   *
+   * Os termos são frases de intenção, não palavras soltas: "quantos votos ele
+   * teve" continua sendo uma pergunta legítima sobre o passado e é respondida. */
+  function bloqueado(pergunta, base) {
+    if (!base.bloqueios) return null;
+    var n = ' ' + norm(pergunta) + ' ';
+    for (var i = 0; i < base.bloqueios.length; i++) {
+      var b = base.bloqueios[i];
+      for (var j = 0; j < b.termos.length; j++) {
+        if (n.indexOf(' ' + norm(b.termos[j])) !== -1) {
+          return { tipo: 'recusa', resposta: b.resposta, termo: b.termos[j] };
+        }
+      }
+    }
+    return null;
+  }
+
+  /* Pergunta que nomeia um bairro é respondida por aquele bairro. O dado já
+   * está no site — não usá-lo era devolver a média quando perguntaram o caso. */
+  function porBairro(pergunta, base) {
+    if (!base.bairros) return null;
+    var n = ' ' + norm(pergunta) + ' ';
+    var achado = null;
+    for (var chave in base.bairros) {
+      if (!Object.prototype.hasOwnProperty.call(base.bairros, chave)) continue;
+      var b = base.bairros[chave];
+      var alvo = ' ' + norm(b.nome) + ' ';
+      if (n.indexOf(alvo) === -1) continue;
+      /* nome mais longo ganha: "Alto da Boa Vista" antes de "Boa Vista" */
+      if (!achado || b.nome.length > achado.nome.length) achado = b;
+    }
+    return achado ? { tipo: 'bairro', bairro: achado } : null;
+  }
+
   /* Devolve SEMPRE um objeto. Nunca null, nunca undefined. */
   function responder(pergunta, base) {
+    var recusa = bloqueado(pergunta, base);
+    if (recusa) return recusa;
+
     var pt = tokens(pergunta);
     if (!pt.length) return { tipo: 'fallback', motivo: 'vazio' };
+
+    /* Bairro nomeado ganha do casamento genérico — mas a outra metade da
+     * pergunta não é engolida: se algum registro também casa forte, ele vem
+     * junto como aviso, igual à pergunta composta. */
+    var doBairro = porBairro(pergunta, base);
+    if (doBairro) {
+      var outro = base.registros
+        .filter(function (r) { return !r.pendente && r.id !== 'atuacao-bairros'; })
+        .map(function (r) { var m = score(pt, r); return { r: r, s: m.s }; })
+        .sort(function (a, b) { return b.s - a.s; })[0];
+      doBairro.tambem = (outro && outro.s >= base.limiar) ? outro.r : null;
+      return doBairro;
+    }
 
     var ranking = base.registros
       .filter(function (r) { return !r.pendente; })
@@ -100,16 +157,20 @@
     var top = ranking[0];
     if (!top || top.s < base.limiar) return { tipo: 'fallback', motivo: 'abaixo do limiar' };
 
-    /* Pergunta composta: o segundo colocado só conta como "outro assunto
-     * perguntado junto" quando chega perto do primeiro. Bastar passar do
-     * limiar marcava como composta quase toda pergunta — inclusive
-     * "Você é o Wellington?", que é uma pergunta só. */
+    /* Pergunta composta: o segundo colocado conta como "outro assunto
+     * perguntado junto" quando chega perto do primeiro.
+     *
+     * A condição `acertos >= top.acertos`, que eu tinha posto para não marcar
+     * "Você é o Wellington?" como composta, engolia metade de perguntas que
+     * eram compostas de verdade: "Quantos votos ele teve e o que ele fez no
+     * Pedrinhas?" casava 2 tokens no primeiro e 1 no segundo, e o segundo era
+     * descartado em silêncio. Ela saiu — o limiar de 0,6 na cobertura já
+     * separa os dois casos sozinho. */
     var segundo = ranking[1];
     var multi = segundo
       && segundo.r.id !== top.r.id
       && segundo.s >= base.limiar
-      && segundo.s >= top.s * 0.9
-      && segundo.acertos >= top.acertos;
+      && segundo.s >= top.s * 0.9;
 
     return {
       tipo: 'resposta',

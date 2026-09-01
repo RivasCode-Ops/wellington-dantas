@@ -34,6 +34,11 @@
 
   function aoFim() { log.scrollTop = log.scrollHeight; }
 
+  /* Situações que contam como feito. Mora aqui de propósito: existe uma
+   * constante igual no app.js do mapa, e as duas telas mostram a mesma coluna
+   * do mesmo CSV — mas o chat não pode depender de arquivo que não carrega. */
+  var CONCLUIDA = /conclu|realizada|entregue/i;
+
   function registroPorId(id) {
     for (var i = 0; i < BASE.registros.length; i++) {
       if (BASE.registros[i].id === id) return BASE.registros[i];
@@ -180,10 +185,49 @@
 
   function responderRegistro(reg) { comDelay(function () { mostrarRegistro(reg); }); }
 
+  /* Resposta por bairro: monta a lista daquele bairro a partir do mesmo dado
+   * que pinta o mapa. Bairro sem ação não devolve buraco — devolve a rota de
+   * demanda, igual ao painel do mapa. */
+  function mostrarBairro(b) {
+    var n = b.itens.length;
+    var m = balaoBot(n
+      ? 'Em ' + b.nome + ' há ' + n + (n === 1 ? ' ação registrada' : ' ações registradas') + ':'
+      : 'Não há ação registrada em ' + b.nome + ' neste levantamento. Isso não quer dizer que não haja demanda — quer dizer que ainda não entrou no registro.');
+
+    if (n) {
+      var ol = no('ol', 'painel__itens');
+      b.itens.forEach(function (o) {
+        var li = no('li');
+        var t = no('div', 'painel__t');
+        t.appendChild(no('span', 'painel__ano', o.ano));
+        t.appendChild(no('span', 'tag', o.cat));
+        t.appendChild(no('span', 'painel__sit' + (CONCLUIDA.test(o.sit) ? ' ok' : ''), o.sit));
+        li.appendChild(t);
+        li.appendChild(no('h4', null, o.titulo));
+        li.appendChild(no('p', null, o.local + ' · ' + o.inst));
+        li.appendChild(no('cite', null, 'Fonte: ' + o.fonte));
+        ol.appendChild(li);
+      });
+      m.appendChild(ol);
+      botoes(m, [
+        { rotulo: 'Ver na lista de entregas', acao: function () { irPara('#entregas', b.filtro, b.nome); } },
+        { rotulo: 'Registrar demanda daqui', forte: true, acao: abrirFormulario }
+      ]);
+    } else {
+      botoes(m, [{ rotulo: 'Registrar demanda de ' + b.nome, forte: true, acao: abrirFormulario }]);
+    }
+  }
+
+  function irPara(alvo, filtro, nome) {
+    parent.postMessage({ tipo: 'ir', alvo: alvo, filtro: filtro, nome: nome }, location.origin);
+  }
+
   function perguntar(texto) {
     balaoUsuario(texto);
     var r = motor.responder(texto, BASE);
     comDelay(function () {
+      if (r.tipo === 'recusa') { balaoBot(r.resposta); mostrarIndice(); return; }
+      if (r.tipo === 'bairro') { mostrarBairro(r.bairro); if (r.tambem) mostrarComposta(r.tambem); return; }
       if (r.tipo === 'fallback') { mostrarFallback(); return; }
       mostrarRegistro(r.registro);
       if (r.tambem) mostrarComposta(r.tambem);
@@ -357,9 +401,20 @@
   /* Ponte futura: no dia em que o site virar banco, só esta função troca — a
    * UI e o motor não sabem de onde vem a base. */
   function carregarBase() {
-    return fetch('dados/assistente-base.json').then(function (r) {
-      if (!r.ok) throw new Error('base indisponível');
-      return r.json();
+    return Promise.all([
+      fetch('dados/assistente-base.json').then(function (r) {
+        if (!r.ok) throw new Error('base indisponível');
+        return r.json();
+      }),
+      /* O recorte por bairro é gerado do mesmo CSV que pinta o mapa. Se ele
+       * faltar, o assistente perde só a resposta por bairro — não quebra. */
+      fetch('dados/assistente-bairros.json').then(function (r) {
+        return r.ok ? r.json() : null;
+      }).catch(function () { return null; })
+    ]).then(function (partes) {
+      var base = partes[0];
+      if (partes[1]) base.bairros = partes[1];
+      return base;
     });
   }
 

@@ -195,6 +195,24 @@ function blocoMapa(acoes) {
 /* O retrato só entra se o arquivo existir. Enquanto não existe, o hero fica de
  * uma coluna e a página não referencia imagem que não está no repositório —
  * que é o que a régua reprovaria. Gerar os arquivos: scripts/foto.ps1 */
+/* Largura e altura reais de um JPEG, lidas do marcador SOF. Vinte linhas para
+ * não depender de biblioteca e não cravar dimensão à mão. */
+function dimensaoJpeg(arq) {
+  if (!fs.existsSync(arq)) return null;
+  const b = fs.readFileSync(arq);
+  if (b[0] !== 0xFF || b[1] !== 0xD8) return null;
+  let i = 2;
+  while (i < b.length - 9) {
+    if (b[i] !== 0xFF) { i++; continue; }
+    const m = b[i + 1];
+    if (m >= 0xC0 && m <= 0xCF && m !== 0xC4 && m !== 0xC8 && m !== 0xCC) {
+      return { h: b.readUInt16BE(i + 5), w: b.readUInt16BE(i + 7) };
+    }
+    i += 2 + b.readUInt16BE(i + 2);
+  }
+  return null;
+}
+
 function blocoRetrato() {
   const existe = (n) => fs.existsSync(path.join(RAIZ, 'img', n));
 
@@ -207,6 +225,12 @@ function blocoRetrato() {
   if (!real && !provisorio) return '';
 
   const base = real ? 'wellington' : 'wellington-provisorio';
+
+  /* Dimensão lida do arquivo, não cravada à mão. Estava saindo 1200×1600 num
+   * JPEG de 1200×1333: o navegador reserva a caixa pela proporção declarada,
+   * então a página pulava no carregamento e o `object-fit` cortava num lugar
+   * diferente do desenhado. */
+  const dim = dimensaoJpeg(path.join(RAIZ, 'img', `${base}-1200.jpg`)) || { w: 1200, h: 1600 };
   const srcset = existe(`${base}-700.jpg`)
     ? ` srcset="img/${base}-700.jpg 700w, img/${base}-1200.jpg 1200w" sizes="(max-width:900px) 62vw, 390px"`
     : '';
@@ -225,7 +249,7 @@ function blocoRetrato() {
     : '<b>Imagem provisória, gerada por IA</b> — entra no lugar dela a fotografia oficial que o gabinete enviar.';
 
   return `    <figure class="hero__retrato${real ? '' : ' hero__retrato--prov'}">
-      <img src="img/${base}-1200.jpg"${srcset} alt="${escapar(alt)}" width="1200" height="1600" fetchpriority="high">
+      <img src="img/${base}-1200.jpg"${srcset} alt="${escapar(alt)}" width="${dim.w}" height="${dim.h}" fetchpriority="high">
       <figcaption>${legenda}</figcaption>
     </figure>`;
 }
@@ -265,7 +289,8 @@ function blocoTerritorioNota() {
   return `    <p class="mapa__nota">O traçado cobre os bairros já vetorizados; o cinza-claro é polígono sem nome confirmado. `
     + `Dos <b>${c.semZonaRural} bairros desta lista</b>, <b>${c.comPoligono}</b> já têm polígono no mapa — os outros entram nas próximas rodadas, `
     + `<strong>a começar pelo Junco, que é o bairro com mais ações registradas</strong>. `
-    + `<span>A relação oficial de bairros de Picos ainda precisa ser confirmada com a Prefeitura; esta lista é a que o site cobre hoje.</span></p>\n`
+    + `O desenho também inclui localidade que não é bairro desta lista, como Marco de Sousa. `
+    + `<span>A relação oficial de bairros de Picos ainda precisa ser confirmada com a Prefeitura; esta lista é a que o site cobre hoje. Uma ação pode contar em mais de um lugar — a de iluminação do corredor Paraibinha–Morrinhos–Valparaíso conta nos três —, por isso a soma dos contadores passa das 27.</span></p>\n`
     + `    <h3 class="terr__t">Os ${c.semZonaRural} bairros e a zona rural</h3>`;
 }
 
@@ -329,7 +354,7 @@ function blocoEmendas() {
    * anotado no aviso, que ficou mais explícito para compensar — sem os nomes,
    * é só ele que impede a leitura de que o dinheiro é do vereador. */
   const estagios = [
-    { rotulo: 'Já foi aplicado', re: /conclu/i, origem: 'situação “Concluída” no portal' },
+    { rotulo: 'Já foi aplicado', re: /conclu/i, origem: 'classificada como concluída no portal' },
     { rotulo: 'Está em execução', re: /parcial|liberada|transfer/i, origem: 'executada parcialmente ou já transferida' },
     { rotulo: 'Ainda vai ser aplicado', re: /empenhada/i, origem: 'empenhada — reservada, ainda não executada' },
   ].map((e) => ({ ...e, v: soma(e.re) }));
@@ -386,6 +411,33 @@ const json = acoes.map((a) => ({
   evidencia: a.evidencia,
 }));
 fs.writeFileSync(JSON_SAIDA, JSON.stringify({ atualizado_em: new Date().toISOString().slice(0, 10), acoes: json }, null, 2) + '\n', 'utf8');
+
+/* O assistente responde por bairro a partir do mesmo CSV que pinta o mapa.
+ * Sem este arquivo, quem perguntava "o que foi feito no Junco?" recebia a
+ * média das 27 ações — a resposta do conjunto quando a pergunta era do caso. */
+const bairrosAssistente = {};
+for (const nome of [...BAIRROS, ...ABRANGENTES]) {
+  const itens = acoes
+    .filter((a) => a.bairros.includes(nome))
+    .sort((x, y) => y.data.localeCompare(x.data))
+    .map((a) => ({ ano: a.ano, titulo: a.acao, local: a.local, cat: a.categoria, sit: a.situacao, inst: a.instrumento, fonte: a.fonte }));
+  bairrosAssistente[chave(nome)] = { nome, filtro: chave(nome), itens };
+}
+/* localidades que só existem no CSV — povoado, conjunto, morro */
+for (const a of acoes) {
+  for (const b of a.bairros) {
+    if (bairrosAssistente[chave(b)]) continue;
+    bairrosAssistente[chave(b)] = {
+      nome: b,
+      filtro: chave(b),
+      itens: acoes.filter((x) => x.bairros.includes(b))
+        .sort((x, y) => y.data.localeCompare(x.data))
+        .map((x) => ({ ano: x.ano, titulo: x.acao, local: x.local, cat: x.categoria, sit: x.situacao, inst: x.instrumento, fonte: x.fonte })),
+    };
+  }
+}
+fs.writeFileSync(path.join(RAIZ, 'dados', 'assistente-bairros.json'),
+  JSON.stringify(bairrosAssistente, null, 2) + '\n', 'utf8');
 
 let html = fs.readFileSync(HTML, 'utf8');
 /* Assinatura de conteúdo no endereço do CSS e do JS.

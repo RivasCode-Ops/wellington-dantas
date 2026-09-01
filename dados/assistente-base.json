@@ -336,7 +336,7 @@
       },
       "acao": {
         "tipo": "formulario",
-        "rotulo": "Registrar demanda"
+        "rotulo": "Abrir o formulário"
       },
       "seguintes": [
         "opa",
@@ -431,6 +431,36 @@
         "mapa"
       ],
       "rotulo_curto": "De onde vêm os dados"
+    }
+  ],
+  "bloqueios": [
+    {
+      "_leia": "Frases de intenção, não palavras soltas. Bloquear a palavra \"votos\" quebraria \"quantos votos ele teve\", que é pergunta legítima sobre o passado e tem resposta com fonte.",
+      "termos": [
+        "devo votar",
+        "em quem votar",
+        "quem votar",
+        "vou votar",
+        "votar em",
+        "pra votar",
+        "para votar",
+        "voto nele",
+        "voto em",
+        "votar no",
+        "e candidato",
+        "sera candidato",
+        "vai se candidatar",
+        "candidatura",
+        "eleicao",
+        "eleicoes",
+        "2028",
+        "urna",
+        "campanha eleitoral",
+        "pedir voto",
+        "peca voto",
+        "me convence a votar"
+      ],
+      "resposta": "Não oriento voto e não falo de eleição. Wellington Dantas não é candidato nesta eleição, e este site é do mandato: ele mostra o que foi protocolado, o que está tramitando e o que foi entregue, com a fonte de cada informação. Isso eu posso te mostrar."
     }
   ]
 }
