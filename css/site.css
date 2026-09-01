@@ -130,6 +130,114 @@
   max-width: 72ch;
 }
 
+/* mapa interativo + painel
+ *
+ * O SVG é inline: dentro de <img> ele não recebe hover, clique nem foco, e
+ * nenhuma destas regras alcançaria os polígonos.
+ */
+.mapa__grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 28px;
+  align-items: start;
+  margin: 34px 0 16px;
+}
+.mapa {
+  margin: 0;
+  background: var(--branco);
+  border: 1px solid var(--linha);
+  padding: 16px 16px 10px;
+}
+#mapa { display: block; width: 100%; height: auto; }
+
+.reg { fill: #fff; stroke: #9AA0A6; stroke-width: 2; stroke-linejoin: round; cursor: pointer; transition: fill .12s; }
+.reg.nn { fill: #EDEFF2; cursor: default; }
+.reg.on { fill: var(--pt-vermelho); stroke: var(--pt-vermelho-fundo); stroke-width: 2.5; }
+.reg:hover { fill: #DCE0E5; }
+.reg.on:hover, .reg.on.is-sel { fill: var(--pt-vermelho-fundo); }
+.reg.is-sel { fill: #C9CFD6; stroke: var(--tinta); stroke-width: 3.5; }
+.reg:focus { outline: none; }
+.reg:focus-visible { stroke: var(--tinta); stroke-width: 5; }
+
+/* Os rótulos vivem em unidades do viewBox (2146 de largura). A 19, como vinham
+   do desenho, saíam a menos de 7px na tela — ilegíveis no desktop e piores no
+   celular. A 40 chegam a ~14px na largura em que o mapa é servido; abaixo de
+   700px o desenho fica pequeno demais para qualquer texto e os nomes saem de
+   cena — quem lê nome usa o painel e a lista, que continuam completos. */
+.lb {
+  font-family: var(--sans);
+  font-size: 40px;
+  font-weight: 600;
+  fill: var(--tinta);
+  text-anchor: middle;
+  letter-spacing: -.01em;
+  paint-order: stroke;
+  stroke: #fff;
+  stroke-width: 10px;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+.lb.on { fill: #fff; stroke: var(--pt-vermelho-fundo); stroke-width: 9px; }
+
+.mapa__leg {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  align-items: center;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--linha);
+  font-size: 13px;
+  color: var(--aco);
+}
+.mapa__leg span { display: flex; align-items: center; gap: 7px; }
+.sw { width: 13px; height: 13px; border: 1.5px solid #9AA0A6; background: #fff; display: block; }
+.sw.on { background: var(--pt-vermelho); border-color: var(--pt-vermelho-fundo); }
+.sw.nn { background: #EDEFF2; }
+
+.mapa__nota { font-size: 13.5px; color: var(--aco); max-width: 82ch; margin-bottom: 40px; }
+
+.painel {
+  background: var(--branco);
+  border: 1px solid var(--linha);
+  padding: 24px 22px 26px;
+  position: sticky;
+  top: 24px;
+  min-height: 360px;
+}
+.painel h3 { font-size: 19px; font-weight: 600; letter-spacing: -.02em; margin-bottom: 10px; }
+.painel__inicio .olho { margin-bottom: 12px; }
+.painel__inicio p { font-size: 15px; color: var(--aco); }
+.painel kbd {
+  font: inherit; font-size: 12.5px; font-weight: 600;
+  border: 1px solid var(--linha); border-radius: 2px; padding: 1px 5px; color: var(--tinta);
+}
+.painel__cab { padding-bottom: 16px; border-bottom: 2px solid var(--pt-vermelho); }
+.painel__cab .olho { margin-bottom: 10px; }
+.painel__cnt { font-size: 14px; color: var(--aco); margin-top: 6px; }
+
+.painel__itens { list-style: none; }
+.painel__itens li { padding: 16px 0; border-bottom: 1px solid var(--linha); }
+.painel__t { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.painel__ano { font-size: 13px; color: var(--aco); font-variant-numeric: tabular-nums; }
+.painel__sit { font-size: 11px; letter-spacing: .09em; text-transform: uppercase; color: var(--aco); }
+.painel__sit.ok { color: #1B6B36; font-weight: 600; }
+.painel__itens h4 { font-size: 16px; font-weight: 600; letter-spacing: -.01em; margin-top: 8px; }
+.painel__itens p { font-size: 14.5px; color: var(--aco); margin-top: 4px; }
+.painel__itens cite { display: block; font-style: normal; font-size: 12px; color: var(--aco-claro); margin-top: 8px; }
+.painel__nada { font-size: 15px; color: var(--aco); margin-top: 16px; }
+.painel .btn { margin-top: 20px; }
+
+@media (max-width: 1000px) {
+  .mapa__grid { grid-template-columns: 1fr; }
+  .painel { position: static; min-height: 0; }
+}
+@media (max-width: 700px) {
+  .lb { display: none; }
+  .mapa { padding: 10px 10px 8px; }
+  .mapa__leg { font-size: 12px; }
+}
+
 /* mídia sem link — enquanto o clipping não é confirmado */
 .mid__l--sem li {
   display: flex;

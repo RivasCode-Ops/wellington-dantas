@@ -112,6 +112,75 @@ function blocoBairros(acoes) {
   return saida;
 }
 
+/* --- mapa interativo ----------------------------------------------------
+ * O SVG entra inline no HTML — dentro de <img> ele seria só uma figura: não
+ * recebe hover, clique nem foco, e o CSS não alcança os polígonos.
+ *
+ * Regra que não se quebra: o vermelho do mapa é derivado do CSV. Se a última
+ * ação de um bairro sair do arquivo, ele despinta sozinho. Bairro pintado sem
+ * ação registrada é mentira no mapa.
+ */
+function blocoMapa(acoes) {
+  const svgFonte = path.join(RAIZ, 'dados', 'mapa-picos.svg');
+  const mapaFonte = path.join(RAIZ, 'dados', 'bairros-mapa.csv');
+  if (!fs.existsSync(svgFonte) || !fs.existsSync(mapaFonte)) return '';
+
+  /* k → nome dos polígonos identificados */
+  const nomePorK = new Map();
+  fs.readFileSync(mapaFonte, 'utf8').trim().split(/\r?\n/).slice(1).forEach((linha) => {
+    const [k, nome] = linha.split(';').map((c) => c.trim());
+    if (k && nome) nomePorK.set(k, nome);
+  });
+
+  /* ações por bairro, pela chave normalizada */
+  const porBairro = new Map();
+  for (const a of acoes) {
+    for (const b of a.bairros) {
+      const c = chave(b);
+      if (!porBairro.has(c)) porBairro.set(c, []);
+      porBairro.get(c).push(a);
+    }
+  }
+
+  const dados = {};
+  for (const [k, nome] of nomePorK) {
+    const itens = (porBairro.get(chave(nome)) || [])
+      .sort((x, y) => y.data.localeCompare(x.data))
+      .map((a) => ({
+        ano: a.ano, titulo: a.acao, local: a.local, cat: a.categoria,
+        sit: a.situacao, inst: a.instrumento, fonte: a.fonte,
+      }));
+    dados[k] = { nome, filtro: chave(nome), itens };
+  }
+
+  let svg = fs.readFileSync(svgFonte, 'utf8').trim();
+
+  /* pinta e rotula cada polígono a partir da contagem */
+  svg = svg.replace(/<path([^>]*?)data-k="([^"]+)"([^>]*?)>/g, (todo, antes, k, depois) => {
+    const d = dados[k];
+    let attrs = (antes + 'data-k="' + k + '"' + depois);
+    if (!d) {
+      /* polígono sem nome confirmado: não entra na navegação por teclado */
+      attrs = attrs.replace(/\s*tabindex="0"/, '').replace(/\s*role="button"/, '');
+      return `<path${attrs} aria-hidden="true">`;
+    }
+    const n = d.itens.length;
+    if (n > 0) attrs = attrs.replace('class="reg"', 'class="reg on"');
+    const rotulo = n === 0
+      ? `${d.nome}, nenhuma ação registrada`
+      : `${d.nome}, ${n} ${n === 1 ? 'ação registrada' : 'ações registradas'}`;
+    return `<path${attrs} aria-label="${escapar(rotulo)}">`;
+  });
+
+  /* o rótulo escrito no mapa acompanha a pintura */
+  const comAcao = new Set(Object.values(dados).filter((d) => d.itens.length).map((d) => d.nome));
+  svg = svg.replace(/<text class="lb"([^>]*)>([^<]*)<\/text>/g, (todo, attrs, nome) =>
+    comAcao.has(nome) ? `<text class="lb on"${attrs}>${nome}</text>` : todo);
+
+  return `      ${svg}
+      <script type="application/json" id="mapa-dados">${JSON.stringify(dados)}</script>`;
+}
+
 /* O retrato só entra se o arquivo existir. Enquanto não existe, o hero fica de
  * uma coluna e a página não referencia imagem que não está no repositório —
  * que é o que a régua reprovaria. Gerar os arquivos: scripts/foto.ps1 */
@@ -173,6 +242,7 @@ html = trocar(html, 'acoes', blocoAcoes(acoes));
 html = trocar(html, 'bairros', blocoBairros(acoes));
 html = trocar(html, 'resumo', blocoResumo(acoes));
 html = trocar(html, 'retrato', retrato);
+html = trocar(html, 'mapa', blocoMapa(acoes));
 fs.writeFileSync(HTML, html, 'utf8');
 
 console.log(`gerar: ${acoes.length} ações → index.html e dados/acoes.json`);

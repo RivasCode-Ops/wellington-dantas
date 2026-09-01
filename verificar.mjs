@@ -54,8 +54,20 @@ for (const tag of ['og:title', 'og:description', 'og:image', 'og:type']) {
   if (!html.includes(`property="${tag}"`)) reprovar(`falta a meta ${tag} — link colado no WhatsApp não abre com prévia.`);
 }
 if (!html.includes('name="twitter:card"')) reprovar('falta twitter:card.');
+/* og:image tem que ser URL absoluta: WhatsApp e Facebook não resolvem caminho
+ * relativo, e o card sai sem imagem — num site que circula por WhatsApp, isso
+ * derruba o canal principal. */
 const og = /property="og:image" content="([^"]+)"/.exec(html);
-if (og && !/^https?:/.test(og[1]) && !existe(og[1])) reprovar(`a imagem de compartilhamento "${og[1]}" não existe.`);
+if (!og) {
+  reprovar('sem og:image.');
+} else if (!/^https:\/\//.test(og[1])) {
+  reprovar(`og:image está relativo ("${og[1]}") — WhatsApp e Facebook exigem URL absoluta, senão o card sai sem imagem.`);
+} else {
+  const local = og[1].replace(/^https:\/\/[^/]+\/[^/]+\//, '');
+  if (!existe(local)) reprovar(`og:image aponta para "${og[1]}", e o arquivo "${local}" não existe no repositório.`);
+}
+if (!/property="og:url" content="https:\/\//.test(html)) reprovar('falta og:url absoluto.');
+if (!/rel="canonical" href="https:\/\//.test(html)) reprovar('falta o link canonical absoluto.');
 
 /* 5. cabeça mínima ------------------------------------------------------- */
 if (!/<html lang="pt-BR">/.test(html)) reprovar('falta lang="pt-BR" no <html>.');
@@ -102,15 +114,45 @@ for (const m of css.matchAll(/border-radius:\s*(\d+)px/g)) {
 
 /* 9. regra-zero: nada de terceiro no caminho crítico --------------------- */
 if (/https?:\/\/fonts\.(googleapis|gstatic)/.test(html + css)) reprovar('fonte remota do Google — as fontes são locais.');
-for (const m of html.matchAll(/<(?:script|link)[^>]*(?:src|href)="(https?:[^"]+)"/g)) {
-  reprovar(`recurso de terceiro no caminho crítico: ${m[1]}`);
+/* `canonical` e `alternate` apontam para uma URL, não carregam recurso — só
+ * conta o que o navegador vai buscar para desenhar a página. */
+for (const m of html.matchAll(/<(script|link)([^>]*)(?:src|href)="(https?:[^"]+)"/g)) {
+  if (m[1] === 'link' && /rel="(canonical|alternate)"/.test(m[2])) continue;
+  reprovar(`recurso de terceiro no caminho crítico: ${m[3]}`);
 }
 
 /* 10. a página de erro tem que valer sozinha ----------------------------- */
 if (!existe('404.html')) reprovar('sem 404.html — link quebrado cairia na página genérica da hospedagem.');
 if (/<link[^>]+stylesheet/.test(erro404)) reprovar('404.html depende de CSS externo; ela é servida em qualquer caminho e tem que valer sozinha.');
 
-/* 11. enquanto é apresentação, não indexa -------------------------------- */
+/* 11. o mapa tem que ser interativo de verdade ---------------------------
+ * Dentro de <img> um SVG é só figura: não recebe hover, clique nem foco, e o
+ * CSS não alcança os polígonos. Já aconteceu neste repositório. */
+if (/<img[^>]+mapa[^>]*>/i.test(html)) reprovar('o mapa está como <img> — dentro de <img> o SVG não recebe interação nem CSS.');
+if (!/<svg id="mapa"/.test(html)) reprovar('o SVG do mapa não está inline no HTML.');
+if (!/data-k="/.test(html)) reprovar('o mapa não tem polígonos com data-k — nada para o JS ligar.');
+if (!/id="mapa-dados"/.test(html)) reprovar('faltam os dados do mapa (script application/json).');
+
+const app = ler('js/app.js');
+if (!/Enviar uma demanda deste bairro/.test(app)) {
+  reprovar('o painel do mapa não tem estado vazio com chamada — bairro sem registro vira buraco em vez de contato.');
+}
+
+/* 12. rótulo do mapa legível na tela -------------------------------------
+ * O viewBox tem 2146 de largura e o mapa é servido em torno de 740px: cada
+ * unidade do desenho vira ~0,35px. Rótulo abaixo de 34 unidades sai menor que
+ * 12px na tela. */
+const lb = /\.lb\s*\{[^}]*font-size:\s*(\d+)px/.exec(css);
+if (!lb) {
+  reprovar('não achei o tamanho do rótulo do mapa (.lb font-size).');
+} else if (Number(lb[1]) < 34) {
+  reprovar(`rótulo do mapa a ${lb[1]} unidades do viewBox — na largura em que o mapa é servido isso sai com menos de 12px na tela.`);
+}
+if (!/@media \(max-width:\s*7\d\dpx\)/.test(css)) {
+  reprovar('não há ponto de quebra abaixo de 800px — a faixa onde estão os celulares fica sem regra.');
+}
+
+/* 13. enquanto é apresentação, não indexa -------------------------------- */
 if (!/name="robots" content="noindex/.test(html)) {
   avisar('index.html está indexável. Certo depois da aprovação — errado enquanto é versão de apresentação.');
 }
