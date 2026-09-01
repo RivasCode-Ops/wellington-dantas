@@ -75,11 +75,16 @@ h1 em{font-style:normal;color:var(--vm)}
 .lnk{font-size:15px;font-weight:600;color:#fff;border-bottom:2px solid rgba(255,255,255,.6);padding-bottom:2px}
 
 /* animação de entrada */
-[data-an]{opacity:0;transform:translateY(26px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
+/* A entrada animação vale SÓ no modo automático — ou seja, só quando existe
+ * JS para dar `.is-vis`. Estava solta em `[data-an]`, e com script bloqueado
+ * a página inteira nascia em opacity:0: cabeçalho, foto e mais nada. O
+ * fallback de rolagem existia no papel e não na tela. Defeito anterior a
+ * esta rodada; só apareceu quando compareí as duas versões lado a lado. */
+.modo-auto [data-an]{opacity:0;transform:translateY(26px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
 [data-an][data-d="1"]{transition-delay:.10s}
 [data-an][data-d="2"]{transition-delay:.20s}
 [data-an][data-d="3"]{transition-delay:.30s}
-.is-vis [data-an]{opacity:1;transform:none}
+.modo-auto .is-vis [data-an]{opacity:1;transform:none}
 .cena h2,.fim{overflow:hidden}
 
 @media (prefers-reduced-motion:reduce){
@@ -193,3 +198,125 @@ h1 em{font-style:normal;color:var(--vm)}
   justify-content: space-between;
 }
 .rod-traj a { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
+
+/* ===========================================================================
+ * Modo automático — stories.
+ *
+ * Só existe com a classe `modo-auto`, que só o JS põe. Sem ela, tudo abaixo
+ * está desligado e a página é a versão de rolagem de sempre. É o que garante
+ * que script bloqueado não devolva tela preta.
+ * ========================================================================= */
+.modo-auto, .modo-auto body { overflow: hidden; height: 100%; }
+.modo-auto .cena {
+  position: absolute;
+  inset: 0;
+  min-height: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 420ms ease;
+}
+.modo-auto .cena.is-ativa { opacity: 1; visibility: visible; }
+/* Troca seca com movimento reduzido: transição de opacidade também é movimento. */
+.modo-seco .cena { transition: none; }
+
+/* A barra, em segmentos — o trilho de rolagem sai porque não há mais rolagem. */
+.barra {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 7;
+  display: flex;
+  gap: 3px;
+  padding: 10px 12px 0;
+}
+.barra__s {
+  flex: 1;
+  height: 3px;
+  padding: 0;
+  border: 0;
+  background: rgba(255, 255, 255, .28);
+  cursor: pointer;
+  border-radius: 2px;
+  overflow: hidden;
+}
+/* O alvo de toque cresce sem engordar o desenho: 3px de traço, 22px de área. */
+.barra__s::before { content: ""; position: absolute; margin-top: -10px; height: 22px; left: 0; right: 0; }
+.barra__s { position: relative; }
+.barra__f { display: block; height: 100%; width: 0; background: var(--vm); }
+.modo-seco .barra__f { transition: none; }
+.barra__s:focus-visible { outline: 2px solid var(--branco); outline-offset: 3px; }
+
+/* O controle. Palavra escrita, não só ícone — e 44px de alvo. */
+.ctrl {
+  position: fixed;
+  right: clamp(14px, 4vw, 28px);
+  bottom: clamp(14px, 4vw, 28px);
+  z-index: 8;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+.ctrl__b {
+  min-height: 44px;
+  min-width: 96px;
+  padding: 0 18px;
+  /* Contraste medido, não estimado: a primeira versão era preto a 42% com
+   * filete branco a 38%, e sobre uma cena que já é quase preta o botão sumia —
+   * ele existia no getBoundingClientRect e não na tela. Controle que a WCAG
+   * torna obrigatório não pode ser um sussurro. */
+  border: 1px solid rgba(255, 255, 255, .72);
+  background: rgba(0, 0, 0, .78);
+  color: var(--branco);
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  cursor: pointer;
+  border-radius: 2px;
+}
+.ctrl__b:hover { border-color: var(--branco); }
+.ctrl__b:focus-visible { outline: 2px solid var(--branco); outline-offset: 3px; }
+.ctrl__n {
+  max-width: 30ch;
+  text-align: right;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, .72);
+}
+
+/* Zonas de toque: terço da esquerda volta, dois terços da direita avançam.
+ * z-index 4 — abaixo da marca (8), dos controles (8) e da barra (7), e abaixo
+ * dos botões do fecho. Clique na estrela nunca vira "próxima cena". */
+.zona {
+  position: fixed;
+  top: 0; bottom: 0;
+  z-index: 4;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.zona--ant { left: 0; width: 33%; }
+.zona--pro { right: 0; width: 67%; }
+
+/* O fecho fica acima das zonas: os três botões são o destino da peça. */
+.modo-auto .cena--fim .fim__ac { position: relative; z-index: 5; }
+.modo-auto .rolar { display: none; }
+
+@media (max-width: 640px) {
+  .ctrl__n { display: none; }
+}
+
+/* No modo automático o <main> vira o palco: fixo, do tamanho da janela. Sem
+ * isto as cenas absolutas se referenciavam ao bloco inicial e o rodapé, que
+ * continua no fluxo, subia por cima da primeira cena — o texto do rodapé
+ * aparecia escrito sobre a capa. */
+.modo-auto main { position: fixed; inset: 0; }
+/* O rodapé é mobília de página; numa peça de tela cheia ele não tem lugar.
+ * `display:none` e não "fora da tela": escondido mas presente, ele viraria
+ * uma armadilha de tabulação para quem navega por teclado. A assinatura e o
+ * aviso de versão passam para a cena de fecho, que é onde a peça termina. */
+.modo-auto .rod-traj { display: none; }
+.fim__ass { margin-top: 26px; font-size: 12px; line-height: 1.5; color: rgba(255,255,255,.55); }
+.fim__ass b { color: rgba(255,255,255,.8); font-weight: 600; }

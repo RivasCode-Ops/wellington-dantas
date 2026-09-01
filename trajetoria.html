@@ -27,12 +27,12 @@
 <link rel="stylesheet" href="css/fontes.css?v=0481c866">
 <link rel="stylesheet" href="css/tokens.css?v=684491bd">
 <link rel="stylesheet" href="css/topo.css?v=3e17c034">
-<link rel="stylesheet" href="css/trajetoria.css?v=c1c30f52">
+<link rel="stylesheet" href="css/trajetoria.css?v=ccb2bc64">
 </head>
 <body>
 <header class="topo topo--escuro">
   <div class="wrap topo__in">
-    <a class="marca" href="index.html"><svg class="estrela" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.4 14.95 9.6 22.7 10.15 16.75 15.05 18.65 22.6 12 18.4 5.35 22.6 7.25 15.05 1.3 10.15 9.05 9.6Z"/></svg><span class="marca__tx"><span class="marca__n">Wellington Dantas</span><span class="marca__t">Voltar ao site</span></span></a>
+    <a class="marca" href="index.html" aria-label="Voltar para o início do site"><svg class="estrela" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.4 14.95 9.6 22.7 10.15 16.75 15.05 18.65 22.6 12 18.4 5.35 22.6 7.25 15.05 1.3 10.15 9.05 9.6Z"/></svg><span class="marca__tx"><span class="marca__n">Wellington Dantas</span><span class="marca__t">Voltar ao site</span></span></a>
     <nav class="nav" aria-label="Seções do site">
       <a href="index.html">Início</a>
       <a href="trajetoria.html" aria-current="page" data-pagina>Trajetória</a>
@@ -47,8 +47,18 @@
 
 <div class="trilho" aria-hidden="true"><div class="trilho__f" id="trilho"></div></div>
 
+<!-- Controles do modo automatico. Nascem escondidos: sem JS a pagina e a
+     versao de rolagem de sempre, e controle de autoplay que nao existe seria
+     botao mentiroso. O JS revela. -->
+<div class="barra" id="barra" hidden aria-hidden="true"></div>
+<div class="ctrl" id="ctrl" hidden>
+  <p class="ctrl__n" id="ctrl-nota" hidden>Avanço automático desligado. Use as setas ou os botões para navegar.</p>
+  <button class="ctrl__b" type="button" id="pausar" aria-pressed="false">Pausar</button>
+</div>
+<p class="sr" id="anuncio" aria-live="polite"></p>
+
 <main id="conteudo">
-<section class="cena cena--capa" data-cena>
+<section class="cena cena--capa" data-cena data-t="4500" data-nome="Capa — Da rua pra Câmara">
   <figure class="fundo" aria-hidden="true"><img src="img/wellington-1200.jpg" alt="" width="1200" height="1333"></figure>
   <div class="wrap">
     <p class="k" data-an>Wellington Dantas · Vereador de Picos</p>
@@ -58,7 +68,7 @@
   </div>
 </section>
 
-<section class="cena" data-cena>
+<section class="cena" data-cena data-t="5000" data-nome="Movimento por moradia">
   <div class="wrap m">
     <p class="m__a" data-an>Origem</p>
     <h2 data-an data-d="1">Movimento por moradia</h2>
@@ -66,7 +76,7 @@
   </div>
 </section>
 
-<section class="cena" data-cena>
+<section class="cena" data-cena data-t="5500" data-nome="FAMCC e MPA">
   <div class="wrap m">
     <p class="m__a" data-an>Origem</p>
     <h2 data-an data-d="1">FAMCC · MPA</h2>
@@ -74,7 +84,7 @@
   </div>
 </section>
 
-<section class="cena" data-cena>
+<section class="cena" data-cena data-t="4500" data-nome="2017 — Volta à Câmara">
   <div class="wrap m">
     <p class="m__a" data-an>2017</p>
     <h2 data-an data-d="1">Volta à Câmara</h2>
@@ -82,7 +92,7 @@
   </div>
 </section>
 
-<section class="cena" data-cena>
+<section class="cena" data-cena data-t="4500" data-nome="2019 — Presidência do PT">
   <div class="wrap m">
     <p class="m__a" data-an>2019</p>
     <h2 data-an data-d="1">Presidência do PT de Picos</h2>
@@ -90,7 +100,7 @@
   </div>
 </section>
 
-<section class="cena cena--num" data-cena>
+<section class="cena cena--num" data-cena data-t="7000" data-nome="2024 — 2.254 votos">
   <div class="wrap m">
     <p class="m__a" data-an>2024</p>
     <h2 class="conta-h" data-an data-d="1"><span class="num" data-conta="2254" aria-hidden="true">2.254</span><span class="sr">2.254</span> <span class="conta-h__t">votos. O mais votado da cidade pela <span class="num num--sm" data-conta="3" aria-hidden="true">3</span><span class="sr">3</span>ª vez.</span></h2>
@@ -98,7 +108,7 @@
   </div>
 </section>
 
-<section class="cena cena--num" data-cena>
+<section class="cena cena--num" data-cena data-t="7000" data-nome="2025–2026 — 27 ações">
   <div class="wrap m">
     <p class="m__a" data-an>2025 — 2026</p>
     <h2 class="conta-h" data-an data-d="1"><span class="num" data-marcador="acoes" data-conta="27" aria-hidden="true">27</span><span class="sr" data-marcador="acoes-sr">27</span> <span class="conta-h__t">ações registradas, com bairro, data e fonte.</span></h2>
@@ -106,7 +116,7 @@
   </div>
 </section>
 
-<section class="cena cena--fim" data-cena>
+<section class="cena cena--fim" data-cena data-t="0" data-nome="O trabalho não para">
   <div class="wrap">
     <svg class="astro" viewBox="0 0 100 100" aria-hidden="true" data-an><path d="M50 0 L61.23 34.55 L97.55 34.55 L68.17 55.9 L79.39 90.45 L50 69.1 L20.61 90.45 L31.83 55.9 L2.45 34.55 L38.77 34.55 Z"/></svg>
     <h2 class="fim" data-an data-d="1">O trabalho não para.</h2>
@@ -114,7 +124,9 @@
     <div class="fim__ac" data-an data-d="3">
       <a class="btn" href="index.html#entregas">Ver as entregas por bairro</a>
       <a class="lnk" href="index.html#participe">Enviar uma demanda do meu bairro</a>
+      <button class="lnk" type="button" id="rever" hidden>Assistir de novo</button>
     </div>
+    <p class="fim__ass" data-an data-d="3">Versão de apresentação · 01/09/2026 · conteúdo sujeito a validação do gabinete<br><b>Riva’s Alexandre</b> © 2026</p>
   </div>
 </section>
 </main>
@@ -125,6 +137,6 @@
   <p><a href="index.html">Voltar ao site</a> · Riva&rsquo;s Alexandre</p>
 </footer>
 
-<script src="js/trajetoria.js?v=429656ae" defer></script>
+<script src="js/trajetoria.js?v=38c619d8" defer></script>
 </body>
 </html>

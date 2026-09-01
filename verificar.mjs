@@ -111,6 +111,54 @@ for (const arq of ['gabinete-aberto.html', 'js/assistente-ui.js', 'js/gabinete.j
   }
 }
 
+/* 0d. a trajetória tem que sobreviver ao script bloqueado -----------------
+ *
+ * A peça automática só existe se `js/trajetoria.js` rodar: é ele que põe
+ * `modo-auto` na raiz, e é essa classe que empilha as cenas e trava a rolagem.
+ * Script bloqueado, quebrado ou lento devolve a versão de rolagem — que é a
+ * página inteira, legível.
+ *
+ * Duas coisas quebram isso, e as duas já quebraram:
+ *
+ *   `modo-auto` escrito no HTML — aí a página nasce empilhada e, sem JS para
+ *   ativar uma cena, fica em branco.
+ *
+ *   `[data-an]{opacity:0}` fora de `modo-auto` — foi o defeito real: a regra
+ *   estava solta, e com o script bloqueado a página nascia com cabeçalho,
+ *   foto e mais nada. O fallback existia no papel e não na tela. Só apareceu
+ *   quando comparei as duas versões lado a lado. */
+if (existe('trajetoria.html') && existe('css/trajetoria.css')) {
+  const t = ler('trajetoria.html');
+  const c = ler('css/trajetoria.css');
+  if (/<html[^>]*class="[^"]*modo-auto/.test(t)) {
+    reprovar('trajetoria.html nasce com a classe modo-auto. Ela é do JS: no HTML, a página empilha as cenas sem ninguém para ativar uma e fica em branco com o script bloqueado.');
+  }
+  /* "solto" = a regra que zera a opacidade sem `.modo-auto` no seletor. Olho os
+   * caracteres imediatamente antes de `[data-an]`, e não o começo da linha: a
+   * primeira versão desta regra ancorava em `}` ou início de arquivo e passava
+   * batido quando havia um comentário antes — que era exatamente o caso. */
+  let escondeSolto = false;
+  /* Sem os comentários. A primeira versão desta regra se acusou sozinha: o
+   * comentário que explica a correção CITA `[data-an]`, o `[^{]*` seguia dali
+   * até a primeira chave de verdade e a regra reprovava o arquivo correto.
+   * Verificador que lê comentário como código encontra o que ele mesmo
+   * escreveu. */
+  const semComentario = c.replace(/\/\*[\s\S]*?\*\//g, '');
+  for (const m of semComentario.matchAll(/\[data-an\][^{]*\{([^}]*)\}/g)) {
+    if (!/opacity\s*:\s*0/.test(m[1])) continue;
+    const antes = semComentario.slice(Math.max(0, m.index - 40), m.index);
+    if (!/\.modo-auto[^;{}]*$/.test(antes)) { escondeSolto = true; break; }
+  }
+  if (escondeSolto) {
+    reprovar('css/trajetoria.css esconde [data-an] fora de .modo-auto. Com o script bloqueado a trajetória nasce em opacity:0 — cabeçalho, foto e mais nada.');
+  }
+  /* `ctrl` é o contêiner do botão de pausa — é ele que carrega o [hidden]. */
+  for (const [id, oque] of [['ctrl', 'o controle de pausa'], ['barra', 'a barra de progresso']]) {
+    const re = new RegExp(`id="${id}"[^>]*hidden|hidden[^>]*id="${id}"`);
+    if (!re.test(t)) reprovar(`trajetoria.html: ${oque} não nasce com [hidden]. Sem JS não há avanço automático, e controle de autoplay que não existe é botão mentiroso.`);
+  }
+}
+
 /* 1. o HTML gerado bate com o CSV --------------------------------------- */
 const linhasCsv = ler('dados/acoes.csv').trim().split(/\r?\n/).length - 1;
 const itensHtml = (html.match(/<li data-bairros=/g) || []).length;
