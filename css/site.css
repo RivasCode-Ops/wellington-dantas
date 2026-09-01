@@ -35,10 +35,19 @@
   gap: clamp(28px, 5vw, 72px);
   align-items: end;
 }
+/* Com o retrato ao lado, a coluna de texto encurta: o `max-width:16ch` e o
+ * corpo de 92px do mockup, feitos para a largura inteira, passam a quebrar a
+ * manchete no lugar errado. Aqui quem manda na quebra é o <br> da frase. */
+.hero__txt h1 { max-width: none; font-size: clamp(36px, 5.1vw, 66px); }
+
 .hero__retrato { margin: 0; }
 .hero__retrato img {
   display: block;
   width: clamp(240px, 30vw, 390px);
+  /* `height:auto` é obrigatório: o atributo height="1600" do HTML vale como
+     declaração de CSS e, com as duas dimensões fixas, o `aspect-ratio` é
+     ignorado — a imagem sairia com 380 de largura por 1600 de altura. */
+  height: auto;
   aspect-ratio: 3 / 4;
   object-fit: cover;
   object-position: 50% 22%;
@@ -53,6 +62,19 @@
   color: var(--aco);
   max-width: 34ch;
 }
+
+/* Retrato provisório: a legenda não pode passar despercebida, mas também não
+ * pode virar tarja e estragar a apresentação. Filete vermelho e o "gerada por
+ * IA" em negrito bastam para quem lê. */
+.hero__retrato--prov figcaption {
+  border-left: 2px solid var(--pt-vermelho);
+  padding-left: 9px;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+.hero__retrato--prov figcaption b { color: var(--pt-vermelho-fundo); font-weight: 600; }
 
 @media (max-width: 900px) {
   .hero__in { grid-template-columns: 1fr; }

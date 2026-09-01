@@ -67,12 +67,21 @@ nasceu de um defeito real.
    dentro do teto de 250 KB; `gerar.mjs` põe o retrato no hero. Sem o arquivo, o
    hero fica de uma coluna e a página não referencia imagem que não existe.
 
-   **Imagem gerada por IA não entra.** Retrato sintético de pessoa real, num
-   site de mandato, é falsificação — e falsificação detectável: o arquivo
-   gerado carrega manifesto C2PA assinado e marca-d'água que qualquer
-   verificador lê. `scripts/procedencia.mjs` barra na origem (antes do recorte,
-   porque reencodar apaga o metadado) e a régua barra de novo em `img/`.
-   Já chegou uma, em 01/09/2026.
+   **Imagem gerada por IA só entra como provisória, e dizendo que é.** O hero
+   hoje mostra um retrato gerado, aceito para a apresentação com
+   `-Provisorio`: o arquivo se chama `wellington-provisorio-*.jpg`, a legenda
+   diz *"imagem provisória, gerada por IA"* e o texto alternativo diz *"não é
+   uma fotografia"*. **A régua barra a publicação definitiva enquanto ele
+   estiver lá** — no dia em que o `noindex` sair, o site não sobe com retrato
+   sintético de pessoa real.
+
+   Sem `-Provisorio`, `scripts/procedencia.mjs` recusa a origem antes do
+   recorte (depois não adianta: reencodar apaga o manifesto C2PA que denuncia).
+   A imagem que chegou em 01/09/2026 traz manifesto assinado pela OpenAI Media
+   Service API, `digitalSourceType = trainedAlgorithmicMedia` e marca-d'água
+   embutida — é detectável por qualquer verificador de Content Credentials.
+   **Chegando a fotografia oficial, ela entra com o nome sem "provisorio" e
+   tudo isso sai sozinho.**
 2. Endereços das matérias do clipping.
 3. Canal de contato: WhatsApp do gabinete, grupo ou comunidade.
 4. Domínio próprio.

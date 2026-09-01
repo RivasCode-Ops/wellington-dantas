@@ -185,15 +185,31 @@ function blocoMapa(acoes) {
  * uma coluna e a página não referencia imagem que não está no repositório —
  * que é o que a régua reprovaria. Gerar os arquivos: scripts/foto.ps1 */
 function blocoRetrato() {
-  const grande = path.join(RAIZ, 'img', 'wellington-1200.jpg');
-  const pequeno = path.join(RAIZ, 'img', 'wellington-700.jpg');
-  if (!fs.existsSync(grande)) return '';
-  const srcset = fs.existsSync(pequeno)
-    ? ' srcset="img/wellington-700.jpg 700w, img/wellington-1200.jpg 1200w" sizes="(max-width:900px) 62vw, 390px"'
+  const existe = (n) => fs.existsSync(path.join(RAIZ, 'img', n));
+
+  /* Fotografia primeiro. Só na falta dela entra o provisório — e ele entra
+   * dizendo o que é, na legenda e no texto alternativo. Imagem gerada sem
+   * rótulo seria retrato falso de pessoa real; com rótulo é o que sempre foi
+   * um placeholder de apresentação. */
+  const real = existe('wellington-1200.jpg');
+  const provisorio = !real && existe('wellington-provisorio-1200.jpg');
+  if (!real && !provisorio) return '';
+
+  const base = real ? 'wellington' : 'wellington-provisorio';
+  const srcset = existe(`${base}-700.jpg`)
+    ? ` srcset="img/${base}-700.jpg 700w, img/${base}-1200.jpg 1200w" sizes="(max-width:900px) 62vw, 390px"`
     : '';
-  return `    <figure class="hero__retrato">
-      <img src="img/wellington-1200.jpg"${srcset} alt="Wellington Dantas discursando na tribuna da Câmara Municipal de Picos." width="1200" height="1600" fetchpriority="high">
-      <figcaption>Na tribuna da Câmara Municipal de Picos</figcaption>
+
+  const alt = real
+    ? 'Wellington Dantas discursando na tribuna da Câmara Municipal de Picos.'
+    : 'Imagem ilustrativa gerada por inteligência artificial, representando o vereador na tribuna. Não é uma fotografia.';
+  const legenda = real
+    ? 'Na tribuna da Câmara Municipal de Picos'
+    : '<b>Imagem provisória, gerada por IA</b> — entra no lugar dela a fotografia oficial que o gabinete enviar.';
+
+  return `    <figure class="hero__retrato${real ? '' : ' hero__retrato--prov'}">
+      <img src="img/${base}-1200.jpg"${srcset} alt="${escapar(alt)}" width="1200" height="1600" fetchpriority="high">
+      <figcaption>${legenda}</figcaption>
     </figure>`;
 }
 

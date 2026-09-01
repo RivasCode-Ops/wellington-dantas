@@ -19,7 +19,11 @@ param(
   [Parameter(Mandatory = $true)][string]$Origem,
   [double]$Foco = 0.5,
   [double]$Topo = 0.0,
-  [int]$Qualidade = 82
+  [int]$Qualidade = 82,
+  # Aceita imagem gerada por IA COMO PROVISÓRIA. Os arquivos saem com
+  # "provisorio" no nome, o site publica a legenda dizendo o que é, e a régua
+  # barra a saída do modo apresentação enquanto ela estiver no lugar.
+  [switch]$Provisorio
 )
 
 $ErrorActionPreference = 'Stop'
@@ -35,11 +39,16 @@ if (-not (Test-Path $Origem)) { throw "não achei o arquivo: $Origem" }
 $antes = $ErrorActionPreference
 $ErrorActionPreference = 'Continue'
 & node (Join-Path $PSScriptRoot 'procedencia.mjs') $Origem 2>&1 | ForEach-Object { Write-Output $_.ToString() }
-$reprovou = $LASTEXITCODE -ne 0
+$gerada = $LASTEXITCODE -ne 0
 $ErrorActionPreference = $antes
-if ($reprovou) {
-  throw "origem reprovada na conferência de procedência. Nenhum arquivo foi gravado."
+if ($gerada -and -not $Provisorio) {
+  throw "origem gerada por IA. Para usar como retrato provisório de apresentação, repita com -Provisorio. Nenhum arquivo foi gravado."
 }
+if ($gerada) {
+  Write-Output ''
+  Write-Output 'PROVISORIO: a imagem entra rotulada no site e a regua barra a publicacao definitiva ate chegar fotografia.'
+}
+$prefixo = if ($gerada) { 'wellington-provisorio' } else { 'wellington' }
 
 $raiz = Split-Path -Parent $PSScriptRoot
 $destino = Join-Path $raiz 'img'
@@ -78,13 +87,13 @@ try {
     $g.PixelOffsetMode = [System.Drawing.Drawing2D.PixelOffsetMode]::HighQuality
     $g.DrawImage($src, (New-Object System.Drawing.Rectangle(0, 0, $largura, $altura)), $recorte, [System.Drawing.GraphicsUnit]::Pixel)
 
-    $arquivo = Join-Path $destino ("wellington-{0}.jpg" -f $largura)
+    $arquivo = Join-Path $destino ("{0}-{1}.jpg" -f $prefixo, $largura)
     $bmp.Save($arquivo, $jpeg, $par)
     $g.Dispose(); $bmp.Dispose()
 
     $kb = [Math]::Round((Get-Item $arquivo).Length / 1KB, 1)
     $aviso = if ($kb -gt 250) { '  ← ACIMA DO TETO: baixe a qualidade' } else { '' }
-    Write-Output ("img\wellington-{0}.jpg · {1}x{2} · {3} KB{4}" -f $largura, $largura, $altura, $kb, $aviso)
+    Write-Output ("img\{0}-{1}.jpg · {2}x{3} · {4} KB{5}" -f $prefixo, $largura, $largura, $altura, $kb, $aviso)
   }
 }
 finally {

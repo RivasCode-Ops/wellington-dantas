@@ -97,16 +97,42 @@ for (const dir of ['img', 'fontes']) {
   }
 }
 
-/* 7b. nenhuma imagem gerada por IA ---------------------------------------
- * Retrato sintético de pessoa real, num site de mandato, é falsificação — e
- * uma falsificação assinada, porque o arquivo gerado traz manifesto C2PA e
- * marca-d'água que qualquer verificador lê. Já chegou uma. */
+/* 7b. imagem gerada por IA: só provisória, só rotulada, só em apresentação ---
+ *
+ * Retrato sintético de pessoa real passando por fotografia é falsificação — e
+ * falsificação detectável, porque o arquivo gerado traz manifesto C2PA e
+ * marca-d'água que qualquer verificador lê. Placeholder de apresentação, dito
+ * na cara, é outra coisa: é o que mockup sempre fez.
+ *
+ * Então a régua não proíbe: condiciona. O arquivo tem que se chamar
+ * "provisorio", a página tem que publicar a legenda dizendo o que é, e o site
+ * tem que estar em modo apresentação. No dia em que o `noindex` sair — que é o
+ * dia em que o site vira público de verdade — a régua barra a publicação
+ * enquanto o provisório estiver lá. */
+const indexavel = !/name="robots" content="noindex/.test(html);
+let temProvisorio = false;
+
 for (const arq of fs.readdirSync(path.join(RAIZ, 'img'))) {
   if (!/\.(png|jpe?g|webp|avif|gif)$/i.test(arq)) continue;
   const r = conferir(path.join(RAIZ, 'img', arq));
-  if (r.gerada) {
-    reprovar(`img/${arq} é imagem gerada por IA (${r.codigos.join(', ')}${r.gerador ? ', ' + r.gerador : ''}) — não entra.`);
+  const marcadoProvisorio = /provisorio/i.test(arq);
+
+  if (r.gerada && !marcadoProvisorio) {
+    reprovar(`img/${arq} é imagem gerada por IA (${r.codigos.join(', ')}${r.gerador ? ', ' + r.gerador : ''}) e não está marcada como provisória. Renomeie com "provisorio" no nome ou tire do repositório.`);
   }
+  if (marcadoProvisorio) {
+    temProvisorio = true;
+    if (!/Imagem provis[óo]ria, gerada por IA/.test(html)) {
+      reprovar(`img/${arq} é provisória e a página não diz isso ao leitor. A legenda do retrato tem que declarar que a imagem é gerada.`);
+    }
+    if (!/N[ãa]o é uma fotografia/.test(html)) {
+      reprovar(`img/${arq} é provisória e o texto alternativo não avisa que não é fotografia — quem usa leitor de tela receberia a imagem como retrato real.`);
+    }
+  }
+}
+
+if (temProvisorio && indexavel) {
+  reprovar('há retrato provisório gerado por IA e o site está indexável. Publicação definitiva com retrato sintético de pessoa real não sai daqui: troque pela fotografia oficial antes de tirar o noindex.');
 }
 
 /* 8. a régua estética do mockup ------------------------------------------
