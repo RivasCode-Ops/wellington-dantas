@@ -389,8 +389,8 @@ if (existe('dados/assistente-base.json')) {
  * perceber — então o que ela conta tem que bater com o CSV. */
 if (existe('trajetoria.html')) {
   const traj = ler('trajetoria.html');
-  const n = /id="conta-acoes" data-conta="(\d+)"/.exec(traj);
-  if (!n) reprovar('trajetoria.html não tem o contador de ações com id — ele deixaria de ser gerado.');
+  const n = /data-marcador="acoes" data-conta="(\d+)"/.exec(traj);
+  if (!n) reprovar('trajetoria.html perdeu o data-marcador do contador de ações — ele deixaria de ser gerado e envelheceria em silêncio.');
   else if (Number(n[1]) !== linhasCsv) reprovar(`a trajetória conta ${n[1]} ações e o CSV tem ${linhasCsv}. Rode: node scripts/gerar.mjs`);
 
   for (const tag of ['og:title', 'og:image', 'og:url']) {

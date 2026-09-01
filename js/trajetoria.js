@@ -5,8 +5,13 @@
  * porque o site já as serve de css/fontes.css — reembutir custaria 64 KB por
  * página só para repetir arquivo que o navegador já tem em cache.
  *
- * Sem vídeo de fundo de propósito: a medição do site de referência mostrou 21
- * fps com vídeo rodando. Aqui só animam transform e opacity.
+ * SEM VÍDEO DE FUNDO, e o número é o argumento: 21 fps medidos no site
+ * tocomciro111.com em 01/09/2026, com vídeo de fundo rodando — e o contador
+ * de lá está codado certo, em requestAnimationFrame. A suavidade é refém do
+ * orçamento de quadros da página inteira. Aqui só animam transform e opacity.
+ *
+ * "Vídeo de fundo derruba a performance" alguém rebate na primeira reunião.
+ * "21 fps medidos em 01/09/2026" é mais difícil.
  */
 (function(){
  var reduz = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

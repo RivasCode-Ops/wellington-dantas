@@ -98,18 +98,38 @@ h1 em{font-style:normal;color:var(--vm)}
  * e não serve a um 3:2 de tela cheia em nitidez — por isso entra esmaecida e
  * desfocada, como textura da cena, não como retrato. Quando chegar uma foto
  * horizontal em alta, é trocar o src e tirar o filtro. */
+/* Opacidade medida, não escolhida.
+ *
+ * A 28% sobre o #160709 a foto ficava com 71 de 255 de amplitude: um meio-tom
+ * de 128 — a cara de uma pessoa em luz normal — caía em rgb(52,41,42). Isso
+ * resolvia a legibilidade apagando o sujeito, que era justamente o pedido.
+ *
+ * A 40% a amplitude vai a 102 de 255 e o rosto aparece; o branco puro sobre o
+ * pior caso da foto ainda dá 5,23 de contraste, acima do mínimo de 4,5 em
+ * qualquer tamanho. Medido em 01/09/2026. */
 .fundo img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: 50% 28%;
-  opacity: .28;
-  filter: blur(2px) saturate(.7);
+  opacity: .40;
+  filter: blur(2px) saturate(.75);
   transform: scale(1.06);
 }
-/* Sem véu em degradê: a foto já entra a 28% sobre fundo escuro, e a régua do
- * projeto é zero gradiente de fundo. Um degradê aqui seria conveniência, não
- * necessidade — e regra que abre exceção por conveniência não é regra. */
+
+/* Sobre a foto, todo texto é branco puro — sem tom intermediário e sem
+ * opacidade. O .sub estava em --aco-claro e media 2,61 de contraste: reprova.
+ * Se um dia faltar escuridão atrás do texto, o caminho é painel de cor chapada
+ * atrás do bloco ou duotone na própria imagem. Nunca degradê. */
+.cena--capa .sub, .cena--capa .rolar { color: #fff; }
+/* NÃO existe véu em degradê nesta capa, e a ausência é deliberada.
+ *
+ * A régua do projeto é zero gradiente de fundo. Um scrim aqui seria
+ * conveniência, não necessidade: a foto entra a 40% sobre fundo escuro e o
+ * texto é branco puro, o que já dá 5,23 de contraste no pior caso.
+ *
+ * Se você veio consertar "a falta do scrim": ela não falta. Medido em
+ * 01/09/2026. */
 .cena--capa .fundo { background: var(--noite); }
 
 /* volta para o site: a página é imersiva, mas ninguém pode ficar preso nela */
