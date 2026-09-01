@@ -70,13 +70,9 @@
   /* o enquadramento fica no alto: corta a base do microfone, não a testa */
   object-position: 50% 16%;
   background: var(--papel);
-  /* Preto e branco por disciplina de paleta, não por estilo: a madeira do
-   * plenário entra como um bloco laranja saturado do tamanho de um terço da
-   * dobra, e a regra do projeto é vermelho em no máximo ~10% da tela, com o
-   * resto em tinta, aço e papel. Em cinza, a única cor da dobra volta a ser o
-   * vermelho do filete e do botão — que é onde ela tem trabalho a fazer.
-   * Para voltar ao colorido: apagar esta linha. */
-  filter: grayscale(1) contrast(1.06) brightness(1.02);
+  /* Sem dessaturação: nesta fotografia o vermelho dominante é a camisa — a
+   * mesma tinta do filete e do botão. Ela soma à paleta em vez de disputar
+   * com ela, ao contrário da madeira alaranjada do plenário. */
 }
 /* A legenda sai do bloco alinhado e desce para o respiro da seção: se ela
  * ocupasse altura dentro da coluna, roubaria da foto e desalinharia a base. */
@@ -168,21 +164,6 @@
   color: var(--aco);
 }
 .terr__g--sec { grid-template-columns: repeat(3, 1fr); }
-
-.mapa { margin-top: 46px; }
-.mapa img {
-  display: block;
-  width: 100%;
-  height: auto;
-  border: 1px solid var(--linha);
-  background: var(--branco);
-}
-.mapa figcaption {
-  margin-top: 12px;
-  font-size: 13.5px;
-  color: var(--aco);
-  max-width: 72ch;
-}
 
 /* mapa interativo + painel
  *

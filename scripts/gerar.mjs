@@ -201,11 +201,17 @@ function blocoRetrato() {
     ? ` srcset="img/${base}-700.jpg 700w, img/${base}-1200.jpg 1200w" sizes="(max-width:900px) 62vw, 390px"`
     : '';
 
+  /* Descrição e legenda da fotografia vêm de dados/retrato.json — texto de
+   * foto muda quando a foto muda, e isso não deveria exigir mexer em código. */
+  let ficha = {};
+  const fichaArq = path.join(RAIZ, 'dados', 'retrato.json');
+  if (real && fs.existsSync(fichaArq)) ficha = JSON.parse(fs.readFileSync(fichaArq, 'utf8'));
+
   const alt = real
-    ? 'Wellington Dantas discursando na tribuna da Câmara Municipal de Picos.'
+    ? (ficha.alt || 'Wellington Dantas, vereador de Picos.')
     : 'Imagem ilustrativa gerada por inteligência artificial, representando o vereador na tribuna. Não é uma fotografia.';
   const legenda = real
-    ? 'Na tribuna da Câmara Municipal de Picos'
+    ? escapar(ficha.legenda || '') + (ficha.credito ? ` · <span class="cred">Foto: ${escapar(ficha.credito)}</span>` : '')
     : '<b>Imagem provisória, gerada por IA</b> — entra no lugar dela a fotografia oficial que o gabinete enviar.';
 
   return `    <figure class="hero__retrato${real ? '' : ' hero__retrato--prov'}">
