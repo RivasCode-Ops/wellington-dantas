@@ -47,7 +47,8 @@ if (mortos > 1) reprovar(`${mortos} links href="#" na página. Link que não lev
 const refs = [...html.matchAll(/(?:src|href)="([^"#:][^":]*)"/g)].map((m) => m[1]);
 for (const ref of new Set(refs)) {
   if (/^(https?:|mailto:|#)/.test(ref)) continue;
-  const arquivo = ref.split('?')[0];   /* a assinatura de cache não é parte do caminho */
+  const arquivo = ref.split('?')[0].split('#')[0];   /* nem a assinatura de cache nem a âncora são parte do caminho */
+  if (!arquivo) continue;
   if (!existe(arquivo)) reprovar(`index.html aponta para "${arquivo}", que não existe no repositório.`);
 }
 

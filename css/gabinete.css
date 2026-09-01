@@ -143,3 +143,37 @@ textarea{resize:vertical}
  .kpi{grid-template-columns:1fr 1fr}.cards{grid-template-columns:1fr}.dupla{grid-template-columns:1fr}
  .drops{grid-template-columns:1fr}.busca{width:100%}
 }
+
+/* --- acréscimos da integração ao site ---------------------------------- */
+
+/* O mural não tem foto por item: o CSV tem local, data, instrumento e fonte,
+ * não imagem. Em vez de um retângulo hachurado prometendo foto que não existe,
+ * a situação vira etiqueta no topo do conteúdo. */
+.card__c .card__s { position: static; display: inline-block; margin-bottom: 12px; }
+
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+.marca { display: flex; align-items: center; gap: 11px; text-decoration: none; color: inherit; }
+.marca .estrela { width: 26px; height: 26px; flex: 0 0 auto; fill: var(--vm); }
+.marca span { display: flex; flex-direction: column; line-height: 1.2; }
+.marca b { font-size: 16px; font-weight: 600; letter-spacing: -.01em; }
+.marca i { font-style: normal; font-size: 11.5px; color: var(--aco); }
+
+/* o texto montado aparece na tela antes de a pessoa enviar: ela lê o que vai
+   mandar, em vez de confiar */
+.recibo__msg {
+  font: inherit; font-size: 13.5px; line-height: 1.6; white-space: pre-wrap;
+  background: #fff; border: 1px solid var(--linha); border-radius: 2px;
+  padding: 14px 16px; margin: 14px 0; color: var(--tinta);
+}
+.recibo__ac { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+
+.risco__n a { color: var(--vm); font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+
+/* o critério é proposta até o gabinete assinar — e isso fica escrito */
+.crit__pend {
+  margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--linha);
+  font-size: 12px; color: var(--aco);
+}
+
+.rod a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }

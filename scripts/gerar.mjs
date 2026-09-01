@@ -373,6 +373,66 @@ ${estagios.map((e) => `        <li><b>R$&nbsp;${milhoes(e.v)}&nbsp;mi</b><span>$
       <p class="rec__f"><b>O que este número não é.</b> ${faltando.length ? `O portal não traz nenhum registro de ${faltando.join(', ')}, ` : ''}${zerados.length ? `${zerados.length} ${zerados.length === 1 ? 'registro aparece' : 'registros aparecem'} com valor zero, ` : ''}e o beneficiário nem sempre é a Prefeitura — há associação e entidade com endereço na cidade. ${regs.length} registros para ${Number(anos[anos.length - 1]) - Number(anos[0]) + 1} anos é o que a Prefeitura publicou, não o universo do que chegou à cidade.<br><span>Fonte: Portal de Transparência da Prefeitura Municipal de Picos — Emendas Parlamentares. Coleta de ${regs[0].coletado_em ? dataCurta(regs[0].coletado_em) : 'setembro de 2026'}, conferida linha a linha. A situação de cada recurso é a que consta no portal; a divisão em três estágios é leitura do site.</span></p>`;
 }
 
+/* --- mural do Gabinete Aberto -------------------------------------------
+ *
+ * O protótipo trazia dez registros escritos à mão, com nove protocolos
+ * (WD-2025-0011 e vizinhos) que não existem em lugar nenhum, duas situações
+ * que o CSV não tem — "Em execução" e "Negado" — e frases de execução
+ * inventadas, do tipo "executado pelo FUMIP em 12 dias". Publicar aquilo seria
+ * criar histórico público falso de um mandato real.
+ *
+ * O mural passa a ser uma terceira vista do mesmo CSV que alimenta o mapa e a
+ * lista de entregas. O card de "negado" volta no dia em que existir um negado
+ * de verdade; enquanto isso, a prova de que o mural não é vitrine são os
+ * protocolados de fevereiro de 2025 ainda sem resposta, que estão lá.
+ */
+function classeSituacao(s) {
+  if (/conclu|realizada|entregue/i.test(s)) return 'Concluída';
+  if (/negad|arquivad|indeferid/i.test(s)) return 'Negado';
+  if (/protocolad/i.test(s)) return 'Protocolado';
+  return 'Emexecução';
+}
+
+function blocoMural(acoes) {
+  return [...acoes]
+    .sort((x, y) => y.data.localeCompare(x.data))
+    .map((a) => {
+      const cls = classeSituacao(a.situacao);
+      const busca = semAcento([a.acao, a.local, a.bairros.join(' '), a.categoria, a.instrumento].join(' ')).toLowerCase();
+      return `      <li class="card" data-sit="${cls}" data-busca="${escapar(busca)}">
+        <div class="card__c">
+          <span class="card__s s-${cls}">${escapar(a.situacao)}</span>
+          <h3>${escapar(a.acao)}</h3>
+          <p>${escapar(a.local)}</p>
+          <div class="card__m"><span><b>${escapar(a.bairros[0])}</b> · ${escapar(a.instrumento)} · ${dataCurta(a.data)}</span><span>${escapar(a.fonte)}</span></div>
+        </div>
+      </li>`;
+    }).join('\n');
+}
+
+function blocoMuralKpi(acoes) {
+  const conta = (cls) => acoes.filter((a) => classeSituacao(a.situacao) === cls).length;
+  const linhas = [
+    ['Concluída', 'concluídas'],
+    ['Emexecução', 'em andamento'],
+    ['Protocolado', 'protocoladas, aguardando resposta'],
+  ].map((par) => `        <li><b data-c="${conta(par[0])}">0</b><span>${par[1]}</span></li>`);
+  return `      <ul class="kpi">\n${linhas.join('\n')}\n      </ul>`;
+}
+
+function blocoMuralChips(acoes) {
+  const cls = [...new Set(acoes.map((a) => classeSituacao(a.situacao)))];
+  const nome = { 'Concluída': 'Concluídas', 'Emexecução': 'Em andamento', 'Protocolado': 'Protocoladas', 'Negado': 'Negadas' };
+  return ['        <button type="button" class="chip is-on" data-f="">Todas</button>']
+    .concat(cls.map((c) => `        <button type="button" class="chip" data-f="${c}">${nome[c] || c}</button>`))
+    .join('\n');
+}
+
+function blocoOpcoesBairro() {
+  return BAIRROS.map((b) => `              <option>${escapar(b)}</option>`).join('\n')
+    + '\n              <option>Outro / povoado</option>';
+}
+
 function blocoResumo(acoes) {
   const anos = acoes.map((a) => a.ano).sort();
   const bairrosAlcancados = new Set();
@@ -467,6 +527,19 @@ html = trocar(html, 'terrnota', blocoTerritorioNota());
 html = trocar(html, 'emendas', blocoEmendas());
 html = versionarAssets(html);
 fs.writeFileSync(HTML, html, 'utf8');
+
+/* --- Gabinete Aberto ---------------------------------------------------- */
+const GAB = path.join(RAIZ, 'gabinete-aberto.html');
+if (fs.existsSync(GAB)) {
+  let gg = fs.readFileSync(GAB, 'utf8');
+  gg = trocar(gg, 'mural', blocoMural(acoes));
+  gg = trocar(gg, 'mural-kpi', blocoMuralKpi(acoes));
+  gg = trocar(gg, 'mural-chips', blocoMuralChips(acoes));
+  gg = trocar(gg, 'opcoes-bairro', blocoOpcoesBairro());
+  gg = versionarAssets(gg);
+  fs.writeFileSync(GAB, gg, 'utf8');
+  console.log(`gerar: gabinete-aberto.html — ${acoes.length} itens no mural`);
+}
 
 /* --- página da trajetória ---------------------------------------------
  * Os dois números que ela anima vêm do mesmo CSV do resto do site. Número
