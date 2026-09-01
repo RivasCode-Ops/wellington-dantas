@@ -1,0 +1,139 @@
+/* Trajetória — "Da rua pra Câmara".
+ *
+ * Oito telas cheias em rolagem, com trilho de progresso, contadores e parallax.
+ * Extraído do arquivo único entregue pelo desenho; as fontes saíram do base64
+ * porque o site já as serve de css/fontes.css — reembutir custaria 64 KB por
+ * página só para repetir arquivo que o navegador já tem em cache.
+ *
+ * Sem vídeo de fundo de propósito: a medição do site de referência mostrou 21
+ * fps com vídeo rodando. Aqui só animam transform e opacity.
+ */
+:root{--vm:#E4142C;--vf:#B5121E;--noite:#160709;--noite2:#200B0F;--branco:#fff;--aco-claro:#9A8E90;--linha:rgba(255,255,255,.16);
+--sans:"Inter Tight",system-ui,sans-serif;--serif:"Instrument Serif",Georgia,serif;--wrap:1100px;--gut:clamp(22px,6vw,64px)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--noite);color:var(--branco);font-family:var(--sans);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.wrap{max-width:var(--wrap);margin:0 auto;padding-inline:var(--gut);width:100%}
+a{color:inherit;text-decoration:none}
+
+/* grão */
+.grao{position:fixed;inset:0;z-index:3;pointer-events:none;opacity:.5;
+ background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAAnUlEQVR42u3RAQ0AMAgEsTEZ+Pf5yCAhPQnXStJPa30LAAAQAAACAEAAAAgAAAEAIAAABACAAAAQAAACAEAAAAgAAAEAIAAABACAAAAQAAACAEAAAAgAAAEAIAAABACAAAAQAAACAEAAAAgAAAEAIAAABAAAAAEAIAAABACAAAAQAAACAEAAAAgAAAEAIAAABACAAAAQAAACAEAALjTj6gPXcJrfFAAAAABJRU5ErkJggg==);background-size:96px 96px;mix-blend-mode:overlay}
+
+/* trilho vermelho */
+.trilho{position:fixed;left:0;top:0;bottom:0;width:3px;background:rgba(255,255,255,.08);z-index:4}
+.trilho__f{width:100%;height:0;background:var(--vm);box-shadow:0 0 14px rgba(228,20,44,.75)}
+
+/* cenas */
+.cena{min-height:100vh;display:flex;align-items:center;position:relative;padding-block:14vh;border-bottom:1px solid rgba(255,255,255,.06)}
+.cena:nth-child(odd){background:var(--noite2)}
+.cena--capa{background:var(--noite)!important}
+
+/* fundo com retrato */
+.fundo{position:absolute;inset:0;overflow:hidden;z-index:0}
+.fundo__ph{position:absolute;inset:-8% -4%;background:repeating-linear-gradient(45deg,#241014 0 10px,#1b0b0f 10px 20px);
+ display:flex;align-items:center;justify-content:center;will-change:transform}
+.fundo__ph span{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.24);text-align:center;line-height:2}
+.cena--capa::after{content:"";position:absolute;inset:0;z-index:1;
+ background:linear-gradient(100deg,rgba(22,7,9,.97) 0%,rgba(22,7,9,.9) 42%,rgba(22,7,9,.35) 100%)}
+.cena--capa .wrap{position:relative;z-index:2}
+
+/* tipografia */
+.k{font-size:11.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--vm);font-weight:700;margin-bottom:28px}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(52px,10.5vw,132px);line-height:.94;letter-spacing:-.02em}
+h1 em{font-style:normal;color:var(--vm)}
+.sub{font-size:clamp(17px,2vw,21px);color:var(--aco-claro);max-width:34ch;margin-top:32px}
+.rolar{display:flex;align-items:center;gap:12px;margin-top:56px;font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--aco-claro)}
+.rolar span{display:block;width:52px;height:1px;background:var(--vm);transform-origin:left;animation:puxa 2.2s ease-in-out infinite}
+@keyframes puxa{0%,100%{transform:scaleX(.35)}50%{transform:scaleX(1)}}
+
+.m{max-width:44ch}
+.m__a{font-family:var(--sans);font-size:clamp(13px,1.4vw,15px);letter-spacing:.24em;text-transform:uppercase;color:var(--vm);font-weight:700;margin-bottom:20px;padding-left:22px;position:relative}
+.m__a::before{content:"";position:absolute;left:0;top:50%;width:12px;height:2px;background:var(--vm)}
+.cena h2{font-family:var(--serif);font-weight:400;font-size:clamp(34px,5.4vw,68px);line-height:1.02;letter-spacing:-.015em}
+.m__d{font-size:clamp(16px,1.8vw,19px);color:var(--aco-claro);margin-top:26px;max-width:40ch}
+
+/* números */
+.conta{line-height:.85;margin-bottom:12px}
+.num{font-size:clamp(88px,17vw,220px);font-weight:700;letter-spacing:-.05em;color:var(--vm);font-variant-numeric:tabular-nums;display:inline-block;
+ text-shadow:0 0 60px rgba(228,20,44,.35)}
+.num--sm{font-size:clamp(34px,5.4vw,68px);font-weight:400;font-family:var(--serif);letter-spacing:-.015em;text-shadow:none;color:var(--vm)}
+
+/* fecho */
+.cena--fim{background:var(--vm)!important;text-align:center;justify-content:center}
+.cena--fim .wrap{display:flex;flex-direction:column;align-items:center}
+.estrela{width:56px;height:56px;fill:#fff;margin-bottom:36px}
+.fim{font-family:var(--serif);font-weight:400;font-size:clamp(46px,9vw,116px);line-height:.98;letter-spacing:-.02em;color:#fff}
+.fim__d{font-size:clamp(19px,2.4vw,26px);color:#fff;margin-top:22px}
+.fim__ac{display:flex;gap:22px;align-items:center;flex-wrap:wrap;justify-content:center;margin-top:52px}
+.btn{background:#fff;color:var(--vf);font-size:15px;font-weight:600;padding:15px 26px;border-radius:2px;display:inline-block}
+.lnk{font-size:15px;font-weight:600;color:#fff;border-bottom:2px solid rgba(255,255,255,.6);padding-bottom:2px}
+
+/* animação de entrada */
+[data-an]{opacity:0;transform:translateY(26px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
+[data-an][data-d="1"]{transition-delay:.10s}
+[data-an][data-d="2"]{transition-delay:.20s}
+[data-an][data-d="3"]{transition-delay:.30s}
+.is-vis [data-an]{opacity:1;transform:none}
+.cena h2,.fim{overflow:hidden}
+
+@media (prefers-reduced-motion:reduce){
+ [data-an]{opacity:1!important;transform:none!important;transition:none!important}
+ .rolar span{animation:none;transform:scaleX(1)}
+ .trilho{display:none}
+ html{scroll-behavior:auto}
+}
+@media (max-width:640px){.cena{min-height:88vh;padding-block:12vh}.trilho{width:2px}}
+
+/* ajustes das cenas de número e da vaga do retrato */
+.cena--num .m{max-width:74ch}
+.cena--num h2{max-width:22ch}
+.cena--num .m__d{max-width:44ch}
+.cena--capa .fundo__ph{align-items:flex-start;justify-content:flex-end;padding:12vh 6vw}
+.cena--capa .fundo__ph span{color:rgba(255,255,255,.5);border:1px dashed rgba(255,255,255,.28);padding:14px 20px}
+
+/* --- acréscimos da integração ao site ---------------------------------- */
+
+/* A vaga do retrato passou a usar a fotografia que já existe. Ela é 1200×1333
+ * e não serve a um 3:2 de tela cheia em nitidez — por isso entra esmaecida e
+ * desfocada, como textura da cena, não como retrato. Quando chegar uma foto
+ * horizontal em alta, é trocar o src e tirar o filtro. */
+.fundo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 28%;
+  opacity: .28;
+  filter: blur(2px) saturate(.7);
+  transform: scale(1.06);
+}
+/* Sem véu em degradê: a foto já entra a 28% sobre fundo escuro, e a régua do
+ * projeto é zero gradiente de fundo. Um degradê aqui seria conveniência, não
+ * necessidade — e regra que abre exceção por conveniência não é regra. */
+.cena--capa .fundo { background: var(--noite); }
+
+/* volta para o site: a página é imersiva, mas ninguém pode ficar preso nela */
+.voltar {
+  position: fixed;
+  top: 20px;
+  left: 26px;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--branco);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  opacity: .82;
+}
+.voltar:hover { opacity: 1; }
+.voltar:focus-visible { outline: 2px solid var(--vm); outline-offset: 4px; }
+.voltar svg { width: 18px; height: 18px; fill: var(--vm); flex: 0 0 auto; }
+
+@media (max-width: 640px) {
+  .voltar { top: 14px; left: 16px; }
+  .voltar span { display: none; }
+  .voltar svg { width: 22px; height: 22px; }
+}

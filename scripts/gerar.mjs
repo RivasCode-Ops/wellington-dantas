@@ -468,5 +468,22 @@ html = trocar(html, 'emendas', blocoEmendas());
 html = versionarAssets(html);
 fs.writeFileSync(HTML, html, 'utf8');
 
+/* --- página da trajetória ---------------------------------------------
+ * Os dois números que ela anima vêm do mesmo CSV do resto do site. Número
+ * animado cravado à mão é número que envelhece sem ninguém perceber. */
+const TRAJ = path.join(RAIZ, 'trajetoria.html');
+if (fs.existsSync(TRAJ)) {
+  const locais = new Set();
+  for (const a of acoes) for (const b of a.bairros) locais.add(b);
+  let t = fs.readFileSync(TRAJ, 'utf8');
+  /* Marcador de comentário não vale dentro de atributo: o comentário HTML vira
+   * texto literal do valor. Aqui a troca é por id — no atributo e no texto. */
+  t = t.replace(/(id="conta-acoes" data-conta=")\d+(")/, '$1' + acoes.length + '$2');
+  t = t.replace(/(<span id="conta-locais">)\d+(<\/span>)/, '$1' + locais.size + '$2');
+  t = versionarAssets(t);
+  fs.writeFileSync(TRAJ, t, 'utf8');
+  console.log(`gerar: trajetoria.html — ${acoes.length} ações em ${locais.size} localidades`);
+}
+
 console.log(`gerar: ${acoes.length} ações → index.html e dados/acoes.json`);
 console.log(retrato ? 'gerar: retrato no hero' : 'gerar: sem retrato (img/wellington-1200.jpg não existe) — hero de uma coluna');

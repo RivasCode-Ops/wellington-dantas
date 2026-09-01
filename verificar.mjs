@@ -384,6 +384,28 @@ if (existe('dados/assistente-base.json')) {
   }
 }
 
+/* 12c. a página da trajetória --------------------------------------------
+ * Ela anima números. Número animado cravado à mão envelhece sem ninguém
+ * perceber — então o que ela conta tem que bater com o CSV. */
+if (existe('trajetoria.html')) {
+  const traj = ler('trajetoria.html');
+  const n = /id="conta-acoes" data-conta="(\d+)"/.exec(traj);
+  if (!n) reprovar('trajetoria.html não tem o contador de ações com id — ele deixaria de ser gerado.');
+  else if (Number(n[1]) !== linhasCsv) reprovar(`a trajetória conta ${n[1]} ações e o CSV tem ${linhasCsv}. Rode: node scripts/gerar.mjs`);
+
+  for (const tag of ['og:title', 'og:image', 'og:url']) {
+    if (!traj.includes(`property="${tag}"`)) reprovar(`trajetoria.html sem ${tag}.`);
+  }
+  if (!/rel="canonical" href="https:\/\//.test(traj)) reprovar('trajetoria.html sem canonical absoluto.');
+  if (!/class="voltar"/.test(traj)) reprovar('trajetoria.html sem caminho de volta ao site — página imersiva não pode prender ninguém.');
+  if (/@font-face/.test(ler('css/trajetoria.css'))) {
+    reprovar('css/trajetoria.css reembute as fontes; elas já são servidas por css/fontes.css.');
+  }
+  for (const m of traj.matchAll(/(?:src|href)="((?:css|js|img)\/[^"?]+)/g)) {
+    if (!existe(m[1])) reprovar(`trajetoria.html aponta para "${m[1]}", que não existe.`);
+  }
+}
+
 /* 13. enquanto é apresentação, não indexa -------------------------------- */
 if (!/name="robots" content="noindex/.test(html)) {
   avisar('index.html está indexável. Certo depois da aprovação — errado enquanto é versão de apresentação.');
