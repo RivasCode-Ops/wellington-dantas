@@ -27,7 +27,7 @@
 <link rel="stylesheet" href="css/fontes.css?v=0481c866">
 <link rel="stylesheet" href="css/tokens.css?v=684491bd">
 <link rel="stylesheet" href="css/topo.css?v=3e17c034">
-<link rel="stylesheet" href="css/gabinete.css?v=d2e4ab30">
+<link rel="stylesheet" href="css/gabinete.css?v=e4e0bd97">
 </head>
 <body>
 
@@ -50,8 +50,9 @@
 
 <section class="v is-on" id="v-mural" role="tabpanel" aria-labelledby="aba-mural">
   <div class="wrap">
+    <h1 class="sr">Gabinete Aberto</h1>
     <p class="olho">Mural</p>
-    <h1>O que entrou, o que anda<br>e o que travou.</h1>
+    <h2>O que entrou, o que anda<br>e o que travou.</h2>
     <p class="lide">Cada item aqui é um registro público do mandato, com bairro, data, instrumento e a fonte de onde veio. Inclusive os que estão parados — <b>um mural onde tudo dá certo ninguém acredita</b>.</p>
 
 <!--gerado:mural-kpi-->
@@ -62,13 +63,27 @@
       </ul>
 <!--/gerado:mural-kpi-->
 
+    <aside class="crit">
+      <p class="crit__t">Como o gabinete decide a ordem</p>
+      <ol class="crit__l">
+        <li><span>1</span><b>Risco de vida entra na frente</b><p>Fio solto, bueiro aberto, poste caído, esgoto na rua.</p></li>
+        <li><span>2</span><b>Quanta gente é afetada</b><p>Rua inteira pesa mais que uma casa. Abaixo-assinado do bairro pesa mais ainda.</p></li>
+        <li><span>3</span><b>De quem é a competência</b><p>Prefeitura, governo do estado, concessionária de energia ou de água. O gabinete diz para onde foi e cobra de quem é.</p></li>
+        <li><span>4</span><b>Repetição no mesmo ponto</b><p>Três pedidos no mesmo lugar viram um só, mais forte, e sobem na fila.</p></li>
+        <li><span>5</span><b>Ordem de chegada</b><p>Empatou nos quatro de cima? Quem chegou primeiro vai primeiro.</p></li>
+      </ol>
+      <p class="crit__n">O critério é público de propósito. Assim ninguém precisa conhecer alguém para ser atendido.</p>
+      <p class="crit__pend">Critério proposto, à espera do aval do gabinete — como todo o conteúdo desta versão.</p>
+    </aside>
+
     <div class="filtros">
       <div class="chips" id="fstatus" role="group" aria-label="Filtrar por situação">
 <!--gerado:mural-chips-->
         <button type="button" class="chip is-on" data-f="">Todas</button>
-        <button type="button" class="chip" data-f="Protocolado">Protocoladas</button>
-        <button type="button" class="chip" data-f="Emexecução">Em andamento</button>
-        <button type="button" class="chip" data-f="Concluída">Concluídas</button>
+        <button type="button" class="chip" data-f="Protocolado">Protocoladas <em>15</em></button>
+        <button type="button" class="chip" data-f="Emexecução">Em andamento <em>6</em></button>
+        <button type="button" class="chip" data-f="Concluída">Concluídas <em>6</em></button>
+        <button type="button" class="chip chip--zero" data-f="Negado">Negado / Arquivado</button>
 <!--/gerado:mural-chips-->
       </div>
       <label class="busca"><span class="sr">Buscar no mural</span>
@@ -76,6 +91,8 @@
       </label>
     </div>
 
+    <p class="sr" id="mural-anuncio" aria-live="polite" aria-atomic="true"></p>
+    <p class="vazio" id="mural-vazio" hidden></p>
     <ul class="cards" id="cards">
 <!--gerado:mural-->
       <li class="card" data-sit="Concluída" data-busca="reforma entregue por votacao popular do orcamento participativo quadra de esportes do bairro pedrinhas pedrinhas praca e lazer entrega">
@@ -304,8 +321,8 @@
   <div class="wrap duas">
     <div>
       <p class="olho">Minha rua</p>
-      <h1>Manda o problema.<br>Com foto, resolve mais rápido.</h1>
-      <p class="lide">O texto sai pronto daqui, com bairro e rua nomeados, e você envia pelo canal do gabinete. <b>A foto vai anexada na mensagem</b> — foto de buraco resolve discussão.</p>
+      <h2>Manda o problema da tua rua.</h2>
+      <p class="lide">Diz o bairro, a rua e o que está acontecendo. O texto sai pronto para você mandar ao gabinete — e sai com o local nomeado, que é o que costuma faltar. <b>Foto ou vídeo você anexa na própria mensagem</b>, pelo canal que escolher: nada de arquivo passa por este site.</p>
 
       <form class="form" id="form" novalidate>
         <div class="dupla">
@@ -375,7 +392,7 @@
         <p class="recibo__t">Texto pronto</p>
         <p class="recibo__p" id="codigo">PIC-0000-0000</p>
         <pre class="recibo__msg" id="mensagem"></pre>
-        <p class="recibo__d">O código já vai na primeira linha do texto: ele serve para <b>você e o gabinete falarem da mesma demanda</b>. Ele passa a existir para o gabinete quando você enviar a mensagem — antes disso ele é só seu. Envie o texto pelo canal do gabinete e <b>anexe a foto na própria mensagem</b>.</p>
+        <p class="recibo__d">O código já vai na primeira linha do texto: ele serve para <b>você e o gabinete falarem da mesma demanda</b>. Ele passa a existir para o gabinete quando você enviar a mensagem — antes disso ele é só seu. Envie o texto pelo canal do gabinete e <b>anexe a foto <b>ou o vídeo</b> na própria mensagem</b>.</p>
         <div class="recibo__ac">
           <button class="btn" type="button" id="copiar">Copiar o texto</button>
           <a class="lnk" id="canal" href="https://www.instagram.com/wellingtondantaspicos/" rel="noopener" target="_blank">Abrir o canal do gabinete</a>
@@ -384,18 +401,6 @@
       </div>
     </div>
 
-    <aside class="crit">
-      <p class="crit__t">Como o gabinete decide a ordem</p>
-      <ol class="crit__l">
-        <li><span>1</span><b>Risco de vida entra na frente</b><p>Fio solto, bueiro aberto, poste caído, esgoto na rua.</p></li>
-        <li><span>2</span><b>Quanta gente é afetada</b><p>Rua inteira pesa mais que uma casa. Abaixo-assinado do bairro pesa mais ainda.</p></li>
-        <li><span>3</span><b>De quem é a competência</b><p>Prefeitura, governo do estado, concessionária de energia ou de água. O gabinete diz para onde foi e cobra de quem é.</p></li>
-        <li><span>4</span><b>Repetição no mesmo ponto</b><p>Três pedidos no mesmo lugar viram um só, mais forte, e sobem na fila.</p></li>
-        <li><span>5</span><b>Ordem de chegada</b><p>Empatou nos quatro de cima? Quem chegou primeiro vai primeiro.</p></li>
-      </ol>
-      <p class="crit__n">O critério é público de propósito. Assim ninguém precisa conhecer alguém para ser atendido.</p>
-      <p class="crit__pend">Critério proposto, à espera do aval do gabinete — como todo o conteúdo desta versão.</p>
-    </aside>
   </div>
 </section>
 
@@ -409,6 +414,6 @@
   </div>
 </footer>
 
-<script src="js/gabinete.js?v=24c80e36" defer></script>
+<script src="js/gabinete.js?v=f138422a" defer></script>
 </body>
 </html>

@@ -415,16 +415,57 @@ function classeSituacao(s) {
   return 'Emexecução';
 }
 
+/* O quadro de mídia do card.
+ *
+ * O CSS de `.card__f` continuava no arquivo depois que o campo sumiu do HTML:
+ * estilo órfão de um elemento que ninguém renderizava mais. Ninguém decidiu
+ * tirar — se perdeu na montagem, e o selo de situação, que era para ficar
+ * sobreposto ao quadro, virou etiqueta solta no meio do texto.
+ *
+ * Duas coisas que a palavra "foto" juntava e que aqui ficam separadas:
+ * morador MANDANDO arquivo é a porta que continua fechada — não há
+ * `input[type=file]` em lugar nenhum, e não vai haver; o card MOSTRANDO o
+ * arquivo que o gabinete publicou é `<img>` num caminho do repositório, sem
+ * upload, sem banco, sem dado de terceiro. A segunda não depende da primeira.
+ *
+ * Quadro só onde existe mídia. O desenho antigo punha moldura hachurada em
+ * todos: com 27 cards e poucas fotos, viram 27 retângulos listrados e a página
+ * parece inacabada. Sem mídia, o card fica como está — e os com mídia puxam o
+ * olho sozinhos, que é o incentivo certo para o gabinete fotografar mais.
+ *
+ * Vídeo entra pela mesma porta: `preload="none"` e cartaz no lugar, porque o
+ * custo real não é o do GitHub Pages, é o 4G de quem mora em Picos. Quem não
+ * tocar não baixa nada. */
+function quadroMidia(a) {
+  const arq = (a.midia || '').trim();
+  if (!arq) return null;
+  const alt = (a.midia_alt || '').trim();
+  const credito = (a.midia_credito || '').trim();
+  if (!alt) throw new Error(`acoes.csv id ${a.id}: tem midia e não tem midia_alt. Texto alternativo descreve o que a imagem mostra — sem ele a mídia não entra.`);
+  const ehVideo = /\.(mp4|webm)$/i.test(arq);
+  const dentro = ehVideo
+    ? `<video src="${escapar(arq)}" preload="none" controls playsinline${a.midia_cartaz ? ` poster="${escapar(a.midia_cartaz)}"` : ''} aria-label="${escapar(alt)}"></video>`
+    : `<img src="${escapar(arq)}" alt="${escapar(alt)}" loading="lazy" decoding="async">`;
+  return `          <figure class="card__f">
+            ${dentro}
+            <span class="card__s card__s--sobre s-${classeSituacao(a.situacao)}">${escapar(a.situacao)}</span>
+            ${credito ? `<figcaption>${escapar(credito)}</figcaption>` : ''}
+          </figure>`;
+}
+
 function blocoMural(acoes) {
   return [...acoes]
     .sort((x, y) => y.data.localeCompare(x.data))
     .map((a) => {
       const cls = classeSituacao(a.situacao);
       const busca = semAcento([a.acao, a.local, a.bairros.join(' '), a.categoria, a.instrumento].join(' ')).toLowerCase();
-      return `      <li class="card" data-sit="${cls}" data-busca="${escapar(busca)}">
-        <div class="card__c">
-          <span class="card__s s-${cls}">${escapar(a.situacao)}</span>
-          <h3>${escapar(a.acao)}</h3>
+      const quadro = quadroMidia(a);
+      /* Com quadro, o selo mora sobre a mídia; sem quadro, no fluxo do texto.
+       * Nunca nos dois lugares. */
+      const selo = quadro ? '' : `          <span class="card__s s-${cls}">${escapar(a.situacao)}</span>\n`;
+      return `      <li class="card${quadro ? ' card--midia' : ''}" data-sit="${cls}" data-busca="${escapar(busca)}">
+${quadro ? quadro + '\n' : ''}        <div class="card__c">
+${selo}          <h3>${escapar(a.acao)}</h3>
           <p>${escapar(a.local)}</p>
           <div class="card__m"><span><b>${escapar(a.bairros[0])}</b> · ${escapar(a.instrumento)} · ${dataCurta(a.data)}</span><span>${escapar(a.fonte)}</span></div>
         </div>
@@ -442,11 +483,27 @@ function blocoMuralKpi(acoes) {
   return `      <ul class="kpi">\n${linhas.join('\n')}\n      </ul>`;
 }
 
+/* O quinto filtro existe mesmo com zero itens — e é o ponto.
+ *
+ * A página abre dizendo "um mural onde tudo dá certo ninguém acredita", e os
+ * filtros eram Todas · Protocoladas · Em andamento · Concluídas. A frase
+ * prometia e o filtro desmentia.
+ *
+ * Nenhum registro do CSV está negado ou arquivado hoje, e NÃO se inventa um.
+ * Mural que estreia com um indeferimento fabricado é pior que mural sem o
+ * filtro: seria história falsa de um mandato real. O filtro entra vazio, com o
+ * texto dizendo o que acontece quando houver — e no dia em que houver, ele se
+ * preenche sozinho, porque sai do mesmo CSV. */
+const ORDEM_SIT = ['Protocolado', 'Emexecução', 'Concluída', 'Negado'];
+const NOME_SIT = { 'Concluída': 'Concluídas', 'Emexecução': 'Em andamento', 'Protocolado': 'Protocoladas', 'Negado': 'Negado / Arquivado' };
+
 function blocoMuralChips(acoes) {
-  const cls = [...new Set(acoes.map((a) => classeSituacao(a.situacao)))];
-  const nome = { 'Concluída': 'Concluídas', 'Emexecução': 'Em andamento', 'Protocolado': 'Protocoladas', 'Negado': 'Negadas' };
+  const conta = (c) => acoes.filter((a) => classeSituacao(a.situacao) === c).length;
   return ['        <button type="button" class="chip is-on" data-f="">Todas</button>']
-    .concat(cls.map((c) => `        <button type="button" class="chip" data-f="${c}">${nome[c] || c}</button>`))
+    .concat(ORDEM_SIT.map((c) => {
+      const n = conta(c);
+      return `        <button type="button" class="chip${n ? '' : ' chip--zero'}" data-f="${c}">${NOME_SIT[c]}${n ? ` <em>${n}</em>` : ''}</button>`;
+    }))
     .join('\n');
 }
 
@@ -459,9 +516,17 @@ function blocoResumo(acoes) {
   const anos = acoes.map((a) => a.ano).sort();
   const bairrosAlcancados = new Set();
   for (const a of acoes) for (const b of a.bairros) if (BAIRROS.includes(b)) bairrosAlcancados.add(b);
-  const concluidas = acoes.filter((a) => /conclu|realizada|entregue/i.test(a.situacao)).length;
+  /* A mesma quebra do Gabinete Aberto, e pelo mesmo cálculo.
+   *
+   * A home dizia "6 concluídas, 21 em andamento" e o mural dizia "6 · 6 · 15".
+   * As duas somam 27 e nenhuma mente — mas a da home ESCONDE que 15 das 21
+   * ainda não tiveram resposta nenhuma, que é justamente o número que dá
+   * credibilidade ao resto. A versão do mural é a correta, e agora é a única:
+   * as duas páginas chamam a mesma função. */
+  const conta = (cls) => acoes.filter((a) => classeSituacao(a.situacao) === cls).length;
   return `<b>${acoes.length}</b> ações registradas entre ${anos[0]} e ${anos[anos.length - 1]} — `
-    + `${concluidas} concluídas, ${acoes.length - concluidas} em andamento — `
+    + `${conta('Concluída')} concluídas, ${conta('Emexecução')} em andamento e `
+    + `${conta('Protocolado')} protocoladas aguardando resposta — `
     + `em ${bairrosAlcancados.size} bairros, além das que valem para a cidade toda. `
     + `<span>Cada linha traz o instrumento, a situação e a fonte.</span>`;
 }

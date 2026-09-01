@@ -44,9 +44,26 @@
     var fs = '';
     var fb = '';
 
+    var anuncio = document.getElementById('mural-anuncio');
+    var vazioMural = document.getElementById('mural-vazio');
+
+    /* O texto do vazio muda conforme o MOTIVO de estar vazio.
+     *
+     * "Nenhum resultado" serve para busca sem acerto. N\u00e3o serve para o filtro
+     * de Negado / Arquivado, que est\u00e1 vazio porque nada foi negado at\u00e9 aqui \u2014
+     * e isso \u00e9 informa\u00e7\u00e3o, n\u00e3o falha. Um mural que estreia com um indeferimento
+     * fabricado seria pior que um mural sem o filtro. */
+    function textoVazio(q) {
+      if (fs === 'Negado' && !q) {
+        return 'Nenhum pedido foi negado ou arquivado at\u00e9 aqui. Quando acontecer, ele aparece nesta lista com o motivo \u2014 \u00e9 o que separa mural de vitrine.';
+      }
+      if (q) return 'Nada no mural bate com \u201c' + q + '\u201d. Tente o nome do bairro, da rua ou do assunto \u2014 ou mande a demanda pela aba Minha rua.';
+      return 'Nenhum registro nesta situa\u00e7\u00e3o por enquanto.';
+    }
+
     function pinta() {
-      var q = fb.trim().toLowerCase()
-        .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      var bruto = fb.trim();
+      var q = bruto.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
       var vistos = 0;
       itens.forEach(function (li) {
         var bateS = !fs || li.dataset.sit === fs;
@@ -55,6 +72,16 @@
         if (!li.hidden) vistos++;
       });
       if (vazio) vazio.hidden = vistos > 0;
+      if (vazioMural) {
+        vazioMural.textContent = textoVazio(bruto);
+        vazioMural.hidden = vistos > 0;
+      }
+      /* Quem filtra sem enxergar precisa ouvir quantos sobraram. Sem isto,
+       * trocar de filtro no leitor de tela n\u00e3o produz retorno nenhum. */
+      if (anuncio) {
+        anuncio.textContent = vistos === 0 ? textoVazio(bruto)
+          : vistos + (vistos === 1 ? ' registro encontrado.' : ' registros encontrados.');
+      }
     }
 
     var chips = document.getElementById('fstatus');
@@ -147,5 +174,47 @@
     recibo.hidden = true;
     document.getElementById('copiar').textContent = 'Copiar o texto';
     form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+})();
+
+/* --- ampliar a mídia do card -------------------------------------------
+ *
+ * <dialog> nativo, sem biblioteca. Esc fecha sozinho, o foco fica preso
+ * dentro e volta para onde estava — tudo isso o navegador já faz, e é o
+ * argumento para não trazer 30 KB de lightbox.
+ *
+ * O diálogo é criado na primeira vez que alguém clica, e não no carregamento:
+ * hoje nenhum card tem mídia, então a página não paga por ele. */
+(function () {
+  'use strict';
+  var cards = document.getElementById('cards');
+  if (!cards) return;
+  var dlg = null;
+
+  cards.addEventListener('click', function (e) {
+    var fig = e.target.closest('.card__f');
+    if (!fig) return;
+    var midia = fig.querySelector('img, video');
+    if (!midia) return;
+    /* No vídeo o clique é do play, não do ampliar: os controles são dele. */
+    if (midia.tagName === 'VIDEO') return;
+    e.preventDefault();
+
+    if (!dlg) {
+      dlg = document.createElement('dialog');
+      dlg.className = 'lupa';
+      dlg.innerHTML = '<img alt=""><p class="lupa__l"></p>'
+        + '<button class="lupa__x" type="button" aria-label="Fechar">Fechar</button>';
+      dlg.querySelector('.lupa__x').addEventListener('click', function () { dlg.close(); });
+      /* clique no fundo fecha — o <dialog> não faz isso sozinho */
+      dlg.addEventListener('click', function (ev) { if (ev.target === dlg) dlg.close(); });
+      document.body.appendChild(dlg);
+    }
+    var img = dlg.querySelector('img');
+    img.src = midia.currentSrc || midia.src;
+    img.alt = midia.alt || '';
+    var leg = fig.querySelector('figcaption');
+    dlg.querySelector('.lupa__l').textContent = leg ? leg.textContent : '';
+    dlg.showModal();
   });
 })();

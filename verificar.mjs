@@ -159,6 +159,53 @@ if (existe('trajetoria.html') && existe('css/trajetoria.css')) {
   }
 }
 
+/* 0e. a mídia do card, quando existir ------------------------------------
+ *
+ * O quadro voltou ao card do mural depois de o CSS ficar órfão — o estilo
+ * continuava no arquivo e o elemento tinha sumido da montagem. Hoje nenhuma
+ * ação tem mídia; estas regras são para o dia em que o gabinete mandar as
+ * fotos, que é quando ninguém vai lembrar delas.
+ *
+ * O `alt` genérico é o defeito mais provável: "foto da obra" não descreve
+ * nada e é pior que ausência, porque satisfaz o validador e não a pessoa.
+ *
+ * O crédito é obrigatório quando o registro NÃO está concluído. É a regra de
+ * conteúdo em forma executável: foto de quadra pronta num card de
+ * "Requerimento" dá a entender execução, e o crédito é onde se escreve de
+ * quem é a obra. */
+if (existe('dados/acoes.csv')) {
+  const linhas = ler('dados/acoes.csv').trim().split(/\r?\n/);
+  const cab = linhas[0].split(';').map((c) => c.trim());
+  const iMidia = cab.indexOf('midia');
+  if (iMidia < 0) {
+    reprovar('dados/acoes.csv não tem a coluna `midia`. O quadro do card volta a ficar sem fonte de dado — foi assim que o CSS de .card__f ficou órfão.');
+  } else {
+    const GENERICO = /^(foto|imagem|v[íi]deo|foto da obra|imagem da obra|foto do local|sem descri)/i;
+    for (const [n, linha] of linhas.slice(1).entries()) {
+      const c = linha.split(';').map((x) => x.trim());
+      const [arq, alt, credito] = [c[iMidia], c[iMidia + 1], c[iMidia + 2]];
+      if (!arq) continue;
+      const id = c[0], situacao = c[cab.indexOf('situacao')];
+      if (!existe(arq)) reprovar(`acoes.csv id ${id}: a mídia ${arq} não existe no repositório.`);
+      if (!alt) reprovar(`acoes.csv id ${id}: mídia sem midia_alt. O texto alternativo descreve o que a imagem mostra.`);
+      else if (GENERICO.test(alt) || alt.length < 20) {
+        reprovar(`acoes.csv id ${id}: midia_alt "${alt}" é genérico. Descreva o que aparece — "foto da obra" satisfaz o validador e não a pessoa.`);
+      }
+      const concluida = /conclu|realizada|entregue/i.test(situacao);
+      if (!concluida && !credito) {
+        reprovar(`acoes.csv id ${id}: registro "${situacao}" com mídia e sem midia_credito. Foto de obra pronta num card que não é entrega dá a entender execução — o crédito é onde se diz de quem é a obra.`);
+      }
+      if (existe(arq)) {
+        const teto = /\.(mp4|webm)$/i.test(arq) ? 3 * 1024 * 1024 : 250 * 1024;
+        if (tamanho(arq) > teto) {
+          reprovar(`${arq} tem ${kb(tamanho(arq))} e o teto é ${kb(teto)}. O custo não é o do GitHub Pages, é o 4G de quem mora em Picos.`);
+        }
+      }
+      void n;
+    }
+  }
+}
+
 /* 1. o HTML gerado bate com o CSV --------------------------------------- */
 const linhasCsv = ler('dados/acoes.csv').trim().split(/\r?\n/).length - 1;
 const itensHtml = (html.match(/<li data-bairros=/g) || []).length;

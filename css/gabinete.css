@@ -179,3 +179,68 @@ textarea{resize:vertical}
 }
 
 .rod a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+
+/* --- quadro de mídia do card -------------------------------------------
+ *
+ * `.card__f` existia no CSS com um fundo hachurado de "foto entra aqui", e o
+ * elemento tinha sumido do HTML — estilo órfão. A hachura sai junto: ela era
+ * marcador de vazio, e agora quadro sem mídia simplesmente não existe. */
+.card__f {
+  position: relative;
+  margin: 0;
+  background: none;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  border-bottom: 1px solid var(--linha);
+}
+.card__f img, .card__f video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.card__f img { cursor: zoom-in; }
+.card__f figcaption {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  padding: 18px 12px 8px;
+  font-size: 11.5px;
+  line-height: 1.35;
+  color: var(--branco);
+  /* faixa sólida atrás do texto: legenda sobre foto sem fundo é ilegível na
+   * metade das fotos e legível na outra metade, e não dá para escolher a foto */
+  background: linear-gradient(to top, rgba(0,0,0,.78), rgba(0,0,0,0));
+}
+/* O selo sobre a mídia precisa de fundo sólido — texto direto na imagem
+ * depende da foto, e a foto quem escolhe é o gabinete. */
+.card__s--sobre {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 2;
+  color: var(--branco);
+  background: var(--noite);
+  border-color: transparent;
+}
+.card__s--sobre.s-Concluída { background: var(--verde); }
+.card__s--sobre.s-Negado { background: var(--pt-vermelho-fundo); }
+
+/* O chip de um filtro sem itens fica no lugar, mais apagado. Ele não é erro:
+ * "Negado / Arquivado" com zero é a informação de que nada foi negado. */
+.chip--zero { color: var(--aco); }
+.chip em { font-style: normal; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.vazio { padding: var(--s3) 0 var(--s4); color: var(--aco); max-width: 62ch; }
+
+.lupa { border: 0; padding: 0; max-width: min(96vw, 1100px); background: var(--noite); color: var(--branco); }
+.lupa::backdrop { background: rgba(0, 0, 0, .82); }
+.lupa img { display: block; max-width: 100%; max-height: 78vh; }
+.lupa__l { padding: 12px 16px; font-size: 13px; color: var(--aco-claro); }
+.lupa__x { position: absolute; top: 8px; right: 8px; min-height: 44px; padding: 0 16px;
+  border: 1px solid rgba(255,255,255,.6); background: rgba(0,0,0,.6); color: var(--branco);
+  font-family: var(--sans); font-size: 13px; font-weight: 600; cursor: pointer; }
+
+/* :focus-visible nas abas, nos filtros e nos cards — navegar por teclado sem
+ * ver onde se está é navegar no escuro. */
+.aba:focus-visible, .chip:focus-visible, .card a:focus-visible, .card__f:focus-visible,
+.lupa__x:focus-visible { outline: 2px solid var(--pt-vermelho); outline-offset: 3px; }
