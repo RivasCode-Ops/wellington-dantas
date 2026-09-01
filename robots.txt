@@ -1,0 +1,5 @@
+# Versão de apresentação: o site ainda não deve aparecer em busca.
+# Quando o gabinete aprovar o conteúdo, esta regra vira "Allow: /" e a meta
+# robots do index.html sai junto — as duas mudam na mesma hora.
+User-agent: *
+Disallow: /

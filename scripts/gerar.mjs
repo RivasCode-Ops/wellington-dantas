@@ -1,0 +1,160 @@
+/* Wellington Dantas — gerador do conteúdo do site.
+ *
+ *   node scripts/gerar.mjs
+ *
+ * Lê `dados/acoes.csv` (a fonte editável) e escreve, dentro do `index.html`,
+ * a lista de ações, a grade de bairros e o resumo — entre marcadores.
+ * Também publica `dados/acoes.json`, para quem quiser consumir o dado bruto.
+ *
+ * Por que gerar HTML e não buscar JSON no navegador: a página tem que valer
+ * com o JavaScript desligado, sem espera e sem piscar. O site de referência
+ * que analisamos busca 91 KB de JSON em toda visita para montar a mesma coisa.
+ * Aqui o HTML já sai pronto do repositório; o JS só filtra o que já está lá.
+ *
+ * Zero dependência: só `node:fs`.
+ *
+ * Riva's Alexandre · 01/09/2026
+ */
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const RAIZ = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const CSV = path.join(RAIZ, 'dados', 'acoes.csv');
+const JSON_SAIDA = path.join(RAIZ, 'dados', 'acoes.json');
+const HTML = path.join(RAIZ, 'index.html');
+
+/* Os 30 bairros de Picos, na ordem em que aparecem no site. Território é dado
+ * estável: fica aqui, não no CSV, para não se repetir em cada linha. */
+const BAIRROS = [
+  'Aerolândia', 'Altamira', 'Alto da Boa Vista', 'Aroeiras', 'Bela Vista',
+  'Belo Norte', 'Boa Sorte', 'Boa Vista', 'Bomba', 'Canto da Várzea',
+  'Catavento', 'Centro', 'Conduru', 'DNER', 'Fátima',
+  'Ipueiras', 'Jardim Natal', 'Junco', 'Malva', 'Morada do Sol',
+  'Paraibinha', 'Paroquial', 'Parque de Exposição', 'Parque Industrial', 'Passagem das Pedras',
+  'Pedrinhas', 'Samambaia', 'São José', 'São Sebastião', 'Zona rural',
+];
+
+/* Recortes que não são bairro, mas onde a ação acontece. */
+const ABRANGENTES = ['Cidade toda', 'Rodovias e acessos', 'Vale do Guaribas'];
+
+const semAcento = (s) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+const chave = (s) => semAcento(String(s)).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const escapar = (s) => String(s)
+  .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  .replace(/"/g, '&quot;');
+
+function lerCsv(texto) {
+  const linhas = texto.trim().split(/\r?\n/);
+  const cab = linhas[0].split(';').map((c) => c.trim());
+  return linhas.slice(1).map((linha, i) => {
+    const celulas = linha.split(';');
+    if (celulas.length !== cab.length) {
+      throw new Error(`acoes.csv linha ${i + 2}: ${celulas.length} colunas, esperava ${cab.length}. Ponto-e-vírgula sobrando no texto?`);
+    }
+    const reg = {};
+    cab.forEach((c, j) => { reg[c] = celulas[j].trim(); });
+    reg.bairros = reg.bairro.split('|').map((b) => b.trim()).filter(Boolean);
+    reg.ano = reg.data.slice(0, 4);
+    return reg;
+  });
+}
+
+const MES = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+const dataCurta = (iso) => {
+  const [a, m, d] = iso.split('-');
+  return `${Number(d)} ${MES[Number(m) - 1]} ${a}`;
+};
+
+/* --- geração dos blocos ------------------------------------------------- */
+
+function blocoAcoes(acoes) {
+  const ordenadas = [...acoes].sort((x, y) => y.data.localeCompare(x.data));
+  return ordenadas.map((a) => {
+    const chaves = a.bairros.map(chave).join(' ');
+    const busca = chave([a.acao, a.local, a.categoria, a.bairros.join(' '), a.instrumento].join(' '));
+    return `      <li data-bairros="${chaves}" data-ano="${a.ano}" data-busca="${busca}">
+        <span class="ent__ano">${a.ano}</span>
+        <div class="ent__c">
+          <h3>${escapar(a.acao)}</h3>
+          <p>${escapar(a.local)} · <b>${escapar(a.situacao)}</b> · ${escapar(a.instrumento)} · ${dataCurta(a.data)}<br><span class="ent__f">Fonte: ${escapar(a.fonte)}</span></p>
+        </div>
+        <span class="tag">${escapar(a.categoria)}</span>
+      </li>`;
+  }).join('\n');
+}
+
+function blocoBairros(acoes) {
+  const conta = new Map();
+  for (const a of acoes) for (const b of a.bairros) conta.set(b, (conta.get(b) || 0) + 1);
+
+  const extras = [...conta.keys()]
+    .filter((b) => !BAIRROS.includes(b) && !ABRANGENTES.includes(b))
+    .sort((x, y) => x.localeCompare(y, 'pt-BR'));
+
+  const item = (nome) => {
+    const n = conta.get(nome) || 0;
+    const cls = n > 0 ? ' class="is-on"' : '';
+    const rotulo = n > 0 ? ` <em>${n}</em>` : '';
+    return `<li${cls}><a href="#entregas" data-filtro="${chave(nome)}">${escapar(nome)}${rotulo}</a></li>`;
+  };
+
+  const linhas = [];
+  for (let i = 0; i < BAIRROS.length; i += 5) {
+    linhas.push('      ' + BAIRROS.slice(i, i + 5).map(item).join(''));
+  }
+  let saida = linhas.join('\n');
+
+  if (extras.length || ABRANGENTES.some((a) => conta.get(a))) {
+    const outros = [...ABRANGENTES.filter((a) => conta.get(a)), ...extras];
+    saida += `\n    </ul>\n    <p class="terr__nota">Povoados, conjuntos e recortes que também têm ação registrada:</p>\n    <ul class="terr__g terr__g--sec">\n      ${outros.map(item).join('')}`;
+  }
+  return saida;
+}
+
+function blocoResumo(acoes) {
+  const anos = acoes.map((a) => a.ano).sort();
+  const bairrosAlcancados = new Set();
+  for (const a of acoes) for (const b of a.bairros) if (BAIRROS.includes(b)) bairrosAlcancados.add(b);
+  const concluidas = acoes.filter((a) => /conclu|realizada|entregue/i.test(a.situacao)).length;
+  return `<b>${acoes.length}</b> ações registradas entre ${anos[0]} e ${anos[anos.length - 1]} — `
+    + `${concluidas} concluídas, ${acoes.length - concluidas} em andamento — `
+    + `em ${bairrosAlcancados.size} bairros, além das que valem para a cidade toda. `
+    + `<span>Cada linha traz o instrumento, a situação e a fonte.</span>`;
+}
+
+function trocar(html, marca, conteudo) {
+  const ini = `<!--gerado:${marca}-->`;
+  const fim = `<!--/gerado:${marca}-->`;
+  const i = html.indexOf(ini);
+  const f = html.indexOf(fim);
+  if (i < 0 || f < 0) throw new Error(`index.html não tem os marcadores de "${marca}".`);
+  return html.slice(0, i + ini.length) + '\n' + conteudo + '\n' + html.slice(f);
+}
+
+/* --- execução ----------------------------------------------------------- */
+
+const acoes = lerCsv(fs.readFileSync(CSV, 'utf8'));
+
+const json = acoes.map((a) => ({
+  id: Number(a.id),
+  bairros: a.bairros,
+  local: a.local,
+  tipo_local: a.tipo_local,
+  acao: a.acao,
+  categoria: a.categoria,
+  data: a.data,
+  instrumento: a.instrumento,
+  situacao: a.situacao,
+  fonte: a.fonte,
+  evidencia: a.evidencia,
+}));
+fs.writeFileSync(JSON_SAIDA, JSON.stringify({ atualizado_em: new Date().toISOString().slice(0, 10), acoes: json }, null, 2) + '\n', 'utf8');
+
+let html = fs.readFileSync(HTML, 'utf8');
+html = trocar(html, 'acoes', blocoAcoes(acoes));
+html = trocar(html, 'bairros', blocoBairros(acoes));
+html = trocar(html, 'resumo', blocoResumo(acoes));
+fs.writeFileSync(HTML, html, 'utf8');
+
+console.log(`gerar: ${acoes.length} ações → index.html e dados/acoes.json`);

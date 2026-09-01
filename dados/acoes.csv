@@ -1,0 +1,28 @@
+id;bairro;local;tipo_local;acao;categoria;data;instrumento;situacao;fonte;evidencia
+1;Junco;Rua Pedro Claro (bairro Junco);rua;Instalação de três redutores de velocidade;Trânsito;2025-02-13;Requerimento;protocolado;Boletim CMP nº 01/2025;relatado
+2;Cidade toda;Áreas atingidas pelas chuvas de janeiro;municipio;Isenção da cobrança de IPTU 2025 para os moradores atingidos;Habitação;2025-02-20;Requerimento;protocolado;Boletim CMP nº 02/2025;relatado
+3;Morro da AABB;Rua Jardim da Infância e Rua Antonio Tibúrcio (Morro da AABB);rua;Complemento de iluminação pública nas ladeiras;Iluminação;2025-02-27;Requerimento;protocolado;Boletim CMP nº 03/2025;relatado
+4;Residencial Sá Urtiga;Residencial Deputado Sá Urtiga;conjunto;Reposição de lâmpadas;Iluminação;2025-03-20;Requerimento;protocolado;Boletim CMP nº 05/2025;relatado
+5;Rodovias e acessos;PI-376;rodovia;Serviço de roço na faixa de domínio;Limpeza;2025-03-20;Requerimento;protocolado;Boletim CMP nº 05/2025;relatado
+6;Junco;Praça do bairro Junco;praca;Reforma da praça;Praça e lazer;2025-03-27;Requerimento;protocolado;Boletim CMP nº 06/2025;relatado
+7;Pedrinhas;Praça do bairro Pedrinhas;praca;Reforma da praça;Praça e lazer;2025-03-27;Requerimento;protocolado;Boletim CMP nº 06/2025;relatado
+8;Valparaíso;BR-316 próximo ao Povoado Valparaíso;rodovia;Sinalização e redutores de velocidade;Trânsito;2025-03-27;Requerimento;protocolado;Boletim CMP nº 06/2025;relatado
+9;Paraibinha|Morrinhos|Valparaíso;Corredor Paraibinha - Povoado Morrinhos - Povoado Valparaíso;corredor;Execução de iluminação pública no trecho;Iluminação;2025-04-03;Requerimento;protocolado;Boletins CMP nº 07 e 08/2025;relatado
+10;Paraibinha;Avenida Doroteu Neres (bairro Paraibinha);avenida;Execução de iluminação pública;Iluminação;2025-04-03;Requerimento;protocolado;Boletins CMP nº 07 e 08/2025;relatado
+11;Cidade toda;Selo Empresa Amiga da Pessoa Autista;municipio;Projeto de lei que institui o selo no município;Inclusão;2025-04-03;Projeto de Lei;em votação;Boletim CMP nº 07/2025;relatado
+12;Cidade toda;Medalha Coêlho Rodrigues - Ten.-Cel. Antonio Aécio Silva Sousa (3º BEC);municipio;Concessão de honraria;Honraria;2025-02-13;Decreto Legislativo;em votação;Boletim CMP nº 01/2025;relatado
+13;Cidade toda;Título de cidadã picoense - Anyara Ayres;municipio;Concessão de título;Honraria;2025-02-20;Decreto Legislativo;em votação;Boletim CMP nº 02/2025;relatado
+14;Cidade toda;Título de cidadão picoense - José Libório Leal;municipio;Concessão de título;Honraria;2025-04-03;Decreto Legislativo;em votação;Boletins CMP nº 07 08 e 09/2025;relatado
+15;Rodovias e acessos;BR-407 - trecho da antiga fábrica da Coca-Cola ao balão da Av. Doroteu Neres;rodovia;Continuação da rede de iluminação pública;Iluminação;2026-06-11;Requerimento;protocolado;Boletim CMP nº 14/2026;relatado
+16;Paraibinha;Avenida Doroteu Neres - do Clube do Professor até a BR-316;avenida;Continuação da rede de iluminação pública;Iluminação;2026-06-11;Requerimento;protocolado;Boletim CMP nº 14/2026;relatado
+17;Junco;Balão da BR-316 no bairro Junco;rotatoria;Continuação da rede de iluminação pública;Iluminação;2026-06-11;Requerimento;protocolado;Boletim CMP nº 14/2026;relatado
+18;Rodovias e acessos;Balão da BR-407 no acesso ao Clube do Professor;rotatoria;Continuação da rede de iluminação pública;Iluminação;2026-06-11;Requerimento;protocolado;Boletim CMP nº 14/2026;relatado
+19;Morro da Macambira;Bairro Morro da Macambira;bairro;Capina limpeza geral e recolhimento de entulho em todas as ruas;Limpeza;2026-06-18;Requerimento;protocolado;Boletim CMP nº 15/2026;relatado
+20;Cidade toda;Órgãos públicos e estabelecimentos comerciais de Picos;municipio;Projeto de lei que obriga placas de combate à violência contra a mulher com canais de denúncia;Mulheres;2026-06-18;Projeto de Lei;1ª votação;Boletins CMP nº 14 e 15/2026;relatado
+21;Pedrinhas;Quadra de esportes do bairro Pedrinhas;bairro;Reforma entregue por votação popular do Orçamento Participativo;Praça e lazer;2026-08-22;Entrega;concluída;Instagram @wellingtondantaspicos;medido
+22;Centro;Zona central de Picos;municipio;Corrida Mulheres Vivas Livres e Respeitadas - Agosto Lilás;Mulheres;2026-08-16;Mobilização;realizada;Instagram e Prefeitura de Picos;medido
+23;Cidade toda;Picos;municipio;Curso de qualificação em refrigeração para 40 jovens;Qualificação;2026-08-07;Articulação;em curso;Instagram @wellingtondantaspicos;medido
+24;Cidade toda;Picos;municipio;2º São João da Melhor Idade da Assistência Social;Assistência;2026-07-09;Apoio;realizada;Instagram @wellingtondantaspicos;medido
+25;Vale do Guaribas;Vale do Guaribas;regiao;1º Encontro da Acessibilidade do Vale do Guaribas;Inclusão;2026-06-26;Articulação;realizada;Instagram @wellingtondantaspicos;medido
+26;Cidade toda;Picos;municipio;Mobilização pela inclusão das pessoas com deficiência e autistas;Inclusão;2026-06-26;Mobilização;realizada;Instagram @wellingtondantaspicos;medido
+27;Cidade toda;Picos;municipio;Pauta de enfrentamento à violência contra a mulher com Prefeitura e Câmara;Mulheres;2026-06-19;Mobilização;realizada;Instagram @wellingtondantaspicos;medido

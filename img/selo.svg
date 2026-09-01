@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Wellington Dantas">
+  <rect width="64" height="64" fill="#200B0F"/>
+  <g fill="none" stroke="#FFFFFF" stroke-width="2.4">
+    <circle cx="32" cy="32" r="30.5" stroke-width="1"/>
+    <path d="M14 24 L20.5 41 L27 28 L33.5 41 L40 24" stroke-linejoin="miter"/>
+    <path d="M43 24 h5.5 c3.6 0 6.5 3.8 6.5 8.5 s-2.9 8.5 -6.5 8.5 H43 z"/>
+  </g>
+</svg>

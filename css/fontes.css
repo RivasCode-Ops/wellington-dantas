@@ -1,0 +1,22 @@
+/* Fontes do site — arquivos locais, servidos pelo próprio domínio.
+ *
+ * Regra-zero: nenhuma requisição a terceiro no caminho crítico. Google Fonts
+ * fora. Os dois arquivos estão em /fontes e vieram embutidos no mockup v2.
+ *
+ * Inter Tight é variável (100–900): um arquivo cobre todos os pesos.
+ */
+@font-face {
+  font-family: "Inter Tight";
+  src: url("../fontes/inter-tight.woff2") format("woff2-variations");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Instrument Serif";
+  src: url("../fontes/instrument-serif.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}

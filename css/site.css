@@ -1,0 +1,121 @@
+/* Acréscimos do site sobre o CSS do mockup.
+ *
+ * O `base.css` é o mockup aprovado, intocado. Tudo que o site ganhou depois —
+ * filtro de bairro, resumo, mapa, estados vazios — mora aqui, para que a
+ * revisão de design continue olhando um arquivo só.
+ *
+ * Régua herdada: zero gradiente, zero sombra, raio máximo 2px, vermelho em no
+ * máximo ~10% da tela, duas famílias tipográficas.
+ */
+
+/* pular para o conteúdo — teclado */
+.pular {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 99;
+  background: var(--pt-vermelho);
+  color: var(--branco);
+  padding: 12px 18px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.pular:focus { left: 0; }
+
+/* entregas — resumo, filtro, fonte, vazio */
+.ent__resumo {
+  font-size: 16px;
+  color: var(--aco);
+  max-width: 72ch;
+  margin: -26px 0 26px;
+  line-height: 1.55;
+}
+.ent__resumo b { color: var(--tinta); font-weight: 600; }
+.ent__resumo span { display: block; margin-top: 4px; font-size: 14px; }
+
+.ent__filtro {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 15px;
+  color: var(--aco);
+  border-left: 3px solid var(--pt-vermelho);
+  padding: 8px 0 8px 14px;
+  margin-bottom: 22px;
+}
+.ent__filtro b { color: var(--tinta); font-weight: 600; }
+.ent__filtro .lnk { font-size: 14px; background: none; border: 0; cursor: pointer; padding: 0; }
+
+.ent__f { color: var(--aco-claro); font-size: 13.5px; }
+
+.ent__l li.is-off { display: none; }
+
+.ent__vazio {
+  padding: 34px 0 0;
+  font-size: 16px;
+  color: var(--aco);
+  max-width: 62ch;
+}
+.ent__vazio a { color: var(--pt-vermelho-fundo); text-decoration: underline; text-underline-offset: 3px; }
+
+/* território — contador, grade secundária, mapa */
+.terr__g em {
+  font-style: normal;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--pt-vermelho-fundo);
+  margin-left: 5px;
+}
+.terr__g a:hover em, .terr__g li.is-on a:hover em { color: var(--branco); }
+
+.terr__nota {
+  margin: 30px 0 12px;
+  font-size: 13px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--aco);
+}
+.terr__g--sec { grid-template-columns: repeat(3, 1fr); }
+
+.mapa { margin-top: 46px; }
+.mapa img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--linha);
+  background: var(--branco);
+}
+.mapa figcaption {
+  margin-top: 12px;
+  font-size: 13.5px;
+  color: var(--aco);
+  max-width: 72ch;
+}
+
+/* mídia sem link — enquanto o clipping não é confirmado */
+.mid__l--sem li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 26px;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--linha);
+}
+.mid__nota {
+  margin-top: 18px;
+  font-size: 13.5px;
+  color: var(--aco);
+}
+
+/* participe */
+.part__nota {
+  font-size: 13.5px;
+  color: rgba(255, 255, 255, .78);
+  max-width: 46ch;
+  margin: 0;
+}
+
+@media (max-width: 820px) {
+  .terr__g--sec { grid-template-columns: repeat(2, 1fr); }
+  .ent__resumo { margin-top: -10px; }
+}

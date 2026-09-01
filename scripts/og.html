@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Cartão de compartilhamento</title>
+<!-- Fonte do arquivo img/og.png. Para regerar:
+     chrome --headless=new --disable-gpu --hide-scrollbars --window-size=1200,630 \
+            --screenshot="img/og.png" "file:///.../scripts/og.html"
+     É a imagem que aparece quando o link do site é colado no WhatsApp. -->
+<link rel="stylesheet" href="../css/fontes.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+  body {
+    background: #200B0F; color: #fff;
+    font-family: "Inter Tight", system-ui, sans-serif;
+    display: grid; grid-template-rows: auto 1fr auto;
+    padding: 64px 72px;
+  }
+  .olho {
+    font-size: 19px; letter-spacing: .14em; text-transform: uppercase;
+    font-weight: 600; color: #E4142C;
+  }
+  h1 {
+    font-family: "Instrument Serif", Georgia, serif; font-weight: 400;
+    font-size: 92px; line-height: 1.0; letter-spacing: -.02em;
+    align-self: center; max-width: 22ch;
+  }
+  .pe { display: flex; align-items: end; justify-content: space-between; gap: 40px; }
+  .pe p { font-size: 24px; font-weight: 600; letter-spacing: -.01em; }
+  .pe span { display: block; font-size: 17px; font-weight: 400; color: #948C8F; margin-top: 6px; letter-spacing: 0; }
+  .risco { width: 132px; height: 4px; background: #E4142C; margin-bottom: 26px; }
+  svg { width: 78px; height: 78px; flex: 0 0 auto; }
+</style>
+</head>
+<body>
+  <p class="olho">Vereador de Picos · Terceiro mandato</p>
+  <h1>A cidade que eu ando é a cidade que eu defendo.</h1>
+  <div class="pe">
+    <div>
+      <div class="risco"></div>
+      <p>Wellington Dantas<span>O mandato bairro por bairro — com instrumento, situação e fonte.</span></p>
+    </div>
+    <svg viewBox="0 0 64 64" aria-hidden="true" fill="none" stroke="#fff" stroke-width="2.4">
+      <circle cx="32" cy="32" r="30.5" stroke-width="1"/>
+      <path d="M14 24 L20.5 41 L27 28 L33.5 41 L40 24" stroke-linejoin="miter"/>
+      <path d="M43 24 h5.5 c3.6 0 6.5 3.8 6.5 8.5 s-2.9 8.5 -6.5 8.5 H43 z"/>
+    </svg>
+  </div>
+</body>
+</html>

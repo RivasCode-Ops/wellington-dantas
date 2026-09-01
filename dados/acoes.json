@@ -1,0 +1,412 @@
+{
+  "atualizado_em": "2026-09-01",
+  "acoes": [
+    {
+      "id": 1,
+      "bairros": [
+        "Junco"
+      ],
+      "local": "Rua Pedro Claro (bairro Junco)",
+      "tipo_local": "rua",
+      "acao": "Instalação de três redutores de velocidade",
+      "categoria": "Trânsito",
+      "data": "2025-02-13",
+      "instrumento": "Requerimento",
+      "situacao": "protocolado",
+      "fonte": "Boletim CMP nº 01/2025",
+      "evidencia": "relatado"
+    },
+    {
+      "id": 2,
+      "bairros": [
+        "Cidade toda"
+      ],
+      "local": "Áreas atingidas pelas chuvas de janeiro",
+      "tipo_local": "municipio",
+      "acao": "Isenção da cobrança de IPTU 2025 para os moradores atingidos",
+      "categoria": "Habitação",
+      "data": "2025-02-20",
+      "instrumento": "Requerimento",
+      "situacao": "protocolado",
+      "fonte": "Boletim CMP nº 02/2025",
+      "evidencia": "relatado"
+    },
+    {
+      "id": 3,
+      "bairros": [
+        "Morro da AABB"
+      ],
+      "local": "Rua Jardim da Infância e Rua Antonio Tibúrcio (Morro da AABB)",
+      "tipo_local": "rua",
+      "acao": "Complemento de iluminação pública nas ladeiras",
+      "categoria": "Iluminação",
+      "data": "2025-02-27",
+      "instrumento": "Requerimento",
+      "situacao": "protocolado",
+      "fonte": "Boletim CMP nº 03/2025",
+      "evidencia": "relatado"
+    },
+    {
+      "id": 4,
+      "bairros": [
+        "Residencial Sá Urtiga"
+      ],
+      "local": "Residencial Deputado Sá Urtiga",
+      "tipo_local": "conjunto",
+      "acao": "Reposição de lâmpadas",
+      "categoria": "Iluminação",
+      "data": "2025-03-20",
+      "instrumento": "Requerimento",
+      "situacao": "protocolado",
+      "fonte": "Boletim CMP nº 05/2025",
+      "evidencia": "relatado"
+    },
+    {
+      "id": 5,
+      "bairros": [
+        "Rodovias e acessos"
+      ],
+      "local": "PI-376",
+      "tipo_local": "rodovia",
+      "acao": "Serviço de roço na faixa de domínio",
+      "categoria": "Limpeza",
+      "data": "2025-03-20",
+      "instrumento": "Requerimento",
+      "situacao": "protocolado",
+      "fonte": "Boletim CMP nº 05/2025",
+      "evidencia": "relatado"
+    },
+    {
+      "id": 6,
+      "bairros": [
+        "Junco"
+      ],
+      "local": "Praça do bairro Junco",
+      "tipo_local": "praca",
+      "acao": "Reforma da praça",
+      "categoria": "Praça e lazer",
+      "data": "2025-03-27",
+      "instrumento": "Requerimento",
+      "situacao": "protocolado",
+      "fonte": "Boletim CMP nº 06/2025",
+      "evidencia": "relatado"
+    },
+    {
+      "id": 7,
+      "bairros": [
+        "Pedrinhas"
+      ],
+      "local": "Praça do bairro Pedrinhas",
+      "tipo_local": "praca",
+      "acao": "Reforma da praça",
+      "categoria": "Praça e lazer",
+      "data": "2025-03-27",
+      "instrumento": "Requerimento",
+      "situacao": "protocolado",
+      "fonte": "Boletim CMP nº 06/2025",
+      "evidencia": "relatado"
+    },
+    {
+      "id": 8,
+      "bairros": [
+        "Valparaíso"
+      ],
+      "local": "BR-316 próximo ao Povoado Valparaíso",
+      "tipo_local": "rodovia",
+      "acao": "Sinalização e redutores de velocidade",
+      "categoria": "Trânsito",
+      "data": "2025-03-27",
+      "instrumento": "Requerimento",
+      "situacao": "protocolado",
+      "fonte": "Boletim CMP nº 06/2025",
+      "evidencia": "relatado"
+    },
+    {
+      "id": 9,
+      "bairros": [
+        "Paraibinha",
+        "Morrinhos",
+        "Valparaíso"
+      ],
+      "local": "Corredor Paraibinha - Povoado Morrinhos - Povoado Valparaíso",
+      "tipo_local": "corredor",
+      "acao": "Execução de iluminação pública no trecho",
+      "categoria": "Iluminação",
+      "data": "2025-04-03",
+      "instrumento": "Requerimento",
+      "situacao": "protocolado",
+      "fonte": "Boletins CMP nº 07 e 08/2025",
+      "evidencia": "relatado"
+    },
+    {
+      "id": 10,
+      "bairros": [
+        "Paraibinha"
+      ],
+      "local": "Avenida Doroteu Neres (bairro Paraibinha)",
+      "tipo_local": "avenida",
+      "acao": "Execução de iluminação pública",
+      "categoria": "Iluminação",
+      "data": "2025-04-03",
+      "instrumento": "Requerimento",
+      "situacao": "protocolado",
+      "fonte": "Boletins CMP nº 07 e 08/2025",
+      "evidencia": "relatado"
+    },
+    {
+      "id": 11,
+      "bairros": [
+        "Cidade toda"
+      ],
+      "local": "Selo Empresa Amiga da Pessoa Autista",
+      "tipo_local": "municipio",
+      "acao": "Projeto de lei que institui o selo no município",
+      "categoria": "Inclusão",
+      "data": "2025-04-03",
+      "instrumento": "Projeto de Lei",
+      "situacao": "em votação",
+      "fonte": "Boletim CMP nº 07/2025",
+      "evidencia": "relatado"
+    },
+    {
+      "id": 12,
+      "bairros": [
+        "Cidade toda"
+      ],
+      "local": "Medalha Coêlho Rodrigues - Ten.-Cel. Antonio Aécio Silva Sousa (3º BEC)",
+      "tipo_local": "municipio",
+      "acao": "Concessão de honraria",
+      "categoria": "Honraria",
+      "data": "2025-02-13",
+      "instrumento": "Decreto Legislativo",
+      "situacao": "em votação",
+      "fonte": "Boletim CMP nº 01/2025",
+      "evidencia": "relatado"
+    },
+    {
+      "id": 13,
+      "bairros": [
+        "Cidade toda"
+      ],
+      "local": "Título de cidadã picoense - Anyara Ayres",
+      "tipo_local": "municipio",
+      "acao": "Concessão de título",
+      "categoria": "Honraria",
+      "data": "2025-02-20",
+      "instrumento": "Decreto Legislativo",
+      "situacao": "em votação",
+      "fonte": "Boletim CMP nº 02/2025",
+      "evidencia": "relatado"
+    },
+    {
+      "id": 14,
+      "bairros": [
+        "Cidade toda"
+      ],
+      "local": "Título de cidadão picoense - José Libório Leal",
+      "tipo_local": "municipio",
+      "acao": "Concessão de título",
+      "categoria": "Honraria",
+      "data": "2025-04-03",
+      "instrumento": "Decreto Legislativo",
+      "situacao": "em votação",
+      "fonte": "Boletins CMP nº 07 08 e 09/2025",
+      "evidencia": "relatado"
+    },
+    {
+      "id": 15,
+      "bairros": [
+        "Rodovias e acessos"
+      ],
+      "local": "BR-407 - trecho da antiga fábrica da Coca-Cola ao balão da Av. Doroteu Neres",
+      "tipo_local": "rodovia",
+      "acao": "Continuação da rede de iluminação pública",
+      "categoria": "Iluminação",
+      "data": "2026-06-11",
+      "instrumento": "Requerimento",
+      "situacao": "protocolado",
+      "fonte": "Boletim CMP nº 14/2026",
+      "evidencia": "relatado"
+    },
+    {
+      "id": 16,
+      "bairros": [
+        "Paraibinha"
+      ],
+      "local": "Avenida Doroteu Neres - do Clube do Professor até a BR-316",
+      "tipo_local": "avenida",
+      "acao": "Continuação da rede de iluminação pública",
+      "categoria": "Iluminação",
+      "data": "2026-06-11",
+      "instrumento": "Requerimento",
+      "situacao": "protocolado",
+      "fonte": "Boletim CMP nº 14/2026",
+      "evidencia": "relatado"
+    },
+    {
+      "id": 17,
+      "bairros": [
+        "Junco"
+      ],
+      "local": "Balão da BR-316 no bairro Junco",
+      "tipo_local": "rotatoria",
+      "acao": "Continuação da rede de iluminação pública",
+      "categoria": "Iluminação",
+      "data": "2026-06-11",
+      "instrumento": "Requerimento",
+      "situacao": "protocolado",
+      "fonte": "Boletim CMP nº 14/2026",
+      "evidencia": "relatado"
+    },
+    {
+      "id": 18,
+      "bairros": [
+        "Rodovias e acessos"
+      ],
+      "local": "Balão da BR-407 no acesso ao Clube do Professor",
+      "tipo_local": "rotatoria",
+      "acao": "Continuação da rede de iluminação pública",
+      "categoria": "Iluminação",
+      "data": "2026-06-11",
+      "instrumento": "Requerimento",
+      "situacao": "protocolado",
+      "fonte": "Boletim CMP nº 14/2026",
+      "evidencia": "relatado"
+    },
+    {
+      "id": 19,
+      "bairros": [
+        "Morro da Macambira"
+      ],
+      "local": "Bairro Morro da Macambira",
+      "tipo_local": "bairro",
+      "acao": "Capina limpeza geral e recolhimento de entulho em todas as ruas",
+      "categoria": "Limpeza",
+      "data": "2026-06-18",
+      "instrumento": "Requerimento",
+      "situacao": "protocolado",
+      "fonte": "Boletim CMP nº 15/2026",
+      "evidencia": "relatado"
+    },
+    {
+      "id": 20,
+      "bairros": [
+        "Cidade toda"
+      ],
+      "local": "Órgãos públicos e estabelecimentos comerciais de Picos",
+      "tipo_local": "municipio",
+      "acao": "Projeto de lei que obriga placas de combate à violência contra a mulher com canais de denúncia",
+      "categoria": "Mulheres",
+      "data": "2026-06-18",
+      "instrumento": "Projeto de Lei",
+      "situacao": "1ª votação",
+      "fonte": "Boletins CMP nº 14 e 15/2026",
+      "evidencia": "relatado"
+    },
+    {
+      "id": 21,
+      "bairros": [
+        "Pedrinhas"
+      ],
+      "local": "Quadra de esportes do bairro Pedrinhas",
+      "tipo_local": "bairro",
+      "acao": "Reforma entregue por votação popular do Orçamento Participativo",
+      "categoria": "Praça e lazer",
+      "data": "2026-08-22",
+      "instrumento": "Entrega",
+      "situacao": "concluída",
+      "fonte": "Instagram @wellingtondantaspicos",
+      "evidencia": "medido"
+    },
+    {
+      "id": 22,
+      "bairros": [
+        "Centro"
+      ],
+      "local": "Zona central de Picos",
+      "tipo_local": "municipio",
+      "acao": "Corrida Mulheres Vivas Livres e Respeitadas - Agosto Lilás",
+      "categoria": "Mulheres",
+      "data": "2026-08-16",
+      "instrumento": "Mobilização",
+      "situacao": "realizada",
+      "fonte": "Instagram e Prefeitura de Picos",
+      "evidencia": "medido"
+    },
+    {
+      "id": 23,
+      "bairros": [
+        "Cidade toda"
+      ],
+      "local": "Picos",
+      "tipo_local": "municipio",
+      "acao": "Curso de qualificação em refrigeração para 40 jovens",
+      "categoria": "Qualificação",
+      "data": "2026-08-07",
+      "instrumento": "Articulação",
+      "situacao": "em curso",
+      "fonte": "Instagram @wellingtondantaspicos",
+      "evidencia": "medido"
+    },
+    {
+      "id": 24,
+      "bairros": [
+        "Cidade toda"
+      ],
+      "local": "Picos",
+      "tipo_local": "municipio",
+      "acao": "2º São João da Melhor Idade da Assistência Social",
+      "categoria": "Assistência",
+      "data": "2026-07-09",
+      "instrumento": "Apoio",
+      "situacao": "realizada",
+      "fonte": "Instagram @wellingtondantaspicos",
+      "evidencia": "medido"
+    },
+    {
+      "id": 25,
+      "bairros": [
+        "Vale do Guaribas"
+      ],
+      "local": "Vale do Guaribas",
+      "tipo_local": "regiao",
+      "acao": "1º Encontro da Acessibilidade do Vale do Guaribas",
+      "categoria": "Inclusão",
+      "data": "2026-06-26",
+      "instrumento": "Articulação",
+      "situacao": "realizada",
+      "fonte": "Instagram @wellingtondantaspicos",
+      "evidencia": "medido"
+    },
+    {
+      "id": 26,
+      "bairros": [
+        "Cidade toda"
+      ],
+      "local": "Picos",
+      "tipo_local": "municipio",
+      "acao": "Mobilização pela inclusão das pessoas com deficiência e autistas",
+      "categoria": "Inclusão",
+      "data": "2026-06-26",
+      "instrumento": "Mobilização",
+      "situacao": "realizada",
+      "fonte": "Instagram @wellingtondantaspicos",
+      "evidencia": "medido"
+    },
+    {
+      "id": 27,
+      "bairros": [
+        "Cidade toda"
+      ],
+      "local": "Picos",
+      "tipo_local": "municipio",
+      "acao": "Pauta de enfrentamento à violência contra a mulher com Prefeitura e Câmara",
+      "categoria": "Mulheres",
+      "data": "2026-06-19",
+      "instrumento": "Mobilização",
+      "situacao": "realizada",
+      "fonte": "Instagram @wellingtondantaspicos",
+      "evidencia": "medido"
+    }
+  ]
+}
