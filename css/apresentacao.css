@@ -1,0 +1,181 @@
+/* apresentacao.css — o guia de aprovação.
+ *
+ * Folha PRÓPRIA, de propósito. Os tokens estão copiados aqui em vez de vir de
+ * tokens.css: esta peça é enviada ao cliente e ele pode reabri-la semanas
+ * depois, e uma mudança futura no site não pode quebrar um documento que já
+ * está na mão dele. É a única folha do repositório que duplica valor por bom
+ * motivo — e o motivo é este.
+ *
+ * As regras de contraste do projeto continuam valendo: vermelho como texto só
+ * acima de 24px semibold; sobre vermelho, branco puro; bloco vermelho com
+ * texto corrido usa o vermelho escuro. Zero sombra, zero gradiente, raio 2px.
+ *
+ * Riva's Alexandre · 01/09/2026
+ */
+:root {
+  --pt-vermelho: #E4142C;
+  --pt-vermelho-fundo: #B5121E;
+  --brasa: #A40E20;
+  --noite: #200B0F;
+  --tinta: #202020;
+  --papel: #F3F5F7;
+  --branco: #FFFFFF;
+  --aco: #6A6B6B;
+  --aco-claro: #948C8F;
+  --linha: #D5D7D9;
+  --serif: 'Instrument Serif', Georgia, serif;
+  --sans: 'Inter Tight', system-ui, sans-serif;
+  --wrap: 940px;
+  --gut: clamp(20px, 5vw, 40px);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+[hidden] { display: none !important; }
+
+body {
+  background: var(--papel);
+  color: var(--tinta);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: var(--wrap); margin: 0 auto; padding-inline: var(--gut); }
+.sr {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+:focus-visible { outline: 2px solid var(--pt-vermelho); outline-offset: 3px; }
+
+/* --- barra de progresso ------------------------------------------------- */
+.prog { position: fixed; top: 0; left: 0; right: 0; height: 3px; background: var(--linha); z-index: 10; }
+.prog__f { height: 100%; width: 0; background: var(--pt-vermelho); transition: width .25s ease; }
+
+/* --- capa --------------------------------------------------------------- */
+.capa { padding: clamp(48px, 9vw, 96px) 0 clamp(32px, 5vw, 56px); border-bottom: 1px solid var(--linha); }
+.olho { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--aco); font-weight: 600; }
+.capa h1 {
+  font-family: var(--serif); font-weight: 400;
+  font-size: clamp(34px, 5.6vw, 62px); line-height: 1.03; letter-spacing: -.015em;
+  margin: 18px 0 22px;
+}
+.capa__d { max-width: 60ch; color: var(--aco); }
+.capa__d b { color: var(--tinta); font-weight: 600; }
+.capa__c {
+  display: inline-block; margin-top: 26px; padding: 7px 14px;
+  border: 1px solid var(--linha); background: var(--branco);
+  font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums;
+}
+.capa__g {
+  margin-top: 22px; max-width: 62ch; padding: 14px 16px;
+  border-left: 3px solid var(--pt-vermelho); background: var(--branco);
+  font-size: 14.5px; line-height: 1.5; color: var(--aco);
+}
+.capa__g b { color: var(--tinta); font-weight: 600; }
+
+/* --- cartão ------------------------------------------------------------- */
+.cartao { padding: clamp(36px, 6vw, 64px) 0; border-bottom: 1px solid var(--linha); }
+.cartao__n { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--aco-claro); font-weight: 600; }
+.cartao h2 {
+  font-family: var(--serif); font-weight: 400;
+  font-size: clamp(26px, 3.4vw, 38px); line-height: 1.08; letter-spacing: -.01em;
+  margin: 8px 0 24px;
+}
+
+/* A tela é a prova. Ela vem antes do texto porque é o que o cliente reconhece
+ * — texto primeiro faria ele ler descrição de algo que ainda não viu. */
+.tela { margin: 0; border: 1px solid var(--linha); background: var(--branco); }
+.tela img { display: block; width: 100%; height: auto; }
+.tela figcaption { padding: 10px 14px; border-top: 1px solid var(--linha); font-size: 13.5px; line-height: 1.45; color: var(--aco); }
+.cartao__telas { display: grid; gap: 16px; }
+.cartao__telas--multi { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+
+.cartao__tx { margin-top: 26px; display: grid; gap: 12px; max-width: 68ch; }
+.cartao__tx b { font-weight: 600; }
+.cartao__tx .prot { padding: 14px 16px; background: var(--branco); border-left: 3px solid var(--pt-vermelho); }
+.cartao__tx .aviso { padding: 14px 16px; background: var(--branco); border-left: 3px solid var(--aco-claro); color: var(--aco); }
+.cartao__tx .perg { padding: 14px 16px; background: var(--noite); color: var(--branco); }
+
+/* --- o voto ------------------------------------------------------------- */
+.voto { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start; }
+.voto__b {
+  min-height: 46px; padding: 0 20px;
+  border: 1px solid var(--linha); background: var(--branco); color: var(--tinta);
+  font-family: var(--sans); font-size: 15px; font-weight: 600; letter-spacing: -.01em;
+  cursor: pointer; border-radius: 2px;
+}
+.voto__b:hover { border-color: var(--aco); }
+/* Selecionado: vermelho cheio, branco puro. */
+.voto__b.is-on { background: var(--pt-vermelho); border-color: var(--pt-vermelho); color: var(--branco); }
+.voto__b[data-v="nao"].is-on { background: var(--noite); border-color: var(--noite); }
+.voto__obs { flex-basis: 100%; display: grid; gap: 6px; margin-top: 6px; }
+.voto__obs span { font-size: 14px; font-weight: 600; }
+.voto__obs textarea {
+  width: 100%; padding: 12px 14px; border: 1px solid var(--linha); background: var(--branco);
+  font-family: var(--sans); font-size: 15px; line-height: 1.5; color: var(--tinta);
+  border-radius: 2px; resize: vertical;
+}
+
+/* --- o que o site não faz ----------------------------------------------- */
+.naofaz {
+  margin: clamp(36px, 6vw, 64px) 0 0;
+  padding: clamp(28px, 5vw, 48px);
+  background: var(--pt-vermelho-fundo); color: var(--branco);
+}
+.naofaz h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(26px, 3.4vw, 38px); line-height: 1.08; }
+.naofaz ul { list-style: none; margin-top: 22px; display: grid; gap: 14px; max-width: 66ch; }
+.naofaz li { padding-left: 22px; position: relative; }
+.naofaz li::before { content: "—"; position: absolute; left: 0; }
+.naofaz__n { margin-top: 24px; font-size: 14px; color: rgba(255, 255, 255, .8); }
+
+/* --- pendências --------------------------------------------------------- */
+.pend { padding: clamp(36px, 6vw, 64px) 0; border-bottom: 1px solid var(--linha); }
+.pend h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(26px, 3.4vw, 38px); line-height: 1.08; }
+.pend__d { margin: 12px 0 28px; max-width: 62ch; color: var(--aco); }
+.pend__i { padding: 18px 0; border-top: 1px solid var(--linha); display: grid; gap: 8px; }
+.pend__c { display: flex; gap: 10px; align-items: center; font-size: 17px; cursor: pointer; }
+.pend__c input { width: 20px; height: 20px; accent-color: var(--pt-vermelho); flex: 0 0 auto; }
+.pend__i p { color: var(--aco); max-width: 66ch; font-size: 15.5px; }
+.pend__r input {
+  width: 100%; max-width: 46ch; min-height: 46px; padding: 0 14px;
+  border: 1px solid var(--linha); background: var(--branco);
+  font-family: var(--sans); font-size: 15px; color: var(--tinta); border-radius: 2px;
+}
+
+/* --- fecho -------------------------------------------------------------- */
+.fecho { padding: clamp(36px, 6vw, 64px) 0 clamp(48px, 8vw, 88px); }
+.fecho h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(26px, 3.4vw, 38px); line-height: 1.08; }
+.fecho p { margin: 12px 0 24px; max-width: 62ch; color: var(--aco); }
+.fecho p b { color: var(--tinta); font-weight: 600; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 48px; padding: 0 24px;
+  background: var(--pt-vermelho); color: var(--branco); border: 1px solid var(--pt-vermelho);
+  font-family: var(--sans); font-size: 15px; font-weight: 600; letter-spacing: -.01em;
+  text-decoration: none; cursor: pointer; border-radius: 2px;
+}
+.btn--g { min-height: 56px; padding: 0 30px; font-size: 17px; }
+.btn--f { background: var(--branco); color: var(--tinta); border-color: var(--linha); }
+#texto {
+  width: 100%; margin: 24px 0 16px; padding: 16px;
+  border: 1px solid var(--linha); background: var(--branco);
+  font-family: ui-monospace, Consolas, monospace; font-size: 13.5px; line-height: 1.55;
+  color: var(--tinta); border-radius: 2px; resize: vertical;
+}
+.fecho__ac { display: flex; flex-wrap: wrap; gap: 10px; }
+.fecho__n { margin-top: 14px; font-size: 14.5px; color: var(--brasa); }
+.lnk {
+  display: inline-block; margin-top: 30px; padding: 0; border: 0; background: none;
+  font-family: var(--sans); font-size: 14.5px; color: var(--aco);
+  border-bottom: 1px solid var(--linha); cursor: pointer;
+}
+.lnk:hover { color: var(--tinta); border-bottom-color: var(--aco); }
+
+/* --- rodapé ------------------------------------------------------------- */
+.rod { background: var(--noite); color: var(--aco-claro); padding: 40px 0 44px; font-size: 13.5px; line-height: 1.6; }
+.rod p + p { margin-top: 16px; }
+.rod b { color: var(--branco); font-weight: 600; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}

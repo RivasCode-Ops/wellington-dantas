@@ -90,6 +90,47 @@ const erro404 = ler('404.html');
   }
 }
 
+/* 0b-bis. o guia de aprovação é peça à parte, e tem que continuar sendo -----
+ *
+ * `apresentacao.html` usa `localStorage` — é o rascunho das respostas de quem
+ * está aprovando, e sem ele a pessoa perde tudo ao fechar a aba. A exceção é
+ * legítima, mas é exatamente o tipo de coisa que vaza: alguém acha útil,
+ * copia para o site, e a frase "não usa cookies, não tem rastreador" no rodapé
+ * do index vira mentira sem ninguém notar.
+ *
+ * Por isso a exceção é NOMEADA aqui, e não deixada por omissão da lista da
+ * regra 0b. E vem com três condições: a página tem que ser noindex, tem que
+ * dizer na tela que guarda, e tem que ter como apagar. */
+if (existe('apresentacao.html')) {
+  const a = ler('apresentacao.html');
+  const js = existe('js/apresentacao.js') ? ler('js/apresentacao.js') : '';
+
+  if (!/<meta name="robots" content="noindex/.test(a)) {
+    reprovar('apresentacao.html sem noindex. É peça de aprovação do gabinete, não conteúdo público — e ela mostra o site inteiro antes de ele existir.');
+  }
+  if (!/só neste navegador|neste seu navegador/.test(a)) {
+    reprovar('apresentacao.html usa armazenamento e não avisa na tela. Guardar escondido é o que a página inteira existe para não fazer.');
+  }
+  if (!/id="recomecar"/.test(a)) {
+    reprovar('apresentacao.html não tem como apagar o que guardou. Armazenamento sem porta de saída não se justifica nem aqui.');
+  }
+  if (js && !/try\s*\{[^}]*localStorage/.test(js)) {
+    reprovar('js/apresentacao.js toca localStorage fora de try/catch. Em janela anônima ou com dados de site bloqueados o guia inteiro para — e ele é a peça que vai para o cliente.');
+  }
+  /* o inverso: o site público não pode ter ganhado armazenamento */
+  for (const f of ['index.html', 'gabinete-aberto.html', 'trajetoria.html', 'js/app.js', 'js/gabinete.js', 'js/trajetoria.js']) {
+    if (existe(f) && /localStorage|sessionStorage|document\.cookie/.test(ler(f))) {
+      reprovar(`${f} ganhou armazenamento. A exceção é do guia de aprovação e só dele — no site público a frase do rodapé deixaria de ser verdade.`);
+    }
+  }
+  /* e ela não pode aparecer na navegação do site */
+  for (const f of ['index.html', 'gabinete-aberto.html', 'trajetoria.html']) {
+    if (existe(f) && /href="apresentacao\.html"/.test(ler(f))) {
+      reprovar(`${f} linka apresentacao.html. O guia mostra pendências e decisões internas do gabinete; ele se manda por link direto, não se publica.`);
+    }
+  }
+}
+
 /* 0c. o código da demanda não pode se vender como protocolo ---------------
  *
  * O código `PIC-AAAA-MM-DD-XXXX` nasce no navegador de quem preencheu e não
@@ -277,12 +318,18 @@ for (const arq of primeiraCarga) {
 }
 if (total > 400 * 1024) reprovar(`primeira carga em ${kb(total)} — o teto é 400 KB.`);
 
-for (const dir of ['img', 'fontes']) {
-  for (const arq of fs.readdirSync(path.join(RAIZ, dir))) {
-    const t = tamanho(path.join(dir, arq));
-    if (t > 250 * 1024) reprovar(`${dir}/${arq} tem ${kb(t)} — nenhum arquivo passa de 250 KB.`);
+/* Desce nas subpastas. Antes só olhava o primeiro nível, e as 20 capturas do
+ * guia de aprovação moram em img/apresentacao/ — o teto simplesmente não
+ * alcançava a pasta que mais cresce quando o site muda. */
+function pesar(dir) {
+  for (const arq of fs.readdirSync(path.join(RAIZ, dir), { withFileTypes: true })) {
+    const rel = `${dir}/${arq.name}`;
+    if (arq.isDirectory()) { pesar(rel); continue; }
+    const t = tamanho(rel);
+    if (t > 250 * 1024) reprovar(`${rel} tem ${kb(t)} — nenhum arquivo passa de 250 KB.`);
   }
 }
+for (const dir of ['img', 'fontes']) pesar(dir);
 
 /* 7b. imagem gerada por IA: só provisória, só rotulada, só em apresentação ---
  *
