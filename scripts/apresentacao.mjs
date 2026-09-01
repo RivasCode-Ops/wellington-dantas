@@ -169,75 +169,101 @@ const CARTOES = [
  * de tabela pública, marcados como "a confirmar na contratação" — e o
  * honorário fica em branco de propósito, porque é decisão do Rivas e não minha.
  */
-const HONORARIO = process.env.WD_HONORARIO || null;
+const SITE_NO_AR = 'https://rivascode-ops.github.io/wellington-dantas/';
 
 const PECAS = [
-  ['Onde o site mora', 'GitHub Pages', 'Guarda o código, verifica antes de publicar e serve a página. Nos limites que este site usa, é gratuito e continua sendo.', 'R$ 0'],
-  ['Como ele é construído', 'HTML, CSS e JavaScript escritos à mão', 'Sem framework, sem biblioteca, sem pacote de terceiro. 79 arquivos, 7.671 linhas, zero dependência instalada — nada que possa ser abandonado, invadido pela cadeia de suprimento ou passar a cobrar.', 'R$ 0'],
-  ['De onde vem o conteúdo', 'Quatro planilhas CSV no repositório', 'Editar a planilha pela web do GitHub publica o site em cerca de um minuto. Sem painel, sem senha, sem banco.', 'R$ 0'],
-  ['O que impede erro no ar', 'A régua de prova — 105 regras', 'Roda a cada publicação. Se qualquer regra reprovar, o site NÃO vai ao ar: número sem fonte, promessa sem dono, link morto, imagem pesada, rastreador, emenda atribuída ao vereador. Cada regra nasceu de um defeito real.', 'R$ 0'],
-  ['O assistente', 'Recuperação sobre base curada', 'Não é IA aberta e não usa OpenAI, Google nem nenhuma API. São 17 registros escritos à mão e 22 termos de recusa. Por isso responde instantaneamente, funciona offline depois de carregado e <b>não tem custo por conversa</b> — mil pessoas perguntando custam o mesmo que uma.', 'R$ 0'],
-  ['Quem visita', 'Nada é medido', 'Sem Analytics, sem pixel, sem cookie. O preço disso é não saber quantas pessoas entraram; o ganho é não precisar de política de privacidade nem de base legal para tratar dado de ninguém.', 'R$ 0'],
+  ['Onde o site mora', 'GitHub Pages', 'Guarda o código, verifica antes de publicar e serve a página. Publicar é dar um comando; voltar atrás também.'],
+  ['Como ele é construído', 'HTML, CSS e JavaScript escritos à mão', 'Sem framework, sem biblioteca, sem pacote de terceiro. 79 arquivos, 7.671 linhas, <b>zero dependência instalada</b> — nada que possa ser abandonado por quem mantém, invadido pela cadeia de suprimento ou passar a cobrar.'],
+  ['De onde vem o conteúdo', 'Quatro planilhas no repositório', 'As 27 ações, os bairros, as emendas e o traçado do mapa. Editar a planilha pela web do GitHub publica o site em cerca de um minuto — sem painel, sem senha, sem banco.'],
+  ['O que impede erro no ar', 'A régua de prova — 105 regras', 'Roda a cada publicação. Se qualquer regra reprovar, o site <b>não vai ao ar</b>: número sem fonte, promessa sem dono, link morto, imagem pesada, rastreador, emenda atribuída ao vereador. Cada regra nasceu de um defeito real.'],
+  ['O assistente', 'Recuperação sobre base curada', 'Não é inteligência artificial aberta e não usa OpenAI, Google nem nenhuma API. São 17 registros escritos à mão e 22 termos de recusa. Responde instantaneamente e <b>funciona igual para uma pessoa ou para mil</b>.'],
+  ['Quem visita', 'Nada é medido', 'Sem Analytics, sem pixel, sem cookie. O preço disso é não saber quantas pessoas entraram; o ganho é não precisar de política de privacidade nem de base legal para tratar dado de ninguém.'],
 ];
 
+/* As ferramentas por MOMENTO, sem valor nenhum. O cliente precisa entender o
+ * que cada peça faz e quando ela entra; quanto custa é conversa de contrato, e
+ * misturar as duas coisas faz ele decidir arquitetura olhando preço. */
 const FASES = [
   {
-    id: 'fase1', t: 'Hoje — a apresentação',
-    v: 'R$ 0', quando: 'no ar agora',
+    id: 'fase1', t: 'Já está funcionando', quando: 'você pode abrir agora',
     itens: [
-      ['Repositório, verificação e publicação', 'GitHub', 'R$ 0'],
-      ['Endereço', 'rivascode-ops.github.io/wellington-dantas', 'R$ 0'],
-      ['Certificado de segurança (HTTPS)', 'incluso no GitHub Pages', 'R$ 0'],
+      ['Repositório, verificação e publicação', 'GitHub e GitHub Actions'],
+      ['Endereço provisório', 'rivascode-ops.github.io/wellington-dantas'],
+      ['Conexão segura (cadeado no navegador)', 'certificado automático'],
+      ['Geração do conteúdo a partir das planilhas', 'scripts próprios, em Node'],
+      ['Captura das telas deste guia', 'script próprio — as imagens se refazem sozinhas quando o site muda'],
     ],
-    nota: 'É o que você está vendo. Nada foi contratado, nada é cobrado, e o site já funciona por inteiro.',
+    nota: 'É o que você está vendo. O site já funciona por inteiro, com mapa, mural, assistente e página de trajetória.',
   },
   {
-    id: 'fase2', t: 'Para ir ao ar de verdade',
-    v: '~R$ 40 por ano', quando: 'quando o conteúdo for aprovado',
+    id: 'fase2', t: 'Entra quando o conteúdo for aprovado', quando: 'para ir ao ar em nome próprio',
     itens: [
-      ['Domínio próprio .com.br', 'registro.br — o registrador oficial do Brasil', '~R$ 40/ano'],
-      ['Hospedagem', 'continua no GitHub Pages', 'R$ 0'],
-      ['Certificado de segurança', 'continua incluso', 'R$ 0'],
-      ['E-mail no domínio (opcional)', 'ex.: contato@wellingtondantas.com.br', 'a partir de ~R$ 0 a R$ 30/mês'],
+      ['Domínio próprio', 'registro.br — o registrador oficial brasileiro'],
+      ['E-mail no domínio', 'ex.: contato@wellingtondantas.com.br'],
+      ['Cartão de compartilhamento', 'a imagem que aparece quando o link é colado no WhatsApp'],
+      ['Tradução para Libras', 'ver o bloco de inclusão logo abaixo'],
     ],
-    nota: 'O domínio é o único gasto obrigatório do projeto inteiro, e ele é anual. Fora dele, um site de mandato com mapa, mural, assistente e página de trajetória fica em R$ 0 por mês de infraestrutura — porque não há servidor rodando, não há banco e não há API sendo chamada.',
+    nota: 'Continua sem servidor rodando, sem banco e sem API sendo chamada — o site é um conjunto de arquivos, e é isso que o torna rápido e difícil de quebrar.',
   },
   {
-    id: 'fase3', t: 'Para virar sistema de atendimento',
-    v: 'depende do caminho', quando: 'quando o gabinete for operar a fila',
+    id: 'fase3', t: 'Entra quando o gabinete for operar a fila', quando: 'aí sim vira sistema de atendimento',
     itens: [
-      ['Banco de dados das demandas + login do gabinete', 'Supabase ou equivalente', 'grátis no plano inicial; ~US$ 25/mês quando crescer'],
-      ['Painel do gabinete (ver, responder, mudar situação)', 'desenvolvimento', 'orçamento à parte'],
-      ['Canal de WhatsApp', 'ver as três opções abaixo', 'R$ 0 a variável'],
-      ['Backup e retenção dos dados', 'incluso no plano do banco', 'incluso'],
-      ['Adequação à LGPD', 'política de privacidade, prazo de guarda, canal de exclusão', 'obrigatório a partir daqui'],
+      ['Banco de dados das demandas', 'para a fila existir de verdade, com protocolo e histórico'],
+      ['Login e senha do gabinete', 'quem responde precisa se identificar'],
+      ['Painel do gabinete', 'ver, responder e mudar a situação de cada demanda'],
+      ['Canal de WhatsApp', 'três caminhos possíveis, logo abaixo'],
+      ['Backup e prazo de guarda dos dados', 'obrigação legal a partir daqui'],
+      ['Política de privacidade e canal de exclusão', 'LGPD — obrigatório assim que houver dado guardado'],
     ],
-    nota: 'Só a partir daqui o site passa a GUARDAR dado de cidadão — nome, telefone, endereço. É o que obriga política de privacidade de verdade, e é a fronteira que separa "site" de "sistema". Antes disso não há o que proteger porque não há o que guardar.',
+    nota: 'É aqui que o site passa a GUARDAR dado de cidadão — nome, telefone, endereço. Essa é a fronteira exata entre "site" e "sistema", e é o que obriga política de privacidade de verdade. Antes disso não há o que proteger porque não há o que guardar.',
   },
 ];
 
 const CAMINHOS = [
   {
     t: 'A · Como está hoje — o morador envia',
-    v: 'R$ 0/mês',
+    v: 'já funciona',
     d: 'O site monta o texto com bairro, rua e contato, e a pessoa envia pelo WhatsApp comum do gabinete. Quem atende responde na mão, como já faz.',
-    bom: 'Custo zero. Funciona amanhã. Nenhum dado de cidadão fica guardado em lugar nenhum.',
-    ruim: 'Não há fila, não há protocolo real, e o "andamento" depende de alguém anotar. O volume aumenta e vira caderno.',
+    bom: 'Funciona amanhã, sem contratar nada. Nenhum dado de cidadão fica guardado em lugar nenhum.',
+    ruim: 'Não há fila nem protocolo real, e o "andamento" depende de alguém anotar. Quando o volume cresce, vira caderno.',
   },
   {
     t: 'B · WhatsApp Business comum + painel do gabinete',
-    v: '~US$ 25/mês + desenvolvimento',
-    d: 'O aplicativo gratuito do WhatsApp Business continua sendo o canal, e quem atende registra a demanda num painel simples. A fila passa a existir de verdade, com protocolo, situação e histórico.',
-    bom: 'É onde o critério de prioridade publicado no site passa a ser cumprível e verificável. Custo previsível.',
-    ruim: 'Alguém do gabinete precisa transcrever para o painel. Não é automático.',
+    v: 'o caminho recomendado',
+    d: 'O aplicativo gratuito do WhatsApp Business continua sendo o canal, e quem atende registra a demanda num painel simples. A fila passa a existir, com protocolo, situação e histórico.',
+    bom: 'É onde o critério de prioridade publicado no site passa a ser cumprível e verificável — deixa de ser promessa e vira processo.',
+    ruim: 'Alguém do gabinete precisa passar a demanda para o painel. Não é automático.',
   },
   {
     t: 'C · WhatsApp Business Platform — a API oficial da Meta',
-    v: 'cobrança por mensagem, tabela da Meta',
+    v: 'só com volume alto',
     d: 'A demanda entra direto no sistema sem ninguém transcrever, e a resposta sai automática quando a situação muda.',
-    bom: 'Automático de ponta a ponta. Suporta volume alto sem contratar gente.',
-    ruim: 'Cobrança por mensagem segundo a tabela da Meta para o Brasil, mais uma provedora intermediária. Exige verificação de conta comercial e aprovação dos modelos de mensagem pela Meta, o que leva semanas. <b>Só compensa com volume alto</b> — e um gabinete de vereador começa com volume baixo.',
+    bom: 'Automático de ponta a ponta. Aguenta volume alto sem contratar gente.',
+    ruim: 'Exige verificação de conta comercial, uma provedora intermediária e aprovação dos modelos de mensagem pela Meta, o que leva semanas. <b>Só compensa com volume alto</b> — e um gabinete de vereador começa com volume baixo.',
   },
+];
+
+/* --- inclusão ------------------------------------------------------------
+ *
+ * O que já está feito é medido, não estimado: cada item foi conferido no
+ * arquivo. E o que falta está separado do que existe, porque prometer Libras
+ * que ainda não está lá seria o mesmo defeito das "promessas sem dono" que o
+ * site inteiro foi construído para não cometer. */
+const INCLUSAO_FEITO = [
+  ['Funciona com o JavaScript desligado', 'O conteúdo já vem escrito na página. Quem usa navegador antigo, conexão ruim ou leitor de tela recebe o texto inteiro, sem esperar.'],
+  ['Leitor de tela', 'Toda imagem tem descrição escrita, os títulos seguem a hierarquia certa, e o resultado de cada filtro e busca é anunciado em voz — quem não enxerga sabe quantos itens sobraram.'],
+  ['Navegação por teclado', 'Dá para usar o site inteiro sem mouse. Onde o foco está fica visível, e a primeira tecla de cada página pula direto para o conteúdo.'],
+  ['Movimento reduzido', 'Quem tem enxaqueca, epilepsia fotossensível ou sensibilidade ao movimento — o que inclui muita pessoa autista — pode desligar animação no próprio aparelho, e o site obedece. A página da trajetória <b>entra pausada</b> e não avança sozinha.'],
+  ['Nada toca sozinho com som', 'Sem áudio automático, sem vídeo em laço, sem pisca-pisca.'],
+  ['Alvo de toque grande', 'Botões e links com no mínimo 44 pixels de altura, para quem tem tremor, pouca mobilidade fina ou dedo grosso.'],
+  ['Contraste e tamanho', 'Texto escuro sobre fundo claro, sem cinza sobre cinza, e a página aumenta de tamanho junto com a configuração do celular.'],
+  ['Linguagem simples', 'Frase curta, palavra do dia a dia, sem jargão de repartição. Serve a quem tem deficiência intelectual e a quem só está com pressa.'],
+];
+
+const INCLUSAO_FALTA = [
+  ['Tradução para Libras', 'Um intérprete virtual no canto da tela traduz o texto da página para Língua Brasileira de Sinais. Existe uma ferramenta pública e gratuita do governo federal para isso, o <b>VLibras</b>, feita para ser instalada em sites públicos.', 'Ela carrega de um servidor do governo, e hoje o site não busca <b>nada</b> fora dele — é o que sustenta a frase "não usa cookie e não tem rastreador". Dá para hospedar a ferramenta no próprio site e manter a promessa, e é o que eu recomendo. Precisa da sua decisão porque muda uma regra que está travada.'],
+  ['Vídeo do mandato com legenda e janela de Libras', 'Todo vídeo publicado no mural sai com legenda embutida, e os principais com janela de intérprete.', 'Depende de o gabinete gravar os vídeos — não é código.'],
+  ['Versão em leitura fácil', 'Uma segunda versão das páginas principais, com frases ainda mais curtas e um conceito por parágrafo, para pessoas com deficiência intelectual.', 'É trabalho de escrita, não de programação. Entra se vocês quiserem.'],
 ];
 
 const NAO_FAZ = [
@@ -326,6 +352,13 @@ const HTML = `<!doctype html>
     <h1>Antes de ir pro ar,<br>você decide o que fica.</h1>
     <p class="capa__d">Este guia mostra o site pronto, tela por tela, explica para que serve cada parte e pergunta se você aprova. Leva uns 8 minutos. No fim, o guia monta um texto com as suas respostas para você mandar de volta — <b>nada é enviado daqui</b>.</p>
     <p class="capa__c" id="contador" aria-live="polite">0 de ${CARTOES.length} respondidos</p>
+
+    <div class="acesso">
+      <p class="acesso__r">O site está no ar agora — pode abrir e mexer</p>
+      <p><a class="acesso__l" href="${SITE_NO_AR}" rel="noopener" target="_blank">${SITE_NO_AR.replace(/^https:\/\//, '').replace(/\/$/, '')}</a></p>
+      <p class="acesso__n">Endereço <b>provisório</b>, e é assim de propósito: ele não aparece em busca do Google e não é para divulgar ainda. O endereço definitivo, em nome próprio, entra quando você aprovar o conteúdo. As telas deste guia são capturas desse mesmo site — se algo aqui parecer estranho, abra lá e confira.</p>
+    </div>
+
     <p class="capa__g">Suas respostas ficam guardadas <b>só neste navegador</b>, para você poder fechar e voltar depois. Não vão para servidor nenhum. O botão <b>Recomeçar</b>, lá no fim, apaga tudo.</p>
   </div>
 </header>
@@ -346,23 +379,23 @@ ${PECAS.map((p) => `        <tr><th scope="row">${esc(p[0])}<span>${esc(p[1])}</
   </section>
 
   <section class="custo">
-    <h2>O que custa, e quando começa a custar</h2>
-    <p class="custo__d">O site já funciona por inteiro e não custa nada, porque <b>ele ainda não opera nada</b>. O custo aparece no dia em que o gabinete passar a receber e responder demanda — e aí é decisão de vocês, não de tecnologia.</p>
+    <h2>As ferramentas, e quando cada uma entra</h2>
+    <p class="custo__d">O site já funciona por inteiro <b>sem operar nada</b>. As ferramentas de sistema entram no dia em que o gabinete passar a receber e responder demanda — e a lista abaixo é o que cada momento exige, para vocês verem onde estão hoje e o que falta.</p>
 ${FASES.map((f) => `    <div class="fase" data-fase="${f.id}">
       <div class="fase__cab">
         <h3>${esc(f.t)}</h3>
-        <p class="fase__v">${esc(f.v)}<span>${esc(f.quando)}</span></p>
+        <p class="fase__q">${esc(f.quando)}</p>
       </div>
       <table class="tab">
         <tbody>
-${f.itens.map((i) => `          <tr><th scope="row">${esc(i[0])}<span>${esc(i[1])}</span></th><td class="tab__v">${esc(i[2])}</td></tr>`).join('\n')}
+${f.itens.map((i) => `          <tr><th scope="row">${esc(i[0])}</th><td>${esc(i[1])}</td></tr>`).join('\n')}
         </tbody>
       </table>
       <p class="fase__n">${esc(f.nota)}</p>
     </div>`).join('\n')}
 
-    <h3 class="custo__h">O canal de WhatsApp: três caminhos, e o mais caro não é o melhor</h3>
-    <p class="custo__d">Esta é a única escolha que muda o custo de verdade. Marque a que vocês querem — vai no texto do retorno.</p>
+    <h3 class="custo__h">O canal de WhatsApp: três caminhos</h3>
+    <p class="custo__d">É a escolha que mais muda o trabalho do gabinete. Marque a que vocês querem — vai no texto do retorno.</p>
     <div class="cams" role="group" aria-label="Caminho do canal de WhatsApp">
 ${CAMINHOS.map((c, k) => `      <article class="cam" data-caminho="${k}">
         <h4>${esc(c.t)}</h4>
@@ -373,12 +406,36 @@ ${CAMINHOS.map((c, k) => `      <article class="cam" data-caminho="${k}">
         <button type="button" class="cam__e">Escolher este</button>
       </article>`).join('\n')}
     </div>
-    <p class="custo__rec"><b>O que eu recomendo:</b> começar no <b>A</b>, que já está pronto e não custa nada, e passar para o <b>B</b> quando o volume de demanda justificar um painel. O <b>C</b> só compensa com volume alto, e um gabinete de vereador começa com volume baixo — pagar por mensagem antes de ter mensagem é gastar para não usar.</p>
+    <p class="custo__rec"><b>O que eu recomendo:</b> começar no <b>A</b>, que já está pronto, e passar para o <b>B</b> quando o volume de demanda justificar um painel. O <b>C</b> só compensa com volume alto — e um gabinete de vereador começa com volume baixo.</p>
+  </section>
 
-    <div class="hon">
-      <h3>O trabalho de quem faz</h3>
-      <p>Os valores acima são de <b>infraestrutura</b> — o que se paga a terceiros para o sistema existir. O trabalho de construir, manter e alimentar é à parte, e vem no contrato.</p>
-      <p class="hon__v">${HONORARIO ? esc(HONORARIO) : 'A combinar — apresentado em proposta separada.'}</p>
+  <section class="incl">
+    <h2>Inclusão: quem mais precisa do gabinete é quem mais encontra porta fechada</h2>
+    <p class="incl__d">Site de mandato que a pessoa com deficiência não consegue usar exclui exatamente quem depende mais do poder público. O que está na primeira lista <b>já funciona</b> — conferi item por item no código. O que está na segunda <b>ainda não existe</b>, e está separado de propósito: prometer aqui o que não está lá seria o mesmo erro que o site inteiro foi construído para não cometer.</p>
+
+    <h3 class="incl__h">O que já funciona hoje</h3>
+    <table class="tab">
+      <tbody>
+${INCLUSAO_FEITO.map((i) => `        <tr><th scope="row">${esc(i[0])}</th><td>${i[1]}</td></tr>`).join('\n')}
+      </tbody>
+    </table>
+
+    <h3 class="incl__h">O que ainda não existe, e depende de decisão</h3>
+${INCLUSAO_FALTA.map((i) => `    <div class="falta">
+      <h4>${esc(i[0])}</h4>
+      <p>${i[1]}</p>
+      <p class="falta__p"><b>O que trava:</b> ${i[2]}</p>
+    </div>`).join('\n')}
+
+    <div class="voto" role="group" aria-label="Sua resposta sobre a tradução em Libras" data-extra="libras" data-titulo="Tradução em Libras">
+      <p class="incl__q"><b>Pergunta:</b> vocês querem a tradução em Libras no site?</p>
+      <button type="button" class="voto__b" data-v="aprovo">Sim, quero</button>
+      <button type="button" class="voto__b" data-v="ajuste">Quero, mas depois</button>
+      <button type="button" class="voto__b" data-v="nao">Não usar</button>
+      <label class="voto__obs" hidden>
+        <span>Observação:</span>
+        <textarea rows="3" data-obs placeholder="Escreva aqui. Vai junto no texto do retorno."></textarea>
+      </label>
     </div>
   </section>
 

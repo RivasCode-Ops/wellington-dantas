@@ -34,19 +34,6 @@
   .estrela--rod { width: 34px; height: 34px; }
 }
 
-/* pular para o conteúdo — teclado */
-.pular {
-  position: absolute;
-  left: -9999px;
-  top: 0;
-  z-index: 99;
-  background: var(--pt-vermelho);
-  color: var(--branco);
-  padding: 12px 18px;
-  font-size: 14px;
-  font-weight: 600;
-}
-.pular:focus { left: 0; }
 
 /* hero com retrato
  *

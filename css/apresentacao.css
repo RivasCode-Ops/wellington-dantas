@@ -201,8 +201,7 @@ body {
 .fase { margin-bottom: 30px; }
 .fase__cab { display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
 .fase h3 { font-size: 19px; font-weight: 600; letter-spacing: -.01em; }
-.fase__v { font-size: 19px; font-weight: 600; color: var(--pt-vermelho-fundo); font-variant-numeric: tabular-nums; text-align: right; }
-.fase__v span { display: block; font-size: 13px; font-weight: 400; color: var(--aco); letter-spacing: 0; }
+.fase__q { font-size: 14px; color: var(--aco); text-align: right; }
 .fase__n { margin-top: 12px; max-width: 68ch; font-size: 15px; line-height: 1.55; color: var(--aco); }
 
 .custo__h { margin: 44px 0 0; font-family: var(--serif); font-weight: 400; font-size: clamp(22px, 2.8vw, 30px); line-height: 1.1; }
@@ -237,3 +236,35 @@ body {
   .tab tbody th { width: auto; }
   .tab__v { text-align: left; margin-top: 6px; }
 }
+
+/* --- o link de acesso ao site ------------------------------------------- */
+.acesso {
+  margin-top: 26px; max-width: 62ch; padding: 20px;
+  background: var(--noite); color: var(--branco);
+}
+.acesso__r { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.7); font-weight: 600; }
+.acesso__l {
+  display: inline-block; margin: 10px 0 12px;
+  font-size: clamp(17px, 2.4vw, 22px); font-weight: 600; letter-spacing: -.01em;
+  color: var(--branco); text-decoration: none;
+  border-bottom: 2px solid var(--pt-vermelho); padding-bottom: 3px;
+  /* endereço longo não pode estourar a caixa num celular de 390px */
+  overflow-wrap: anywhere;
+}
+.acesso__l:hover { border-bottom-color: var(--branco); }
+.acesso__n { font-size: 14px; line-height: 1.5; color: rgba(255,255,255,.72); }
+.acesso__n b { color: var(--branco); font-weight: 600; }
+
+/* --- inclusão ----------------------------------------------------------- */
+.incl { padding: clamp(36px, 6vw, 64px) 0; border-bottom: 1px solid var(--linha); }
+.incl h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(26px, 3.4vw, 38px); line-height: 1.08; }
+.incl__d { margin: 12px 0 30px; max-width: 66ch; color: var(--aco); }
+.incl__d b { color: var(--tinta); font-weight: 600; }
+.incl__h { margin: 30px 0 14px; font-size: 17px; font-weight: 600; letter-spacing: -.01em; }
+.incl__h:first-of-type { margin-top: 0; }
+.falta { padding: 18px 20px; background: var(--branco); border-left: 3px solid var(--aco-claro); margin-bottom: 12px; }
+.falta h4 { font-size: 16px; font-weight: 600; letter-spacing: -.01em; }
+.falta p { margin-top: 8px; max-width: 66ch; font-size: 15px; line-height: 1.55; color: var(--aco); }
+.falta p b { color: var(--tinta); font-weight: 600; }
+.falta__p { border-top: 1px solid var(--linha); padding-top: 10px; }
+.incl__q { flex-basis: 100%; margin-bottom: 4px; font-size: 16px; color: var(--tinta); }

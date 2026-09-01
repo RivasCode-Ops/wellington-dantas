@@ -247,6 +247,29 @@ if (existe('dados/acoes.csv')) {
   }
 }
 
+/* 0f. o mínimo de acessibilidade, nas três páginas -------------------------
+ *
+ * Não é conformidade de fachada: cada item aqui é uma porta que, faltando,
+ * fecha o site para alguém. O "pular para o conteúdo" existia só na home —
+ * quem navega por teclado atravessava o menu inteiro nas outras duas, e no
+ * celular o menu tem sete links em duas linhas. Passou despercebido porque
+ * defeito de teclado não aparece em nenhuma captura de tela. */
+for (const arq of ['index.html', 'gabinete-aberto.html', 'trajetoria.html']) {
+  if (!existe(arq)) continue;
+  const t = ler(arq);
+  const falta = [];
+  if (!/class="pular"/.test(t)) falta.push('o link "pular para o conteúdo"');
+  if (!/id="conteudo"/.test(t)) falta.push('o alvo #conteudo do link de pular');
+  if (!/<main/.test(t)) falta.push('o elemento <main>');
+  const h1 = (t.match(/<h1[\s>]/g) || []).length;
+  if (h1 !== 1) falta.push(`exatamente um <h1> (tem ${h1})`);
+  if (!/lang="pt-BR"/.test(t)) falta.push('lang="pt-BR" no <html> — leitor de tela lê em inglês sem isso');
+  for (const m of t.matchAll(/<img\b(?![^>]*\balt=)[^>]*>/g)) {
+    falta.push(`alt na imagem ${(m[0].match(/src="([^"]*)"/) || [, '?'])[1]}`);
+  }
+  if (falta.length) reprovar(`${arq} não tem: ${falta.join('; ')}.`);
+}
+
 /* 1. o HTML gerado bate com o CSV --------------------------------------- */
 const linhasCsv = ler('dados/acoes.csv').trim().split(/\r?\n/).length - 1;
 const itensHtml = (html.match(/<li data-bairros=/g) || []).length;

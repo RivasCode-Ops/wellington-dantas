@@ -63,9 +63,19 @@ html = html.replace(/<link rel="icon"[^>]*>\n?/, '');
 html = html.replace('<p class="capa__g">',
   '<p class="capa__g">Este é o arquivo do guia: ele funciona <b>sem internet</b> e não avisa ninguém que você abriu. ');
 
-if (/https?:\/\/(?!wa\.me)/.test(html.replace(/data:[^"']+/g, ''))) {
-  const achado = html.replace(/data:[^"']+/g, '').match(/https?:\/\/[a-z0-9./-]+/i);
-  throw new Error(`sobrou endereço externo no arquivo único: ${achado[0]}. Ele tem que abrir sem rede.`);
+/* O guarda mede CARGA, não link.
+ *
+ * A primeira versão barrava qualquer `https://` e reprovou o próprio endereço
+ * do site — que é um link para a pessoa clicar, não um recurso que a página
+ * busca. É a mesma distinção da regra de privacidade do site: `href` é escolha
+ * de quem lê; `src`, `@import`, `url()` e `fetch` são carga que acontece sem
+ * ninguém pedir. Um arquivo que promete abrir sem rede não pode ter imagem
+ * faltando na casa de quem recebeu — mas pode, e deve, ter o link do site. */
+const CARGA = /(?:src\s*=\s*["']|@import\s+(?:url\()?["']?|url\(\s*["']?|fetch\s*\(\s*["'])(https?:)?\/\/([a-z0-9.-]+)/gi;
+const semDados = html.replace(/data:[^"')]+/g, 'EMBUTIDO');
+const externos = [...semDados.matchAll(CARGA)].map((m) => m[2]);
+if (externos.length) {
+  throw new Error(`o arquivo único carrega recurso de fora: ${[...new Set(externos)].join(', ')}. Ele tem que abrir sem rede.`);
 }
 
 fs.mkdirSync(path.dirname(DESTINO), { recursive: true });

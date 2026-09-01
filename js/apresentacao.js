@@ -42,9 +42,15 @@
     barra.style.width = (n / cartoes.length * 100) + '%';
   }
 
-  /* --- os cartões --------------------------------------------------------- */
-  cartoes.forEach(function (cartao) {
-    var id = cartao.dataset.item;
+  /* Decisões avulsas — hoje só a de Libras. Usam os mesmos três botões dos
+   * cartões, mas ficam FORA da contagem: o contador mede quanto do site já foi
+   * revisado, e uma escolha de escopo ali faria a barra mentir sobre o que
+   * ainda falta ler. Mesmo tratamento do caminho de WhatsApp. */
+  var extras = [].slice.call(document.querySelectorAll('[data-extra]'));
+
+  /* --- os cartões e as decisões ------------------------------------------- */
+  cartoes.concat(extras).forEach(function (cartao) {
+    var id = cartao.dataset.item || ('extra-' + cartao.dataset.extra);
     var botoes = [].slice.call(cartao.querySelectorAll('.voto__b'));
     var caixa = cartao.querySelector('.voto__obs');
     var obs = cartao.querySelector('[data-obs]');
@@ -126,7 +132,7 @@
 
   /* --- montar o retorno --------------------------------------------------- */
   function titulo(cartao) {
-    return cartao.querySelector('h2').textContent.trim();
+    return cartao.dataset.titulo || cartao.querySelector('h2').textContent.trim();
   }
 
   function montar() {
@@ -164,6 +170,15 @@
       }
     });
     if (resp.length) { L.push('PENDÊNCIAS RESPONDIDAS'); L = L.concat(resp, ''); }
+
+    var dec = [];
+    extras.forEach(function (x) {
+      var e = estado['extra-' + x.dataset.extra] || {};
+      if (!e.v) return;
+      var como = { aprovo: 'sim', ajuste: 'sim, mas depois', nao: 'não usar' }[e.v];
+      dec.push('· ' + titulo(x) + ': ' + como + (e.obs && e.obs.trim() ? ' — "' + e.obs.trim() + '"' : ''));
+    });
+    if (dec.length) { L.push('DECISÕES'); L = L.concat(dec, ''); }
 
     if (estado.caminho != null && caminhos[estado.caminho]) {
       L.push('CANAL DE WHATSAPP — CAMINHO ESCOLHIDO');

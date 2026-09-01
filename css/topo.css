@@ -19,6 +19,29 @@
  * Riva's Alexandre · 01/09/2026
  */
 
+/* Pular para o conteúdo — o primeiro elemento focável de qualquer página.
+ *
+ * Morava em `site.css`, que só a home carrega: no Gabinete Aberto e na
+ * trajetória quem navega por teclado tinha que atravessar o menu inteiro toda
+ * vez, e no celular o menu agora tem sete links em duas linhas. O componente é
+ * do topo, então ele mora com o topo.
+ *
+ * Escondido fora da tela até receber foco, e não com `display:none` — elemento
+ * com display:none não recebe foco, e o link deixaria de existir para quem
+ * mais precisa dele. */
+.pular {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 99;
+  background: var(--pt-vermelho);
+  color: var(--branco);
+  padding: 12px 18px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.pular:focus { left: 0; }
+
 .topo {
   border-bottom: 1px solid var(--linha);
   background: rgba(243, 245, 247, .92);
