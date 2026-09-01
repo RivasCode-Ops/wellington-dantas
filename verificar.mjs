@@ -32,6 +32,27 @@ const html = ler('index.html');
 const css = ler('css/base.css') + '\n' + ler('css/site.css');
 const erro404 = ler('404.html');
 
+/* 0. o menu não pode sumir no celular ------------------------------------
+ *
+ * `base.css` escondia `.nav` abaixo de 820px e não punha nada no lugar. No
+ * telefone o cabeçalho ficava só com o nome e o botão — e a Trajetória e o
+ * Gabinete Aberto, que são páginas e não âncoras, ficavam inalcançáveis. O
+ * defeito não aparece em nenhuma medida que a régua já fazia: peso, link morto,
+ * arquivo faltando, tudo passava. Só aparece olhando a página estreita.
+ *
+ * A conferência lê as duas folhas na ordem em que o navegador as lê e olha qual
+ * é o ÚLTIMO `display` que cai em `.nav`. Se o último for `none`, o menu está
+ * escondido em algum lugar sem substituto. */
+{
+  const decls = [...css.matchAll(/(^|[},])\s*([^{}]*?\.nav)\s*\{([^}]*)\}/g)]
+    .filter((m) => /(^|,)\s*\.nav\s*$/.test(m[2].split(',').pop().trim()) || m[2].trim() === '.nav')
+    .map((m) => (m[3].match(/display\s*:\s*([a-z-]+)/) || [])[1])
+    .filter(Boolean);
+  if (decls.length && decls[decls.length - 1] === 'none') {
+    reprovar('o menu (.nav) termina em display:none e nada o substitui. No celular a Trajetória e o Gabinete Aberto são páginas, não âncoras: sem menu, ninguém chega nelas.');
+  }
+}
+
 /* 1. o HTML gerado bate com o CSV --------------------------------------- */
 const linhasCsv = ler('dados/acoes.csv').trim().split(/\r?\n/).length - 1;
 const itensHtml = (html.match(/<li data-bairros=/g) || []).length;

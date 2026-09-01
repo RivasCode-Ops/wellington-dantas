@@ -635,3 +635,52 @@
  * filete, e o filete fecha o bloco inteiro em vez de separar o carimbo dele.
  * Tirar a linha do h1 para pôr um irmão no meio afastava o carimbo do tema, que
  * é justamente o que ele não pode fazer. */
+
+/* ---------------------------------------------------------------------------
+ * O menu no celular.
+ *
+ * `base.css:184` fazia `.nav{display:none}` abaixo de 820px e não punha nada no
+ * lugar — nem sanduíche, nem lista. No telefone o cabeçalho ficava com o nome e
+ * o botão "Fale comigo", e mais nada: a Trajetória e o Gabinete Aberto, que são
+ * PÁGINAS e não âncoras, ficavam inalcançáveis. Quem entrava pelo celular não
+ * tinha como saber que existiam. As âncoras ainda se alcançava rolando; as duas
+ * páginas, não.
+ *
+ * Sem sanduíche de propósito. Menu escondido atrás de um botão precisa de JS
+ * para abrir, e aqui a página tem que funcionar com o JS desligado — foi essa a
+ * decisão desde o começo. Uma linha de links que quebra em duas custa 44px de
+ * altura e mostra tudo. O que se ganha escondendo não paga o que se perde.
+ *
+ * As duas páginas vêm primeiro no celular (`order`), porque são as que somem
+ * quando não há menu. No desktop a ordem do mockup fica intacta.
+ * ------------------------------------------------------------------------- */
+@media (max-width: 820px) {
+  .topo__in { flex-wrap: wrap; height: auto; gap: 12px 20px; padding-top: 12px; padding-bottom: 12px; }
+  .nav {
+    display: flex;
+    flex-wrap: wrap;
+    order: 3;
+    flex-basis: 100%;
+    margin-left: 0;
+    gap: 8px 18px;
+    font-size: 14px;
+  }
+  .nav a[href$="trajetoria.html"] { order: -2; }
+  .nav a[href$="gabinete-aberto.html"] { order: -1; }
+  /* As duas páginas ganham o filete vermelho: no meio de sete links iguais,
+   * "Gabinete Aberto" não se distinguia de uma âncora da mesma página. */
+  .nav a[href$=".html"] {
+    color: var(--tinta);
+    font-weight: 600;
+    border-bottom: 2px solid var(--pt-vermelho);
+    padding-bottom: 1px;
+  }
+  .marca { margin-right: auto; }
+}
+
+/* O olho do hero estourava a linha no telefone: "VEREADOR DE PICOS · TERCEIRO
+ * MANDATO · PARTIDO DOS TRABALHADORES" com `letter-spacing:.16em` não cabe em
+ * 358px e o navegador não quebra em "·". Quebra permitida e entrelinha própria. */
+@media (max-width: 560px) {
+  .hero .olho { line-height: 1.6; overflow-wrap: anywhere; }
+}

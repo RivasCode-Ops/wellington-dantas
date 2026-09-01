@@ -41,7 +41,12 @@ h1{font-family:var(--serif);font-weight:400;font-size:clamp(32px,4.4vw,54px);lin
 .cab{margin-bottom:var(--s4)}
 
 /* KPI */
-.kpi{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--linha);border:1px solid var(--linha);margin-bottom:var(--s4)}
+/* Colunas pelo numero de itens, nao um numero fixo. Estava em repeat(4,1fr)
+ * com tres KPIs no mural, e a quarta celula ficava la, cinza e vazia, do
+ * lado de "15 protocoladas" -- parecia dado faltando. O placar e gerado a
+ * partir do CSV: o dia em que uma situacao nova entrar, ele passa a ter
+ * quatro, e o CSS nao pode ser o que decide isso. */
+.kpi{list-style:none;display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:1px;background:var(--linha);border:1px solid var(--linha);margin-bottom:var(--s4)}
 .kpi li{background:#fff;padding:var(--s3) var(--s2)}
 .kpi b{display:block;font-size:38px;font-weight:600;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
 .kpi span{display:block;font-size:13px;color:var(--aco);margin-top:8px}
@@ -140,7 +145,7 @@ textarea{resize:vertical}
 @media (max-width:640px){
  .abas{width:100%;margin-left:0;overflow-x:auto}
  .topo__in{height:auto;flex-direction:column;align-items:flex-start;gap:10px;padding-block:12px}
- .kpi{grid-template-columns:1fr 1fr}.cards{grid-template-columns:1fr}.dupla{grid-template-columns:1fr}
+ .kpi{grid-auto-flow:row;grid-template-columns:1fr 1fr}.cards{grid-template-columns:1fr}.dupla{grid-template-columns:1fr}
  .drops{grid-template-columns:1fr}.busca{width:100%}
 }
 
