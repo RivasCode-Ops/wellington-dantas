@@ -536,7 +536,12 @@ if (existe('trajetoria.html')) {
     if (!traj.includes(`property="${tag}"`)) reprovar(`trajetoria.html sem ${tag}.`);
   }
   if (!/rel="canonical" href="https:\/\//.test(traj)) reprovar('trajetoria.html sem canonical absoluto.');
-  if (!/class="voltar"/.test(traj)) reprovar('trajetoria.html sem caminho de volta ao site — página imersiva não pode prender ninguém.');
+  /* A saída da peça imersiva. Era um link `.voltar` solto no canto; agora é a
+   * marca do cabeçalho, que diz "Voltar ao site" na segunda linha e tem 44px
+   * de altura de toque. A regra passou a medir a SAÍDA e não a classe: o que
+   * não pode existir é página imersiva que prenda quem entrou. */
+  const saida = /class="marca" href="index\.html"/.test(traj) && /Voltar ao site/.test(traj);
+  if (!saida) reprovar('trajetoria.html sem caminho de volta ao site — página imersiva não pode prender ninguém. A marca do topo tem que apontar para index.html e dizer "Voltar ao site".');
   if (!/<main/.test(traj)) reprovar('trajetoria.html sem marco principal.');
   if (!/rod-traj/.test(traj)) reprovar('trajetoria.html sem rodapé com fonte e aviso de versão.');
 

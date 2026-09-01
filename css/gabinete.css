@@ -7,10 +7,7 @@
  * removido no HTML. Em uma linha: o protótipo simulava envio e publicava
  * protocolo, mural e situações que não existem em lugar nenhum.
  */
-:root{--vm:#E4142C;--vf:#B5121E;--brasa:#A40E20;--tinta:#202020;--noite:#200B0F;--aco:#6A6B6B;--aco-claro:#948C8F;
---linha:#D5D7D9;--papel:#F3F5F7;--branco:#fff;--verde:#1B6B36;--ambar:#8A5A00;
---sans:"Inter Tight",system-ui,sans-serif;--serif:"Instrument Serif",Georgia,serif;--wrap:1180px;--gut:clamp(20px,5vw,44px);
---s1:8px;--s2:16px;--s3:24px;--s4:40px;--s5:64px;--s6:96px}
+/* Tokens em css/tokens.css. */
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--papel);color:var(--tinta);font-family:var(--sans);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
 .wrap{max-width:var(--wrap);margin:0 auto;padding-inline:var(--gut)}

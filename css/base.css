@@ -1,11 +1,8 @@
-:root{
-  --pt-vermelho:#E4142C; --pt-vermelho-fundo:#B5121E; --brasa:#A40E20;
-  --tinta:#202020; --noite:#200B0F; --aco:#6A6B6B; --aco-claro:#948C8F;
-  --linha:#D5D7D9; --papel:#F3F5F7; --branco:#FFFFFF;
-  --sans:"Inter Tight",system-ui,sans-serif;
-  --serif:"Instrument Serif",Georgia,serif;
-  --wrap:1180px; --gut:clamp(20px,5vw,48px);
-}
+/* Os tokens saíram para css/tokens.css e o topo para css/topo.css. É a
+ * primeira vez que este arquivo é tocado desde o mockup, e o motivo é o
+ * único que justifica: as três páginas precisavam do mesmo componente, e
+ * manter duas definições disputando a cascata seria o defeito de novo com
+ * outra cara. Nenhum valor mudou. */
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
 body{background:var(--papel);color:var(--tinta);font-family:var(--sans);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
@@ -29,13 +26,6 @@ h3{font-size:19px;letter-spacing:-.01em}
 .lnk:hover{border-color:var(--pt-vermelho)}
 .lnk--cl{color:var(--branco);border-color:rgba(255,255,255,.28)}
 
-.topo{border-bottom:1px solid var(--linha);background:rgba(243,245,247,.92);backdrop-filter:blur(6px);position:sticky;top:0;z-index:9}
-.topo__in{display:flex;align-items:center;gap:40px;height:74px}
-.marca{display:flex;flex-direction:column;line-height:1.15;border-left:3px solid var(--pt-vermelho);padding-left:11px}
-.marca__n{font-weight:600;font-size:16px;letter-spacing:-.01em}
-.marca__t{font-size:12px;color:var(--aco)}
-.nav{display:flex;gap:26px;margin-left:auto;font-size:15px;color:var(--aco)}
-.nav a:hover{color:var(--tinta)}
 
 /* HERO tipográfico */
 .hero{position:relative;padding:clamp(72px,12vw,150px) 0 clamp(60px,8vw,104px);overflow:hidden}

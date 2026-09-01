@@ -1,0 +1,140 @@
+/* topo.css — a assinatura e a barra. O mesmo componente nas três páginas.
+ *
+ * O defeito que originou este arquivo: a home dizia `<b>Wellington Dantas</b>`
+ * e o Gabinete Aberto dizia `<b>Gabinete Aberto</b>`, com o nome do vereador
+ * rebaixado à segunda linha. A trajetória não tinha cabeçalho nenhum. Três
+ * páginas do mesmo mandato, três assinaturas — e a causa não era descuido de
+ * quem escreveu o HTML: era não existir componente. Cada página carregava o
+ * seu próprio CSS e desenhava o topo de novo.
+ *
+ * Regra que este arquivo impõe: **a linha forte é sempre "Wellington Dantas"**.
+ * O nome da página vira rótulo acima do `<h1>`, na classe `.olho`, que é o
+ * padrão que o site já usa em ENTREGAS, A CAUSA e RECURSOS.
+ *
+ * As regras vieram de `base.css` sem alteração de valor — o desenho aprovado
+ * não muda, só passa a morar num lugar só. `base.css` perdeu o bloco do topo,
+ * e é a primeira vez que ele é tocado desde o mockup: a alternativa era manter
+ * duas definições disputando a cascata, que é o defeito de novo com outra cara.
+ *
+ * Riva's Alexandre · 01/09/2026
+ */
+
+.topo {
+  border-bottom: 1px solid var(--linha);
+  background: rgba(243, 245, 247, .92);
+  backdrop-filter: blur(6px);
+  position: sticky;
+  top: 0;
+  z-index: 9;
+}
+.topo__in { display: flex; align-items: center; gap: 40px; height: 74px; }
+
+.marca {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 11px;
+  line-height: 1.15;
+}
+.marca__tx { display: flex; flex-direction: column; line-height: 1.15; }
+.marca__n { font-weight: 600; font-size: 16px; letter-spacing: -.01em; }
+.marca__t {
+  font-size: 10.5px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--aco);
+}
+
+/* A estrela entra no lugar do monograma "WD": monograma de iniciais não diz
+ * nada e some em tamanho pequeno; a estrela de cinco pontas é reconhecida
+ * antes de qualquer palavra ser lida. O alinhamento é óptico — ela acompanha a
+ * altura das duas linhas de texto, não a caixa do desenho. */
+.estrela { width: 26px; height: 26px; flex: 0 0 auto; fill: var(--pt-vermelho); display: block; }
+
+.nav { display: flex; gap: 26px; margin-left: auto; font-size: 15px; color: var(--aco); }
+.nav a { color: inherit; text-decoration: none; }
+.nav a:hover { color: var(--tinta); }
+.nav a[aria-current="page"] { color: var(--tinta); font-weight: 600; }
+
+.topo a:focus-visible,
+.topo button:focus-visible { outline: 2px solid var(--pt-vermelho); outline-offset: 3px; border-radius: 1px; }
+
+/* ---------------------------------------------------------------------------
+ * O menu no celular — e no notebook pequeno.
+ *
+ * `base.css` escondia `.nav` abaixo de 820px e não punha nada no lugar: nem
+ * sanduíche, nem lista. No telefone o cabeçalho ficava com o nome e o botão, e
+ * mais nada — a Trajetória e o Gabinete Aberto, que são PÁGINAS e não âncoras,
+ * ficavam inalcançáveis.
+ *
+ * Sem sanduíche de propósito. Menu escondido atrás de um botão precisa de JS
+ * para abrir, e aqui a página tem que funcionar com o JS desligado. Uma linha
+ * de links que quebra em duas custa 44px de altura e mostra tudo.
+ *
+ * 1024 e não 820: entre 820 e 1024 a barra ainda cabia numa linha só no papel,
+ * mas espremida — "Gabinete Aberto" quebrava em duas linhas dentro do próprio
+ * link. A faixa do meio é o notebook pequeno e o tablet deitado.
+ * ------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  .topo__in { flex-wrap: wrap; height: auto; gap: 12px 20px; padding-top: 12px; padding-bottom: 12px; }
+  .marca { margin-right: auto; }
+  .nav {
+    display: flex;
+    flex-wrap: wrap;
+    order: 3;
+    flex-basis: 100%;
+    margin-left: 0;
+    gap: 8px 18px;
+    font-size: 14px;
+  }
+  /* A página em que se está vem primeiro, depois as outras duas. */
+  .nav a[href$=".html"], .nav a[data-pagina] {
+    color: var(--tinta);
+    font-weight: 600;
+    border-bottom: 2px solid var(--pt-vermelho);
+    padding-bottom: 1px;
+  }
+}
+
+@media (max-width: 560px) {
+  .estrela { width: 22px; height: 22px; }
+}
+
+/* ---------------------------------------------------------------------------
+ * Variante escura — a trajetória.
+ *
+ * A trajetória é cena cheia: o topo tem que ficar SOBRE ela, não empurrá-la.
+ * Por isso `position:absolute` e não `sticky` — sticky reservaria 74px no
+ * fluxo e a primeira tela nasceria cortada, que é justamente o efeito que a
+ * página existe para produzir.
+ * ------------------------------------------------------------------------- */
+.topo--escuro {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  background: transparent;
+  backdrop-filter: none;
+  border-bottom: 0;
+  z-index: 6;
+}
+.topo--escuro .marca__n { color: var(--branco); }
+.topo--escuro .marca__t { color: rgba(255, 255, 255, .70); }
+.topo--escuro .estrela { fill: var(--branco); }
+.topo--escuro .nav { color: rgba(255, 255, 255, .78); }
+.topo--escuro .nav a:hover { color: var(--branco); }
+.topo--escuro .nav a[href$=".html"] { color: var(--branco); border-bottom-color: var(--branco); }
+.topo--escuro a:focus-visible { outline-color: var(--branco); }
+
+/* Na trajetória a marca é a única saída da peça, e alvo de toque de 20px de
+ * altura é menos da metade dos 44px mínimos: no celular o dedo erra e acerta a
+ * zona de avançar que fica atrás. Então ela ganha área, opacidade cheia e
+ * altura mínima — e a segunda linha diz "Voltar ao site", porque "Vereador de
+ * Picos" não informa que aquilo é um botão. A linha forte continua sendo o
+ * nome, que é a regra do componente. */
+.topo--escuro .marca {
+  min-height: 44px;
+  padding: 4px 10px 4px 0;
+  opacity: 1;
+  position: relative;
+  z-index: 8;
+}

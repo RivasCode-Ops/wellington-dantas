@@ -16,29 +16,8 @@
 [hidden] { display: none !important; }
 
 
-/* assinatura institucional
- *
- * A estrela entra no lugar do monograma "WD": monograma de iniciais não diz
- * nada e some em tamanho pequeno; a estrela de cinco pontas é reconhecida
- * antes de qualquer palavra ser lida. Nome e cargo em duas linhas — nome civil
- * e partido descem para a linha legal do rodapé, onde são obrigação e não
- * identidade.
- *
- * O alinhamento da estrela é óptico: ela acompanha a altura das duas linhas de
- * texto, não a caixa do desenho. Estrela alinhada pela caixa parece sempre
- * alta demais.
- */
-.marca {
-  flex-direction: row;
-  align-items: center;
-  gap: 11px;
-  border-left: 0;
-  padding-left: 0;
-}
-.marca__tx { display: flex; flex-direction: column; line-height: 1.15; }
-.marca__t { letter-spacing: .1em; text-transform: uppercase; font-weight: 600; font-size: 10.5px; }
-
-.estrela { width: 26px; height: 26px; flex: 0 0 auto; fill: var(--pt-vermelho); display: block; }
+/* A assinatura (marca, estrela) e a barra foram para css/topo.css, que as
+ * três páginas carregam. O rodapé continua aqui — ele é da home. */
 .estrela--rod { width: 46px; height: 46px; }
 
 .rod__c {
@@ -52,7 +31,6 @@
 .rod__t { margin-top: 14px; }
 
 @media (max-width: 560px) {
-  .estrela { width: 22px; height: 22px; }
   .estrela--rod { width: 34px; height: 34px; }
 }
 
@@ -635,53 +613,6 @@
  * filete, e o filete fecha o bloco inteiro em vez de separar o carimbo dele.
  * Tirar a linha do h1 para pôr um irmão no meio afastava o carimbo do tema, que
  * é justamente o que ele não pode fazer. */
-
-/* ---------------------------------------------------------------------------
- * O menu no celular.
- *
- * `base.css:184` fazia `.nav{display:none}` abaixo de 820px e não punha nada no
- * lugar — nem sanduíche, nem lista. No telefone o cabeçalho ficava com o nome e
- * o botão "Fale comigo", e mais nada: a Trajetória e o Gabinete Aberto, que são
- * PÁGINAS e não âncoras, ficavam inalcançáveis. Quem entrava pelo celular não
- * tinha como saber que existiam. As âncoras ainda se alcançava rolando; as duas
- * páginas, não.
- *
- * Sem sanduíche de propósito. Menu escondido atrás de um botão precisa de JS
- * para abrir, e aqui a página tem que funcionar com o JS desligado — foi essa a
- * decisão desde o começo. Uma linha de links que quebra em duas custa 44px de
- * altura e mostra tudo. O que se ganha escondendo não paga o que se perde.
- *
- * As duas páginas vêm primeiro no celular (`order`), porque são as que somem
- * quando não há menu. No desktop a ordem do mockup fica intacta.
- * ------------------------------------------------------------------------- */
-/* 1024 e nao 820: entre 820 e 1024 a barra ainda cabia numa linha so no papel,
- * mas espremida — "Gabinete Aberto" e "Na midia" quebravam em duas linhas cada
- * uma dentro do proprio link, e o cabecalho ficava com cara de erro. A faixa do
- * meio e a do notebook pequeno e a do tablet deitado; nao da para deixar so
- * para o telefone. */
-@media (max-width: 1024px) {
-  .topo__in { flex-wrap: wrap; height: auto; gap: 12px 20px; padding-top: 12px; padding-bottom: 12px; }
-  .nav {
-    display: flex;
-    flex-wrap: wrap;
-    order: 3;
-    flex-basis: 100%;
-    margin-left: 0;
-    gap: 8px 18px;
-    font-size: 14px;
-  }
-  .nav a[href$="trajetoria.html"] { order: -2; }
-  .nav a[href$="gabinete-aberto.html"] { order: -1; }
-  /* As duas páginas ganham o filete vermelho: no meio de sete links iguais,
-   * "Gabinete Aberto" não se distinguia de uma âncora da mesma página. */
-  .nav a[href$=".html"] {
-    color: var(--tinta);
-    font-weight: 600;
-    border-bottom: 2px solid var(--pt-vermelho);
-    padding-bottom: 1px;
-  }
-  .marca { margin-right: auto; }
-}
 
 /* O olho do hero estourava a linha no telefone: "VEREADOR DE PICOS · TERCEIRO
  * MANDATO · PARTIDO DOS TRABALHADORES" com `letter-spacing:.16em` não cabe em

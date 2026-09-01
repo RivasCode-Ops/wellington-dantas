@@ -1,0 +1,60 @@
+/* tokens.css — a paleta, a tipografia e a medida. Uma vez só.
+ *
+ * Antes disto, o mesmo vermelho estava escrito em quatro arquivos com três
+ * nomes diferentes: `--pt-vermelho` na home, `--vm` no gabinete e na
+ * trajetória, `--vermelho` no assistente. Ninguém errou nada — mas nada
+ * garantia que continuassem iguais, e o dia em que um deles mudasse o site
+ * teria duas marcas sem que nenhuma régua reclamasse.
+ *
+ * Os nomes curtos ficam como APELIDOS do nome canônico, não como cópias do
+ * valor. É o que permite trocar a folha embaixo de `gabinete.css` e
+ * `trajetoria.css` sem reescrever cada regra que já usa `var(--vm)` — e é o
+ * que faz uma mudança de cor valer nas três páginas de uma vez.
+ *
+ * Ordem de carregamento nas três páginas, sem exceção:
+ *   fontes.css → tokens.css → topo.css → [site|gabinete|trajetoria].css
+ *
+ * Riva's Alexandre · 01/09/2026
+ */
+
+:root {
+  /* marca */
+  --pt-vermelho: #E4142C;
+  --pt-vermelho-fundo: #B5121E;
+  --brasa: #A40E20;
+
+  /* tinta e papel */
+  --tinta: #202020;
+  --noite: #200B0F;
+  --aco: #6A6B6B;
+  --aco-claro: #948C8F;
+  --linha: #D5D7D9;
+  --papel: #F3F5F7;
+  --branco: #FFFFFF;
+
+  /* situação — verde e âmbar do mural */
+  --verde: #1B6B36;
+  --ambar: #8A5A00;
+
+  /* tipografia */
+  --sans: "Inter Tight", system-ui, sans-serif;
+  --serif: "Instrument Serif", Georgia, serif;
+
+  /* medida */
+  --wrap: 1180px;
+  --gut: clamp(20px, 5vw, 48px);
+
+  /* escala de espaço — nasceu no gabinete e serve a qualquer página */
+  --s1: 8px;
+  --s2: 16px;
+  --s3: 24px;
+  --s4: 40px;
+  --s5: 64px;
+  --s6: 96px;
+
+  /* apelidos: mesma cor, nome curto. Não são valores novos. */
+  --vm: var(--pt-vermelho);
+  --vf: var(--pt-vermelho-fundo);
+  --vermelho: var(--pt-vermelho);
+  --vermelho-fundo: var(--pt-vermelho-fundo);
+}

@@ -8,8 +8,13 @@
  * Sem vídeo de fundo de propósito: a medição do site de referência mostrou 21
  * fps com vídeo rodando. Aqui só animam transform e opacity.
  */
-:root{--vm:#E4142C;--vf:#B5121E;--noite:#160709;--noite2:#200B0F;--branco:#fff;--aco-claro:#9A8E90;--linha:rgba(255,255,255,.16);
---sans:"Inter Tight",system-ui,sans-serif;--serif:"Instrument Serif",Georgia,serif;--wrap:1100px;--gut:clamp(22px,6vw,64px)}
+/* Tokens em css/tokens.css. O que sobra aqui não é duplicata: é o que a
+ * CENA sobrescreve de propósito. O preto da trajetória é mais fundo que o
+ * do rodapé, o filete é branco translúcido porque cai sobre foto, e a
+ * medida é mais estreita porque a página é de leitura corrida. Escrever o
+ * valor de novo aqui seria erro; sobrescrever com intenção declarada, não. */
+:root{--noite:#160709;--noite2:#200B0F;--aco-claro:#9A8E90;--linha:rgba(255,255,255,.16);
+--wrap:1100px;--gut:clamp(22px,6vw,64px)}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{background:var(--noite);color:var(--branco);font-family:var(--sans);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
@@ -62,7 +67,7 @@ h1 em{font-style:normal;color:var(--vm)}
 /* fecho */
 .cena--fim{background:var(--vm)!important;text-align:center;justify-content:center}
 .cena--fim .wrap{display:flex;flex-direction:column;align-items:center}
-.estrela{width:56px;height:56px;fill:#fff;margin-bottom:36px}
+.astro{width:56px;height:56px;fill:#fff;margin-bottom:36px}
 .fim{font-family:var(--serif);font-weight:400;font-size:clamp(46px,9vw,116px);line-height:.98;letter-spacing:-.02em;color:#fff}
 .fim__d{font-size:clamp(19px,2.4vw,26px);color:#fff;margin-top:22px}
 .fim__ac{display:flex;gap:22px;align-items:center;flex-wrap:wrap;justify-content:center;margin-top:52px}
