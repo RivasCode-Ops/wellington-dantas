@@ -188,10 +188,12 @@
   /* Resposta por bairro: monta a lista daquele bairro a partir do mesmo dado
    * que pinta o mapa. Bairro sem ação não devolve buraco — devolve a rota de
    * demanda, igual ao painel do mapa. */
-  function mostrarBairro(b) {
+  function mostrarRecorte(b, ehTema) {
     var n = b.itens.length;
     var m = balaoBot(n
-      ? 'Em ' + b.nome + ' há ' + n + (n === 1 ? ' ação registrada' : ' ações registradas') + ':'
+      ? (ehTema
+          ? b.nome + ': ' + n + (n === 1 ? ' ação registrada' : ' ações registradas') + ' de ' + (b.total || n) + ' no total.'
+          : 'Em ' + b.nome + ' há ' + n + (n === 1 ? ' ação registrada' : ' ações registradas') + ':')
       : 'Não há ação registrada em ' + b.nome + ' neste levantamento. Isso não quer dizer que não haja demanda — quer dizer que ainda não entrou no registro.');
 
     if (n) {
@@ -211,10 +213,10 @@
       m.appendChild(ol);
       botoes(m, [
         { rotulo: 'Ver na lista de entregas', acao: function () { irPara('#entregas', b.filtro, b.nome); } },
-        { rotulo: 'Registrar demanda daqui', forte: true, acao: abrirFormulario }
+        { rotulo: ehTema ? 'Registrar uma demanda' : 'Registrar demanda daqui', forte: true, acao: abrirFormulario }
       ]);
     } else {
-      botoes(m, [{ rotulo: 'Registrar demanda de ' + b.nome, forte: true, acao: abrirFormulario }]);
+      botoes(m, [{ rotulo: 'Registrar demanda' + (ehTema ? '' : ' de ' + b.nome), forte: true, acao: abrirFormulario }]);
     }
   }
 
@@ -227,7 +229,8 @@
     var r = motor.responder(texto, BASE);
     comDelay(function () {
       if (r.tipo === 'recusa') { balaoBot(r.resposta); mostrarIndice(); return; }
-      if (r.tipo === 'bairro') { mostrarBairro(r.bairro); if (r.tambem) mostrarComposta(r.tambem); return; }
+      if (r.tipo === 'bairro') { mostrarRecorte(r.bairro, false); if (r.tambem) mostrarComposta(r.tambem); return; }
+      if (r.tipo === 'tema') { mostrarRecorte(r.tema, true); return; }
       if (r.tipo === 'fallback') { mostrarFallback(); return; }
       mostrarRegistro(r.registro);
       if (r.tambem) mostrarComposta(r.tambem);
@@ -410,10 +413,14 @@
        * faltar, o assistente perde só a resposta por bairro — não quebra. */
       fetch('dados/assistente-bairros.json').then(function (r) {
         return r.ok ? r.json() : null;
+      }).catch(function () { return null; }),
+      fetch('dados/assistente-temas.json').then(function (r) {
+        return r.ok ? r.json() : null;
       }).catch(function () { return null; })
     ]).then(function (partes) {
       var base = partes[0];
       if (partes[1]) base.bairros = partes[1];
+      if (partes[2]) base.temas = partes[2];
       return base;
     });
   }

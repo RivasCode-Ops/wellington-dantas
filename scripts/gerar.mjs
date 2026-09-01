@@ -521,6 +521,32 @@ for (const a of acoes) {
 fs.writeFileSync(path.join(RAIZ, 'dados', 'assistente-bairros.json'),
   JSON.stringify(bairrosAssistente, null, 2) + '\n', 'utf8');
 
+/* O assistente também entende tema, e a contagem sai do mesmo CSV. As palavras
+ * de cada tema são sinônimo do jeito que a pessoa fala — "poste apagado" é
+ * iluminação, "buraco" é pavimentação —, e não o rótulo da planilha. */
+const SINONIMOS = {
+  'Iluminação': ['iluminacao', 'poste', 'luz', 'escuro', 'lampada', 'sem luz', 'apagado'],
+  'Praça e lazer': ['praca', 'quadra', 'lazer', 'esporte', 'campo'],
+  'Mulheres': ['mulher', 'mulheres', 'violencia contra a mulher', 'feminicidio', 'agosto lilas'],
+  'Inclusão': ['inclusao', 'acessibilidade', 'deficiencia', 'autista', 'cadeirante'],
+  'Trânsito': ['transito', 'sinalizacao', 'redutor', 'lombada', 'velocidade', 'faixa'],
+  'Limpeza': ['limpeza', 'entulho', 'capina', 'mato', 'roco', 'lixo'],
+  'Habitação': ['habitacao', 'moradia', 'casa', 'iptu'],
+  'Honraria': ['honraria', 'titulo de cidadao', 'medalha', 'homenagem'],
+  'Qualificação': ['qualificacao', 'curso', 'capacitacao', 'emprego'],
+  'Assistência': ['assistencia social', 'melhor idade', 'idoso'],
+};
+const temasAssistente = {};
+for (const [cat, palavras] of Object.entries(SINONIMOS)) {
+  const itens = acoes.filter((a) => a.categoria === cat)
+    .sort((x, y) => y.data.localeCompare(x.data))
+    .map((a) => ({ ano: a.ano, titulo: a.acao, local: a.local, cat: a.categoria, sit: a.situacao, inst: a.instrumento, fonte: a.fonte }));
+  if (!itens.length) continue;
+  temasAssistente[chave(cat)] = { nome: cat, filtro: chave(cat), palavras, itens, total: acoes.length };
+}
+fs.writeFileSync(path.join(RAIZ, 'dados', 'assistente-temas.json'),
+  JSON.stringify(temasAssistente, null, 2) + '\n', 'utf8');
+
 let html = fs.readFileSync(HTML, 'utf8');
 /* Assinatura de conteúdo no endereço do CSS e do JS.
  *

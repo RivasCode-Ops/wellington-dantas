@@ -128,6 +128,26 @@
     return achado ? { tipo: 'bairro', bairro: achado } : null;
   }
 
+  /* Tema: iluminação, praça, limpeza, trânsito… A contagem e a lista vêm do
+   * mesmo CSV do mapa. Casa pela palavra que a pessoa usa — "poste apagado" —
+   * e não pelo rótulo da planilha. */
+  function porTema(pergunta, base) {
+    if (!base.temas) return null;
+    var n = ' ' + norm(pergunta) + ' ';
+    var achado = null;
+    var maior = 0;
+    for (var k in base.temas) {
+      if (!Object.prototype.hasOwnProperty.call(base.temas, k)) continue;
+      var t = base.temas[k];
+      for (var i = 0; i < t.palavras.length; i++) {
+        var p = ' ' + norm(t.palavras[i]);
+        if (n.indexOf(p) === -1) continue;
+        if (t.palavras[i].length > maior) { maior = t.palavras[i].length; achado = t; }
+      }
+    }
+    return achado ? { tipo: 'tema', tema: achado } : null;
+  }
+
   /* Devolve SEMPRE um objeto. Nunca null, nunca undefined. */
   function responder(pergunta, base) {
     var recusa = bloqueado(pergunta, base);
@@ -139,7 +159,12 @@
     /* Bairro nomeado ganha do casamento genérico — mas a outra metade da
      * pergunta não é engolida: se algum registro também casa forte, ele vem
      * junto como aviso, igual à pergunta composta. */
+    /* Tema vem depois do bairro: quem nomeia o bairro quer o bairro, mesmo
+     * dizendo "poste" na mesma frase. O tema pega quem só nomeia o assunto. */
+    var doTema = porTema(pergunta, base);
+
     var doBairro = porBairro(pergunta, base);
+    if (!doBairro && doTema) return doTema;
     if (doBairro) {
       var outro = base.registros
         .filter(function (r) { return !r.pendente && r.id !== 'atuacao-bairros'; })
