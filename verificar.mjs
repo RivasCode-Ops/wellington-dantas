@@ -214,6 +214,19 @@ if (!/bairros desta lista/.test(html)) {
   reprovar('a nota de território não foi gerada — a página perdeu a contagem que diz o que está medindo.');
 }
 
+/* 11b. dado de violência não sai sem porta de saída ----------------------
+ * A página publica 37 feminicídios e o percentual de vítimas que nunca
+ * registraram ocorrência. Quem chega nessa parte pode estar chegando por um
+ * motivo. Número que salva vem junto do número que assusta. */
+if (/feminic[íi]dio/i.test(html)) {
+  if (!/href="tel:190"/.test(html) || !/href="tel:180"/.test(html)) {
+    reprovar('a página publica dado de feminicídio sem os canais de emergência (190 e 180) como link de ligar. Dado de violência não vai ao ar sem porta de saída.');
+  }
+  if (!/Lei Maria da Penha/.test(html)) {
+    reprovar('falta a linha sobre a Lei Maria da Penha: qualquer delegacia é obrigada a registrar e a encaminhar medida protetiva. É a informação que muda o que a pessoa faz depois de ler.');
+  }
+}
+
 /* 12a-bis. emenda parlamentar não é do vereador --------------------------
  * Vereador não apresenta emenda parlamentar. Publicar a cifra como conquista
  * dele seria atribuir número de outra pessoa — e é conferível em portal

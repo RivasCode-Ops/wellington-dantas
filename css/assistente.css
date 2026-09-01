@@ -6,6 +6,14 @@
  *   texto do balão    #202020 sobre #F3F5F7    → 14,8
  * Vermelho vivo (#E4142C) nunca em texto pequeno — só em filete e realce.
  */
+
+/* O atributo [hidden] vale display:none pela folha do navegador — e qualquer
+ * classe com `display` ganha dele por especificidade. Dois elementos deste
+ * site caíram nisso: a faixa de filtro aparecia vazia no carregamento e o
+ * indicador de digitando ficava permanentemente aceso. Esta linha fecha a
+ * porta para os próximos. */
+[hidden] { display: none !important; }
+
 :root {
   --vermelho: #E4142C;
   --vermelho-fundo: #B5121E;

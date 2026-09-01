@@ -16,6 +16,7 @@
     "_leia": "Quando o gabinete definir o canal oficial, preencher tipo com \"whatsapp\" e valor com o número em formato internacional (ex.: 5589999999999), ou tipo \"email\" e valor com o endereço. O botão de envio da demanda passa a abrir o canal direto e este aviso some sozinho."
   },
   "chips": [
+    "socorro",
     "quem-e",
     "atuacao-bairros",
     "mapa",
@@ -24,6 +25,35 @@
     "fontes"
   ],
   "registros": [
+    {
+      "id": "socorro",
+      "titulo": "Onde buscar ajuda agora",
+      "sistema": true,
+      "rotulo_curto": "Preciso de ajuda",
+      "gatilhos": [
+        "socorro",
+        "estou em risco",
+        "apanhei",
+        "fui agredida",
+        "violencia contra mim",
+        "ameaca",
+        "me ajuda",
+        "meu marido",
+        "meu companheiro",
+        "estou com medo",
+        "medida protetiva",
+        "denunciar agressao",
+        "estao me batendo"
+      ],
+      "resposta": "Se você está em risco agora, ligue 190 — Polícia Militar, emergência, 24 horas. Para orientação e denúncia, ligue 180 — Central de Atendimento à Mulher, nacional, gratuita, 24 horas, que também atende quem quer ajudar outra pessoa. Pela Lei Maria da Penha, qualquer delegacia é obrigada a registrar a ocorrência e a encaminhar o pedido de medida protetiva de urgência: não é preciso ter boletim anterior, nem ir acompanhada. Eu sou um assistente automatizado e não substituo nenhum desses canais.",
+      "fonte": {
+        "rotulo": "",
+        "url": ""
+      },
+      "seguintes": [
+        "mulheres"
+      ]
+    },
     {
       "id": "identidade-bot",
       "titulo": "O que é este assistente",

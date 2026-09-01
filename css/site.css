@@ -8,6 +8,14 @@
  * máximo ~10% da tela, duas famílias tipográficas.
  */
 
+/* O atributo [hidden] vale display:none pela folha do navegador — e qualquer
+ * classe com `display` ganha dele por especificidade. Dois elementos deste
+ * site caíram nisso: a faixa de filtro aparecia vazia no carregamento e o
+ * indicador de digitando ficava permanentemente aceso. Esta linha fecha a
+ * porta para os próximos. */
+[hidden] { display: none !important; }
+
+
 /* pular para o conteúdo — teclado */
 .pular {
   position: absolute;
@@ -108,6 +116,60 @@
   .hero__retrato img { position: static; height: auto; aspect-ratio: 5 / 6; }
   /* em coluna única não há base para alinhar: a legenda volta ao fluxo */
   .hero__retrato figcaption { position: static; margin-top: 10px; }
+}
+
+/* onde buscar ajuda
+ *
+ * Este bloco fica dentro da seção escura da causa, logo depois do dado de
+ * feminicídio. Publicar 37 mortes e nenhum caminho de saída é deixar o dado
+ * sem porta — e quem chega a essa parte da página pode estar chegando por um
+ * motivo. Os números são toque-para-ligar e são os maiores da seção.
+ */
+.socorro {
+  grid-column: 1 / -1;
+  margin-top: 40px;
+  border: 1px solid rgba(255, 255, 255, .28);
+  border-left: 3px solid var(--pt-vermelho);
+  padding: 24px 24px 22px;
+}
+.socorro__t {
+  font-size: 12px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--branco);
+  margin-bottom: 18px;
+}
+.socorro__l { list-style: none; display: grid; gap: 12px; margin-bottom: 20px; }
+.socorro__l a {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  min-height: 48px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, .07);
+  border: 1px solid rgba(255, 255, 255, .2);
+}
+.socorro__l a:hover { background: var(--pt-vermelho); border-color: var(--pt-vermelho); }
+.socorro__l a:focus-visible { outline: 2px solid var(--branco); outline-offset: 2px; }
+.socorro__l b {
+  font-size: 34px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--branco);
+  flex: 0 0 auto;
+}
+.socorro__l span { font-size: 14px; color: rgba(255, 255, 255, .86); }
+.socorro__n, .socorro__p { font-size: 14px; color: rgba(255, 255, 255, .82); line-height: 1.55; }
+.socorro__n { margin-bottom: 12px; }
+.socorro__n b, .socorro__p b { color: var(--branco); font-weight: 600; }
+.socorro__p { font-size: 13px; color: rgba(255, 255, 255, .62); }
+
+@media (max-width: 640px) {
+  .socorro { padding: 18px 16px; }
+  .socorro__l a { flex-direction: column; gap: 4px; }
 }
 
 /* entregas — resumo, filtro, fonte, vazio */
