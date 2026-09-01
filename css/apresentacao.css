@@ -179,3 +179,61 @@ body {
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
 }
+
+/* --- a stack e o investimento ------------------------------------------- */
+.stack, .custo { padding: clamp(36px, 6vw, 64px) 0; border-bottom: 1px solid var(--linha); }
+.stack h2, .custo h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(26px, 3.4vw, 38px); line-height: 1.08; }
+.stack__d, .custo__d { margin: 12px 0 28px; max-width: 64ch; color: var(--aco); }
+.stack__d b, .custo__d b { color: var(--tinta); font-weight: 600; }
+
+.tab { width: 100%; border-collapse: collapse; background: var(--branco); border: 1px solid var(--linha); }
+.tab th, .tab td { text-align: left; vertical-align: top; padding: 14px 16px; border-top: 1px solid var(--linha); font-size: 15px; line-height: 1.5; }
+.tab thead th { border-top: 0; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--aco); font-weight: 600; }
+.tab tbody th { font-weight: 600; width: 30%; }
+.tab tbody th span { display: block; margin-top: 3px; font-weight: 400; font-size: 13.5px; color: var(--aco); }
+.tab td { color: var(--aco); }
+.tab td b { color: var(--tinta); font-weight: 600; }
+/* O valor em coluna própria, tabular, para a coluna alinhar na vertical e o
+ * olho somar sozinho — que é o que qualquer pessoa faz numa tabela de preço. */
+.tab__v { white-space: nowrap; font-variant-numeric: tabular-nums; font-weight: 600; color: var(--tinta) !important; text-align: right; width: 1%; }
+.stack__n { margin-top: 20px; max-width: 68ch; padding: 14px 16px; background: var(--branco); border-left: 3px solid var(--pt-vermelho); font-size: 15.5px; line-height: 1.55; }
+
+.fase { margin-bottom: 30px; }
+.fase__cab { display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
+.fase h3 { font-size: 19px; font-weight: 600; letter-spacing: -.01em; }
+.fase__v { font-size: 19px; font-weight: 600; color: var(--pt-vermelho-fundo); font-variant-numeric: tabular-nums; text-align: right; }
+.fase__v span { display: block; font-size: 13px; font-weight: 400; color: var(--aco); letter-spacing: 0; }
+.fase__n { margin-top: 12px; max-width: 68ch; font-size: 15px; line-height: 1.55; color: var(--aco); }
+
+.custo__h { margin: 44px 0 0; font-family: var(--serif); font-weight: 400; font-size: clamp(22px, 2.8vw, 30px); line-height: 1.1; }
+.cams { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.cam { padding: 20px; background: var(--branco); border: 1px solid var(--linha); display: flex; flex-direction: column; gap: 10px; }
+.cam.is-on { border-color: var(--pt-vermelho); border-width: 2px; padding: 19px; }
+.cam h4 { font-size: 16px; font-weight: 600; letter-spacing: -.01em; }
+.cam p { font-size: 14.5px; line-height: 1.5; color: var(--aco); }
+.cam__v { font-weight: 600; color: var(--tinta) !important; font-variant-numeric: tabular-nums; }
+.cam__b b { color: #1B6B36; }
+.cam__r b { color: var(--brasa); }
+.cam__e { margin-top: auto; min-height: 44px; border: 1px solid var(--linha); background: var(--papel);
+  font-family: var(--sans); font-size: 14.5px; font-weight: 600; color: var(--tinta); cursor: pointer; border-radius: 2px; }
+.cam.is-on .cam__e { background: var(--pt-vermelho); border-color: var(--pt-vermelho); color: var(--branco); }
+.custo__rec { margin-top: 22px; max-width: 68ch; padding: 16px; background: var(--noite); color: var(--branco); font-size: 15.5px; line-height: 1.55; }
+.custo__rec b { color: var(--branco); font-weight: 600; }
+
+.hon { margin-top: 40px; padding: 24px; background: var(--branco); border: 1px solid var(--linha); }
+.hon h3 { font-size: 19px; font-weight: 600; letter-spacing: -.01em; }
+.hon p { margin-top: 10px; max-width: 66ch; font-size: 15.5px; line-height: 1.55; color: var(--aco); }
+.hon p b { color: var(--tinta); font-weight: 600; }
+.hon__v { font-size: 17px; font-weight: 600; color: var(--tinta) !important; }
+
+@media (max-width: 620px) {
+  /* Tabela de duas colunas não cabe em 390px sem espremer o valor. Vira lista:
+   * o rótulo em cima, o valor embaixo, alinhado à direita. */
+  .tab, .tab tbody, .tab tr, .tab th, .tab td { display: block; width: auto; }
+  .tab thead { display: none; }
+  .tab tr { border-top: 1px solid var(--linha); padding: 12px 14px; }
+  .tab tr:first-child { border-top: 0; }
+  .tab th, .tab td { border: 0; padding: 0; }
+  .tab tbody th { width: auto; }
+  .tab__v { text-align: left; margin-top: 6px; }
+}

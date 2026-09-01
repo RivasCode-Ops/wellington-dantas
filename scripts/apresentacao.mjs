@@ -158,6 +158,88 @@ const CARTOES = [
   },
 ];
 
+/* --- a stack e o investimento -------------------------------------------
+ *
+ * Faltava, e a observação que gerou este bloco está certa: isto não é um site,
+ * é um sistema — só que um sistema que hoje não opera nada, e por isso não
+ * custa nada. O custo aparece no dia em que o gabinete passar a RECEBER e
+ * RESPONDER demanda, porque aí entra banco, canal e gente.
+ *
+ * Regra deste bloco: nenhum preço inventado. Os valores são ordens de grandeza
+ * de tabela pública, marcados como "a confirmar na contratação" — e o
+ * honorário fica em branco de propósito, porque é decisão do Rivas e não minha.
+ */
+const HONORARIO = process.env.WD_HONORARIO || null;
+
+const PECAS = [
+  ['Onde o site mora', 'GitHub Pages', 'Guarda o código, verifica antes de publicar e serve a página. Nos limites que este site usa, é gratuito e continua sendo.', 'R$ 0'],
+  ['Como ele é construído', 'HTML, CSS e JavaScript escritos à mão', 'Sem framework, sem biblioteca, sem pacote de terceiro. 79 arquivos, 7.671 linhas, zero dependência instalada — nada que possa ser abandonado, invadido pela cadeia de suprimento ou passar a cobrar.', 'R$ 0'],
+  ['De onde vem o conteúdo', 'Quatro planilhas CSV no repositório', 'Editar a planilha pela web do GitHub publica o site em cerca de um minuto. Sem painel, sem senha, sem banco.', 'R$ 0'],
+  ['O que impede erro no ar', 'A régua de prova — 105 regras', 'Roda a cada publicação. Se qualquer regra reprovar, o site NÃO vai ao ar: número sem fonte, promessa sem dono, link morto, imagem pesada, rastreador, emenda atribuída ao vereador. Cada regra nasceu de um defeito real.', 'R$ 0'],
+  ['O assistente', 'Recuperação sobre base curada', 'Não é IA aberta e não usa OpenAI, Google nem nenhuma API. São 17 registros escritos à mão e 22 termos de recusa. Por isso responde instantaneamente, funciona offline depois de carregado e <b>não tem custo por conversa</b> — mil pessoas perguntando custam o mesmo que uma.', 'R$ 0'],
+  ['Quem visita', 'Nada é medido', 'Sem Analytics, sem pixel, sem cookie. O preço disso é não saber quantas pessoas entraram; o ganho é não precisar de política de privacidade nem de base legal para tratar dado de ninguém.', 'R$ 0'],
+];
+
+const FASES = [
+  {
+    id: 'fase1', t: 'Hoje — a apresentação',
+    v: 'R$ 0', quando: 'no ar agora',
+    itens: [
+      ['Repositório, verificação e publicação', 'GitHub', 'R$ 0'],
+      ['Endereço', 'rivascode-ops.github.io/wellington-dantas', 'R$ 0'],
+      ['Certificado de segurança (HTTPS)', 'incluso no GitHub Pages', 'R$ 0'],
+    ],
+    nota: 'É o que você está vendo. Nada foi contratado, nada é cobrado, e o site já funciona por inteiro.',
+  },
+  {
+    id: 'fase2', t: 'Para ir ao ar de verdade',
+    v: '~R$ 40 por ano', quando: 'quando o conteúdo for aprovado',
+    itens: [
+      ['Domínio próprio .com.br', 'registro.br — o registrador oficial do Brasil', '~R$ 40/ano'],
+      ['Hospedagem', 'continua no GitHub Pages', 'R$ 0'],
+      ['Certificado de segurança', 'continua incluso', 'R$ 0'],
+      ['E-mail no domínio (opcional)', 'ex.: contato@wellingtondantas.com.br', 'a partir de ~R$ 0 a R$ 30/mês'],
+    ],
+    nota: 'O domínio é o único gasto obrigatório do projeto inteiro, e ele é anual. Fora dele, um site de mandato com mapa, mural, assistente e página de trajetória fica em R$ 0 por mês de infraestrutura — porque não há servidor rodando, não há banco e não há API sendo chamada.',
+  },
+  {
+    id: 'fase3', t: 'Para virar sistema de atendimento',
+    v: 'depende do caminho', quando: 'quando o gabinete for operar a fila',
+    itens: [
+      ['Banco de dados das demandas + login do gabinete', 'Supabase ou equivalente', 'grátis no plano inicial; ~US$ 25/mês quando crescer'],
+      ['Painel do gabinete (ver, responder, mudar situação)', 'desenvolvimento', 'orçamento à parte'],
+      ['Canal de WhatsApp', 'ver as três opções abaixo', 'R$ 0 a variável'],
+      ['Backup e retenção dos dados', 'incluso no plano do banco', 'incluso'],
+      ['Adequação à LGPD', 'política de privacidade, prazo de guarda, canal de exclusão', 'obrigatório a partir daqui'],
+    ],
+    nota: 'Só a partir daqui o site passa a GUARDAR dado de cidadão — nome, telefone, endereço. É o que obriga política de privacidade de verdade, e é a fronteira que separa "site" de "sistema". Antes disso não há o que proteger porque não há o que guardar.',
+  },
+];
+
+const CAMINHOS = [
+  {
+    t: 'A · Como está hoje — o morador envia',
+    v: 'R$ 0/mês',
+    d: 'O site monta o texto com bairro, rua e contato, e a pessoa envia pelo WhatsApp comum do gabinete. Quem atende responde na mão, como já faz.',
+    bom: 'Custo zero. Funciona amanhã. Nenhum dado de cidadão fica guardado em lugar nenhum.',
+    ruim: 'Não há fila, não há protocolo real, e o "andamento" depende de alguém anotar. O volume aumenta e vira caderno.',
+  },
+  {
+    t: 'B · WhatsApp Business comum + painel do gabinete',
+    v: '~US$ 25/mês + desenvolvimento',
+    d: 'O aplicativo gratuito do WhatsApp Business continua sendo o canal, e quem atende registra a demanda num painel simples. A fila passa a existir de verdade, com protocolo, situação e histórico.',
+    bom: 'É onde o critério de prioridade publicado no site passa a ser cumprível e verificável. Custo previsível.',
+    ruim: 'Alguém do gabinete precisa transcrever para o painel. Não é automático.',
+  },
+  {
+    t: 'C · WhatsApp Business Platform — a API oficial da Meta',
+    v: 'cobrança por mensagem, tabela da Meta',
+    d: 'A demanda entra direto no sistema sem ninguém transcrever, e a resposta sai automática quando a situação muda.',
+    bom: 'Automático de ponta a ponta. Suporta volume alto sem contratar gente.',
+    ruim: 'Cobrança por mensagem segundo a tabela da Meta para o Brasil, mais uma provedora intermediária. Exige verificação de conta comercial e aprovação dos modelos de mensagem pela Meta, o que leva semanas. <b>Só compensa com volume alto</b> — e um gabinete de vereador começa com volume baixo.',
+  },
+];
+
 const NAO_FAZ = [
   'Não pede voto e não menciona eleição — você não é candidato agora, e o site respeita isso.',
   'Não atribui emenda parlamentar a você.',
@@ -250,6 +332,55 @@ const HTML = `<!doctype html>
 
 <div class="wrap">
 ${CARTOES.map(cartao).join('\n')}
+
+  <section class="stack">
+    <h2>Por dentro: o que faz isso funcionar</h2>
+    <p class="stack__d">Isto não é uma página bonita: é um sistema. Só que um sistema construído para <b>não ter peça que cobre, quebre ou dependa de terceiro</b> — e é por isso que ele custa zero hoje.</p>
+    <table class="tab">
+      <thead><tr><th>Peça</th><th>O que é</th><th>Custo</th></tr></thead>
+      <tbody>
+${PECAS.map((p) => `        <tr><th scope="row">${esc(p[0])}<span>${esc(p[1])}</span></th><td>${p[2]}</td><td class="tab__v">${esc(p[3])}</td></tr>`).join('\n')}
+      </tbody>
+    </table>
+    <p class="stack__n"><b>O que isso te protege:</b> nenhuma dessas peças pode aumentar de preço, ser descontinuada ou vazar dado do seu eleitor, porque não há dado sendo guardado e não há serviço de terceiro sendo chamado. O dia em que o GitHub deixar de servir, o site inteiro cabe numa pasta e sobe em qualquer outro lugar em uma tarde.</p>
+  </section>
+
+  <section class="custo">
+    <h2>O que custa, e quando começa a custar</h2>
+    <p class="custo__d">O site já funciona por inteiro e não custa nada, porque <b>ele ainda não opera nada</b>. O custo aparece no dia em que o gabinete passar a receber e responder demanda — e aí é decisão de vocês, não de tecnologia.</p>
+${FASES.map((f) => `    <div class="fase" data-fase="${f.id}">
+      <div class="fase__cab">
+        <h3>${esc(f.t)}</h3>
+        <p class="fase__v">${esc(f.v)}<span>${esc(f.quando)}</span></p>
+      </div>
+      <table class="tab">
+        <tbody>
+${f.itens.map((i) => `          <tr><th scope="row">${esc(i[0])}<span>${esc(i[1])}</span></th><td class="tab__v">${esc(i[2])}</td></tr>`).join('\n')}
+        </tbody>
+      </table>
+      <p class="fase__n">${esc(f.nota)}</p>
+    </div>`).join('\n')}
+
+    <h3 class="custo__h">O canal de WhatsApp: três caminhos, e o mais caro não é o melhor</h3>
+    <p class="custo__d">Esta é a única escolha que muda o custo de verdade. Marque a que vocês querem — vai no texto do retorno.</p>
+    <div class="cams" role="group" aria-label="Caminho do canal de WhatsApp">
+${CAMINHOS.map((c, k) => `      <article class="cam" data-caminho="${k}">
+        <h4>${esc(c.t)}</h4>
+        <p class="cam__v">${esc(c.v)}</p>
+        <p>${esc(c.d)}</p>
+        <p class="cam__b"><b>A favor:</b> ${esc(c.bom)}</p>
+        <p class="cam__r"><b>Contra:</b> ${c.ruim}</p>
+        <button type="button" class="cam__e">Escolher este</button>
+      </article>`).join('\n')}
+    </div>
+    <p class="custo__rec"><b>O que eu recomendo:</b> começar no <b>A</b>, que já está pronto e não custa nada, e passar para o <b>B</b> quando o volume de demanda justificar um painel. O <b>C</b> só compensa com volume alto, e um gabinete de vereador começa com volume baixo — pagar por mensagem antes de ter mensagem é gastar para não usar.</p>
+
+    <div class="hon">
+      <h3>O trabalho de quem faz</h3>
+      <p>Os valores acima são de <b>infraestrutura</b> — o que se paga a terceiros para o sistema existir. O trabalho de construir, manter e alimentar é à parte, e vem no contrato.</p>
+      <p class="hon__v">${HONORARIO ? esc(HONORARIO) : 'A combinar — apresentado em proposta separada.'}</p>
+    </div>
+  </section>
 
   <section class="naofaz">
     <h2>O que o site deliberadamente não faz</h2>

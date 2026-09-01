@@ -99,6 +99,29 @@
     resp.addEventListener('input', salvar);
   });
 
+  /* --- o caminho do canal de WhatsApp -------------------------------------
+   *
+   * É a única escolha do guia que muda dinheiro. Fica fora da contagem dos
+   * cartões de propósito: o contador mede quanto do SITE foi revisado, e
+   * misturar uma decisão de contrato ali faria a barra mentir sobre o que
+   * ainda falta ler. */
+  var caminhos = [].slice.call(document.querySelectorAll('[data-caminho]'));
+  function pintarCaminho() {
+    caminhos.forEach(function (c) {
+      var on = String(estado.caminho) === c.dataset.caminho;
+      c.classList.toggle('is-on', on);
+      c.querySelector('.cam__e').textContent = on ? 'Escolhido ✓' : 'Escolher este';
+      c.querySelector('.cam__e').setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+  }
+  caminhos.forEach(function (c) {
+    c.querySelector('.cam__e').addEventListener('click', function () {
+      estado.caminho = (String(estado.caminho) === c.dataset.caminho) ? null : c.dataset.caminho;
+      gravar(estado); pintarCaminho();
+    });
+  });
+  pintarCaminho();
+
   contar();
 
   /* --- montar o retorno --------------------------------------------------- */
@@ -141,6 +164,13 @@
       }
     });
     if (resp.length) { L.push('PENDÊNCIAS RESPONDIDAS'); L = L.concat(resp, ''); }
+
+    if (estado.caminho != null && caminhos[estado.caminho]) {
+      L.push('CANAL DE WHATSAPP — CAMINHO ESCOLHIDO');
+      L.push('· ' + caminhos[estado.caminho].querySelector('h4').textContent.trim()
+        + ' — ' + caminhos[estado.caminho].querySelector('.cam__v').textContent.trim());
+      L.push('');
+    }
 
     L.push('— retorno montado no guia de aprovação, sem envio automático.');
     return L.join('\n');
