@@ -318,8 +318,21 @@ function blocoEmendas() {
   };
 
   const situacoes = agrupar('status');
-  const origens = agrupar('parlamentar').slice(0, 6);
-  const concluida = situacoes.filter(([k]) => /conclu/i.test(k)).reduce((s, [, a]) => s + a.v, 0);
+  const soma = (re) => situacoes.filter(([k]) => re.test(k)).reduce((s, [, a]) => s + a.v, 0);
+
+  /* Três estágios de aplicação, com o rótulo do portal ao lado: a classificação
+   * é da Prefeitura, a tradução é do site. "Empenhada" é recurso reservado e
+   * ainda não executado — por isso entra em "vai ser", nunca em "foi".
+   *
+   * Quem mandou cada emenda saiu da página a pedido do cliente: é site de
+   * mandato, não vitrine de outro parlamentar. O custo dessa escolha está
+   * anotado no aviso, que ficou mais explícito para compensar — sem os nomes,
+   * é só ele que impede a leitura de que o dinheiro é do vereador. */
+  const estagios = [
+    { rotulo: 'Já foi aplicado', re: /conclu/i, origem: 'situação “Concluída” no portal' },
+    { rotulo: 'Está em execução', re: /parcial|liberada|transfer/i, origem: 'executada parcialmente ou já transferida' },
+    { rotulo: 'Ainda vai ser aplicado', re: /empenhada/i, origem: 'empenhada — reservada, ainda não executada' },
+  ].map((e) => ({ ...e, v: soma(e.re) }));
 
   /* Os nomes saem do portal em caixa alta e sem acento — "COM. DA SAUDE",
    * "BANCADA DO PIAUI". Não corrijo: reescrever nome de órgão é inventar
@@ -327,22 +340,12 @@ function blocoEmendas() {
   const capitular = (s) => s;
 
   return `      <ul class="rec__n">
-        <li><b>R$&nbsp;${milhoes(total)}&nbsp;mi</b><span>destinados a Picos entre ${anos[0]} e ${anos[anos.length - 1]}</span></li>
-        <li><b>${regs.length}</b><span>emendas no portal da Prefeitura</span></li>
-        <li><b>R$&nbsp;${milhoes(concluida)}&nbsp;mi</b><span>com situação concluída — o resto ainda não é dinheiro na conta</span></li>
+${estagios.map((e) => `        <li><b>R$&nbsp;${milhoes(e.v)}&nbsp;mi</b><span>${e.rotulo}<em>${escapar(e.origem)}</em></span></li>`).join('\n')}
       </ul>
 
-      <h3 class="rec__t">Em que pé está</h3>
-      <ul class="rec__l">
-${situacoes.map(([k, a]) => `        <li><span class="rec__r">${escapar(capitular(k))}</span><span class="rec__q">${a.n}</span><span class="rec__v">R$ ${brl(a.v)}</span></li>`).join('\n')}
-      </ul>
+      <p class="rec__soma">Somados, <b>R$ ${brl(total)}</b> em ${regs.length} registros entre ${anos[0]} e ${anos[anos.length - 1]}.</p>
 
-      <h3 class="rec__t">De quem partiu — as seis maiores origens</h3>
-      <ul class="rec__l">
-${origens.map(([k, a]) => `        <li><span class="rec__r">${escapar(capitular(k))}</span><span class="rec__q">${a.n}</span><span class="rec__v">R$ ${brl(a.v)}</span></li>`).join('\n')}
-      </ul>
-
-      <p class="rec__f"><b>O que este número não é.</b> ${faltando.length ? `O portal não traz nenhum registro de ${faltando.join(', ')}, ` : ''}${zerados.length ? `${zerados.length} ${zerados.length === 1 ? 'emenda aparece' : 'emendas aparecem'} com valor zero, ` : ''}e o beneficiário nem sempre é a Prefeitura — há associação e entidade com endereço na cidade. ${regs.length} registros para ${Number(anos[anos.length - 1]) - Number(anos[0]) + 1} anos é o que a Prefeitura publicou, não o universo do que chegou.<br><span>Fonte: Portal de Transparência da Prefeitura Municipal de Picos — Emendas Parlamentares. Coleta de ${regs[0].coletado_em ? dataCurta(regs[0].coletado_em) : 'setembro de 2026'}, conferida linha a linha.</span></p>`;
+      <p class="rec__f"><b>O que este número não é.</b> ${faltando.length ? `O portal não traz nenhum registro de ${faltando.join(', ')}, ` : ''}${zerados.length ? `${zerados.length} ${zerados.length === 1 ? 'registro aparece' : 'registros aparecem'} com valor zero, ` : ''}e o beneficiário nem sempre é a Prefeitura — há associação e entidade com endereço na cidade. ${regs.length} registros para ${Number(anos[anos.length - 1]) - Number(anos[0]) + 1} anos é o que a Prefeitura publicou, não o universo do que chegou à cidade.<br><span>Fonte: Portal de Transparência da Prefeitura Municipal de Picos — Emendas Parlamentares. Coleta de ${regs[0].coletado_em ? dataCurta(regs[0].coletado_em) : 'setembro de 2026'}, conferida linha a linha. A situação de cada recurso é a que consta no portal; a divisão em três estágios é leitura do site.</span></p>`;
 }
 
 function blocoResumo(acoes) {

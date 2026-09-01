@@ -233,8 +233,14 @@ if (/feminic[íi]dio/i.test(html)) {
  * público em trinta segundos. A seção de recursos é de contexto: mostra de
  * onde o dinheiro vem, e não diz que alguém o trouxe. */
 if (existe('dados/emendas.csv')) {
-  if (!/Nada disto é emenda do vereador/.test(html)) {
-    reprovar('a seção de recursos perdeu o aviso de que a emenda não é do vereador. Sem ele, a seção vira apropriação.');
+  /* Sem os nomes dos autores na página, este aviso passou a ser a ÚNICA coisa
+   * que impede a leitura de que o dinheiro é do vereador. Por isso a régua
+   * exige as duas metades da frase: que não é dele e que não passou por ele. */
+  if (!/Nenhum destes recursos é do vereador, e nenhum passou por ele/.test(html)) {
+    reprovar('a seção de recursos perdeu o aviso de que o dinheiro não é do vereador nem passou por ele. Sem os nomes dos autores na página, esse aviso é a única coisa que separa contexto de apropriação.');
+  }
+  if (!/não atribui a ninguém/.test(html)) {
+    reprovar('falta a frase de que o site não atribui os recursos a ninguém.');
   }
   const ATRIBUICAO = [
     /emendas?[^.]{0,60}(trazidas?|conquistadas?|garantidas?) por (wellington|ele)/i,
@@ -244,9 +250,22 @@ if (existe('dados/emendas.csv')) {
   for (const re of ATRIBUICAO) {
     if (re.test(html)) reprovar(`o site atribui emenda parlamentar ao vereador ("${re.source}"). Ele não é autor de emenda.`);
   }
-  /* Empenhado não é pago: os dois números têm que aparecer juntos. */
-  if (!/ainda não é dinheiro na conta/.test(html)) {
-    reprovar('a seção de recursos publica o total sem separar o que está concluído. Empenhado não é dinheiro na conta.');
+  /* Empenhado não é pago: o total nunca sai sem a separação por estágio. */
+  if (!/Já foi aplicado/.test(html) || !/Ainda vai ser aplicado/.test(html)) {
+    reprovar('a seção de recursos publica o total sem separar o que já foi aplicado do que ainda vai ser. Empenhado não é dinheiro na conta.');
+  }
+
+  /* Nome de parlamentar não entra: é site de mandato, não vitrine de terceiro.
+   * A lista de nomes vem do próprio CSV, então a regra acompanha o dado. */
+  const nomes = new Set(
+    ler('dados/emendas.csv').trim().split(/\r?\n/).slice(1)
+      .map((l) => (l.split(';')[2] || '').trim())
+      .filter((n) => n.length > 5)
+  );
+  for (const nome of nomes) {
+    if (html.toUpperCase().includes(nome.toUpperCase())) {
+      reprovar(`o nome "${nome}" aparece na página. Nome de parlamentar não entra no site do mandato — nem para dar crédito.`);
+    }
   }
 }
 

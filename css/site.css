@@ -16,6 +16,46 @@
 [hidden] { display: none !important; }
 
 
+/* assinatura institucional
+ *
+ * A estrela entra no lugar do monograma "WD": monograma de iniciais não diz
+ * nada e some em tamanho pequeno; a estrela de cinco pontas é reconhecida
+ * antes de qualquer palavra ser lida. Nome e cargo em duas linhas — nome civil
+ * e partido descem para a linha legal do rodapé, onde são obrigação e não
+ * identidade.
+ *
+ * O alinhamento da estrela é óptico: ela acompanha a altura das duas linhas de
+ * texto, não a caixa do desenho. Estrela alinhada pela caixa parece sempre
+ * alta demais.
+ */
+.marca {
+  flex-direction: row;
+  align-items: center;
+  gap: 11px;
+  border-left: 0;
+  padding-left: 0;
+}
+.marca__tx { display: flex; flex-direction: column; line-height: 1.15; }
+.marca__t { letter-spacing: .1em; text-transform: uppercase; font-weight: 600; font-size: 10.5px; }
+
+.estrela { width: 26px; height: 26px; flex: 0 0 auto; fill: var(--pt-vermelho); display: block; }
+.estrela--rod { width: 46px; height: 46px; }
+
+.rod__c {
+  font-size: 11.5px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--aco-claro);
+  margin-top: 3px;
+}
+.rod__t { margin-top: 14px; }
+
+@media (max-width: 560px) {
+  .estrela { width: 22px; height: 22px; }
+  .estrela--rod { width: 34px; height: 34px; }
+}
+
 /* pular para o conteúdo — teclado */
 .pular {
   position: absolute;
@@ -371,7 +411,17 @@
  * cor com que o site marca o que é dele. Nesta seção o vermelho aparece só no
  * filete do aviso. Cor também atribui. */
 .rec__n b { color: var(--tinta); }
-.rec__n span { display: block; font-size: 13.5px; color: var(--aco); margin-top: 9px; max-width: 30ch; }
+.rec__n span { display: block; font-size: 15px; color: var(--tinta); margin-top: 10px; max-width: 26ch; font-weight: 600; letter-spacing: -.01em; }
+/* o rótulo do portal fica embaixo do rótulo em português: a tradução é do
+   site, a classificação é da Prefeitura, e as duas aparecem */
+.rec__n em { display: block; font-style: normal; font-size: 13px; font-weight: 400; color: var(--aco); margin-top: 4px; }
+
+.rec__soma {
+  font-size: 15px; color: var(--aco);
+  border-top: 1px solid var(--linha);
+  padding-top: 18px; margin-bottom: 30px;
+}
+.rec__soma b { color: var(--tinta); font-weight: 600; font-variant-numeric: tabular-nums; }
 
 .rec__t {
   font-size: 13px; letter-spacing: .06em; text-transform: uppercase;
