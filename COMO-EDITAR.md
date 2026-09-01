@@ -6,10 +6,6 @@ minuto.
 
 ## O passo a passo
 
-> **Enquanto a Action de publicação não estiver ligada** (ver o README), quem
-> edita o CSV precisa rodar `node scripts/gerar.mjs` antes do commit. Depois de
-> ligada, o passo a passo abaixo vale como está.
-
 1. Abra `dados/acoes.csv` aqui no GitHub.
 2. Clique no lápis (**Edit this file**), no canto de cima à direita.
 3. Vá até o fim e escreva **uma linha nova**, seguindo a ordem das colunas.

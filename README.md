@@ -12,24 +12,12 @@ node verificar.mjs   # a régua de prova; sai com erro se algo reprovar
 node scripts/gerar.mjs   # só regerar o HTML a partir do CSV
 ```
 
-Publicar é `git push` na `main`. Voltar atrás é `git revert`.
+Publicar é `git push` na `main`. A Action roda o gerador, roda a régua e sobe.
+Se a régua reprovar, **o site não vai ao ar** — e o commit fica marcado com
+falha. Voltar atrás é `git revert`.
 
-### Um passo ainda pendente: ligar a Action
-
-Hoje o Pages publica direto do branch `main`. O arquivo
-`.github/workflows/publicar.yml` já está escrito, mas ainda **não foi enviado**:
-o token do `gh` neste computador não tem o escopo `workflow`. Uma vez só, no
-terminal:
-
-```bash
-gh auth refresh -h github.com -s workflow   # abre o navegador para autorizar
-git add .github && git commit -m "liga a Action de publicação" && git push
-```
-
-Depois disso a régua passa a rodar no servidor a cada push — e editar
-`dados/acoes.csv` pela web do GitHub passa a publicar sozinho, porque o gerador
-roda lá. Enquanto isso não acontece, quem edita o CSV precisa rodar
-`node scripts/gerar.mjs` antes do commit.
+Como o gerador roda no servidor, **editar `dados/acoes.csv` pela web do GitHub
+já publica**: commit lá, site no ar em cerca de um minuto.
 
 ## O que tem dentro
 
