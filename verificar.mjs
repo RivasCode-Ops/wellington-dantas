@@ -341,6 +341,24 @@ if (existe('dados/assistente-base.json')) {
   const ia = ler('assistente.html');
   const lanc = ler('js/assistente-launcher.js');
 
+  /* O nome é "Wellington Dantas.IA", inteiro.
+   *
+   * "Dantas.IA" é curto e cabe melhor, mas ninguém em Picos chama o vereador de
+   * Dantas — chamam de Wellington. Assistente que se apresenta por um nome que
+   * o eleitor não reconhece não é economia de caractere, é apresentação
+   * falhada. A regra pega o nome onde ele é dito ao usuário: o campo de
+   * identidade e qualquer arquivo entregue. */
+  if (base.identidade.nome_bot !== 'Wellington Dantas.IA') {
+    reprovar(`o assistente se apresenta como "${base.identidade.nome_bot}". O nome é "Wellington Dantas.IA" — ninguém conhece o vereador por "Dantas".`);
+  }
+  for (const arq of ['dados/assistente-base.json', 'assistente.html', 'js/assistente-ui.js',
+    'js/assistente-motor.js', 'js/assistente-launcher.js', 'index.html', 'README.md']) {
+    if (!existe(arq)) continue;
+    if (/(?<!Wellington )Dantas\.IA/.test(ler(arq))) {
+      reprovar(`${arq} escreve "Dantas.IA" sem "Wellington" na frente. O nome do assistente é "Wellington Dantas.IA", inteiro.`);
+    }
+  }
+
   for (const r of base.registros) {
     const factual = !r.sistema && !r.pendente;
     if (factual && !(r.fonte && String(r.fonte.rotulo || '').trim())) {

@@ -1,4 +1,4 @@
-/* Dantas.IA — motor de recuperação.
+/* Wellington Dantas.IA — motor de recuperação.
  *
  * Não gera texto. Recupera. Toda frase que o assistente diz está escrita em
  * dados/assistente-base.json — o motor só decide qual registro responde.
@@ -81,7 +81,7 @@
       bons.push(r);
     }
     if (descartados.length && raiz.console) {
-      console.warn('Dantas.IA: registro sem fonte, descartado — ' + descartados.join(', '));
+      console.warn('Wellington Dantas.IA: registro sem fonte, descartado — ' + descartados.join(', '));
     }
     base.registros = bons;
     return base;

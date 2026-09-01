@@ -1,4 +1,4 @@
-/* Dantas.IA — interface. Roda dentro do iframe.
+/* Wellington Dantas.IA — interface. Roda dentro do iframe.
  *
  * Toda mensagem é escrita com textContent. Nada de innerHTML com texto vindo
  * do JSON: a base é editável por gente do gabinete, e um dia alguém vai colar

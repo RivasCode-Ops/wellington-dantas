@@ -1,4 +1,4 @@
-/* Dantas.IA — lançador. Roda na página, não no chat.
+/* Wellington Dantas.IA — lançador. Roda na página, não no chat.
  *
  * Este arquivo é de propósito o menor possível: até o primeiro clique, o
  * assistente não custa nem uma requisição a mais. O iframe, o CSS do chat, o

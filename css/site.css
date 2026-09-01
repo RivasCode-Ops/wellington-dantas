@@ -608,12 +608,14 @@
  * REPROVA como texto normal, que exige 4,5. Baixar o corpo ou tirar o 700 põe
  * a frase abaixo do mínimo. */
 .carimbo {
+  display: block;
   font-family: var(--sans);
   font-size: clamp(26px, 2.9vw, 34px);
   font-weight: 700;
+  line-height: 1.1;
   letter-spacing: -.02em;
   color: var(--pt-vermelho);
-  margin: 22px 0 0;
+  margin: 16px 0 0;
 }
 
 /* nota do bloco Recursos: o papel do mandato dito na primeira pessoa, e o
@@ -628,17 +630,8 @@
 .rec .nota p + p { margin-top: 12px; }
 .rec .nota b { color: var(--tinta); font-weight: 600; }
 
-/* O filete vermelho era `h1::after` — pseudo-elemento do próprio título, que
- * renderiza dentro da caixa dele. Nenhum irmão cabe entre o h1 e o filete.
- * Para o carimbo entrar ANTES da linha, como pedido, a linha muda de dono:
- * sai do h1 e passa a ser o `::after` do carimbo. Mesmo desenho, mesma medida,
- * outra ordem. */
-.hero__txt h1::after { display: none; }
-.carimbo::after {
-  content: "";
-  display: block;
-  width: 96px;
-  height: 4px;
-  background: var(--pt-vermelho);
-  margin-top: 30px;
-}
+/* O filete continua sendo `h1::after` — e agora isso é o certo, porque o
+ * carimbo está DENTRO da manchete. A ordem sai natural: título, carimbo,
+ * filete, e o filete fecha o bloco inteiro em vez de separar o carimbo dele.
+ * Tirar a linha do h1 para pôr um irmão no meio afastava o carimbo do tema, que
+ * é justamente o que ele não pode fazer. */

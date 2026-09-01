@@ -35,7 +35,7 @@ js/app.js             só filtra a lista que já está no HTML
 verificar.mjs         a régua de prova
 ```
 
-## O assistente (Dantas.IA)
+## O assistente (Wellington Dantas.IA)
 
 Recuperação sobre base curada, **sem LLM e sem chave de API**. O motor não
 escreve frase nenhuma: toda resposta está em `dados/assistente-base.json`, e

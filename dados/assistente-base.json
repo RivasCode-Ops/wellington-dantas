@@ -3,7 +3,7 @@
   "versao": "1.0.0",
   "atualizado_em": "2026-09-01",
   "identidade": {
-    "nome_bot": "Dantas.IA",
+    "nome_bot": "Wellington Dantas.IA",
     "subtitulo": "Assistente automatizado · não é o vereador",
     "aviso_fixo": "Respostas automáticas a partir de informações públicas · não é o vereador",
     "abertura": "Oi. Eu organizo o que é público sobre o mandato do vereador Wellington Dantas em Picos: as 27 ações registradas, os bairros, as fontes de cada informação. Se eu não souber, eu digo que não sei — e te ofereço registrar a demanda do seu bairro."
@@ -67,9 +67,13 @@
         "quem e voce",
         "voce e uma pessoa",
         "falo com o vereador",
-        "e o proprio"
+        "e o proprio",
+        "que e esse assistente",
+        "que e voce",
+        "quem e wellington dantas ia",
+        "que e o wellington dantas ia"
       ],
-      "resposta": "Sou o Dantas.IA, um assistente automatizado. Não sou o vereador Wellington Dantas e não falo por ele: eu organizo informações públicas do mandato dele em Picos. Para falar com o gabinete, uso outro caminho — é só pedir.",
+      "resposta": "Sou o Wellington Dantas.IA, um assistente automatizado. Não sou o vereador Wellington Dantas e não falo por ele: eu organizo informações públicas do mandato dele em Picos. Para falar com o gabinete, uso outro caminho — é só pedir.",
       "fonte": {
         "rotulo": "",
         "url": ""
