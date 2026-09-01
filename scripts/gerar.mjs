@@ -99,7 +99,7 @@ function blocoBairros(acoes) {
   const item = (nome) => {
     const n = conta.get(nome) || 0;
     const cls = n > 0 ? ' class="is-on"' : '';
-    const rotulo = n > 0 ? ` <em>${n}</em>` : '';
+    const rotulo = n > 0 ? ` <em aria-label=\"${n} ${n === 1 ? 'ação registrada' : 'ações registradas'}\">${n}</em>` : '';
     return `<li${cls}><a href="#entregas" data-filtro="${chave(nome)}">${escapar(nome)}${rotulo}</a></li>`;
   };
 
@@ -546,13 +546,36 @@ if (fs.existsSync(GAB)) {
  * animado cravado à mão é número que envelhece sem ninguém perceber. */
 const TRAJ = path.join(RAIZ, 'trajetoria.html');
 if (fs.existsSync(TRAJ)) {
+  /* "Localidade" é lugar, não recorte. "Cidade toda", "Rodovias e acessos" e
+   * "Vale do Guaribas" são abrangências: contá-las como localidade inflava o
+   * número e o fazia divergir da lista publicada no território. */
   const locais = new Set();
-  for (const a of acoes) for (const b of a.bairros) locais.add(b);
+  for (const a of acoes) for (const b of a.bairros) if (!ABRANGENTES.includes(b)) locais.add(b);
   let t = fs.readFileSync(TRAJ, 'utf8');
   /* Marcador de comentário não vale dentro de atributo: o comentário HTML vira
    * texto literal do valor. Aqui a troca é por id — no atributo e no texto. */
-  t = t.replace(/(id="conta-acoes" data-conta=")\d+(")/, '$1' + acoes.length + '$2');
-  t = t.replace(/(<span id="conta-locais">)\d+(<\/span>)/, '$1' + locais.size + '$2');
+  /* Comentário HTML dentro de atributo não vale: ele vira texto literal do
+   * valor e Number() devolve NaN. Comentário como filho do elemento funciona;
+   * atributo próprio também. `data-marcador` e não `id`: id é uso único e
+   * disputa espaço com âncora de navegação.
+   *
+   * O número aparece TRÊS vezes na mesma cena e as três trocam juntas: no
+   * `data-conta`, que é o alvo da animação; no texto do span que anima, que é
+   * o que a página publica antes de qualquer JS; e no espelho `.sr`, que é o
+   * que o leitor de tela lê — porque o span que anima é `aria-hidden`. */
+  /* A trava testa se o PADRÃO casou, não se o texto mudou. Testar mudança dá
+   * falso alarme sempre que o número já está certo — que é o caso comum. */
+  const trocas = [
+    [/(data-marcador="acoes" data-conta=")\d+(" aria-hidden="true">)\d+(<)/, '$1' + acoes.length + '$2' + acoes.length + '$3'],
+    [/(data-marcador="acoes-sr">)\d+(<)/, '$1' + acoes.length + '$2'],
+    [/(<span data-marcador="locais">)\d+(<\/span>)/, '$1' + locais.size + '$2'],
+  ];
+  for (const [re, por] of trocas) {
+    if (!re.test(t)) {
+      throw new Error(`trajetoria.html: o marcador ${re.source.slice(0, 40)}… não existe mais. O número passaria a envelhecer em silêncio.`);
+    }
+    t = t.replace(re, por);
+  }
   t = versionarAssets(t);
   fs.writeFileSync(TRAJ, t, 'utf8');
   console.log(`gerar: trajetoria.html — ${acoes.length} ações em ${locais.size} localidades`);

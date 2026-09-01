@@ -346,6 +346,13 @@ if (existe('dados/assistente-base.json')) {
   }
 
   if (!/sandbox/.test(lanc)) reprovar('assistente: iframe sem sandbox.');
+  /* Sem `allow-forms` o navegador bloqueia a submissão dentro do iframe e o
+   * evento submit nunca chega: o assistente fica mudo para quem digita e
+   * aperta Enter. E o defeito não aparece em teste com dispatchEvent — só com
+   * requestSubmit ou Enter de verdade. */
+  if (!/sandbox='[^']*allow-forms|sandbox="[^"]*allow-forms|allow-popups allow-forms/.test(lanc)) {
+    reprovar('assistente: sandbox sem allow-forms — quem digita e aperta Enter não recebe resposta.');
+  }
   if (!/event\.origin !== location\.origin|e\.origin !== location\.origin/.test(lanc)) {
     reprovar('assistente: postMessage sem checagem de origem.');
   }
@@ -399,6 +406,20 @@ if (existe('trajetoria.html')) {
   }
   if (!/rel="canonical" href="https:\/\//.test(traj)) reprovar('trajetoria.html sem canonical absoluto.');
   if (!/class="voltar"/.test(traj)) reprovar('trajetoria.html sem caminho de volta ao site — página imersiva não pode prender ninguém.');
+  if (!/<main/.test(traj)) reprovar('trajetoria.html sem marco principal.');
+  if (!/rod-traj/.test(traj)) reprovar('trajetoria.html sem rodapé com fonte e aviso de versão.');
+
+  /* O número nasce escrito no HTML: a página não pode publicar "0 votos".
+   * E o span que anima é aria-hidden, com espelho para o leitor de tela. */
+  if (/data-conta="\d+"[^>]*>0</.test(traj)) {
+    reprovar('trajetoria.html publica 0 num contador. O número nasce estático no HTML; quem zera é o JS, e só fora da tela.');
+  }
+  const sr = /data-marcador="acoes-sr">(\d+)</.exec(traj);
+  if (!sr) reprovar('trajetoria.html sem o espelho acessível do contador — o leitor de tela leria a contagem.');
+  else if (Number(sr[1]) !== linhasCsv) reprovar(`o espelho acessível diz ${sr[1]} e o CSV tem ${linhasCsv}.`);
+  if (!/data-conta="\d+" aria-hidden="true"/.test(traj)) {
+    reprovar('o contador da trajetória não está aria-hidden: o leitor de tela anunciaria cada passo da contagem.');
+  }
   if (/@font-face/.test(ler('css/trajetoria.css'))) {
     reprovar('css/trajetoria.css reembute as fontes; elas já são servidas por css/fontes.css.');
   }

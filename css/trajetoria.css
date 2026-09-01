@@ -157,3 +157,34 @@ h1 em{font-style:normal;color:var(--vm)}
   .voltar span { display: none; }
   .voltar svg { width: 22px; height: 22px; }
 }
+
+/* O número entrou para dentro do <h2>.
+ *
+ * Antes ele era um <p> irmão, e o cabeçalho começava em "votos." — o leitor de
+ * tela e o buscador liam a frase pela metade. Agora o h2 é a frase inteira, e
+ * o número é o primeiro bloco dela.
+ *
+ * E ele nasce escrito no HTML, não em zero: a página abria dizendo "0 votos. O
+ * mais votado da cidade pela 0ª vez", que é o contrário do que ela quer dizer,
+ * e só corrigia quando o JS rodava. Regra do site: número nasce estático. */
+.conta-h { display: block; max-width: 26ch; }
+.conta-h .num { display: block; line-height: .85; margin-bottom: 10px; }
+.conta-h__t { display: block; }
+
+/* espelho para leitor de tela: o número que anima é aria-hidden, e este
+ * carrega o valor final — o cabeçalho nunca é anunciado como "0 votos" */
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* rodapé: a página imersiva também presta contas de onde veio o número */
+.rod-traj {
+  background: var(--noite2);
+  color: rgba(255,255,255,.68);
+  font-size: 12.5px;
+  line-height: 1.6;
+  padding: 34px var(--gut);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 40px;
+  justify-content: space-between;
+}
+.rod-traj a { color: #fff; text-decoration: underline; text-underline-offset: 3px; }

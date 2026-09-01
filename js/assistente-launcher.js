@@ -36,7 +36,13 @@
     frame.id = 'assistente-frame';
     frame.title = 'Assistente do mandato';
     frame.src = 'assistente.html';
-    frame.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups');
+    /* `allow-forms` não é enfeite: sem ele o navegador bloqueia a submissão do
+       formulário dentro do iframe e o evento `submit` nunca chega ao listener.
+       O assistente ficava mudo para quem digitava e apertava Enter — só os
+       chips funcionavam. E o defeito não aparecia em teste, porque
+       `dispatchEvent(new Event("submit"))` não passa pelo bloqueio: só
+       `requestSubmit()` e o Enter de verdade passam. */
+    frame.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups allow-forms');
     frame.setAttribute('referrerpolicy', 'no-referrer');
 
     caixa.appendChild(frame);

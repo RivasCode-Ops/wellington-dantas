@@ -18,6 +18,20 @@
  var cenas = document.querySelectorAll('[data-cena]');
  if (reduz){ cenas.forEach(function(c){c.classList.add('is-vis')}); return; }
 
+ /* Os números nascem escritos no HTML. Quem zera é este bloco, e só para o que
+  * ainda está FORA da tela — o que já está visível no carregamento fica com o
+  * valor certo e nunca anima.
+  *
+  * É o defeito que medimos na referência: lá o contador mostra o número final,
+  * cai para zero e sobe, 351 ms com o valor certo na tela antes do reset. O
+  * erro é de ordem — zerar na hora em que entra na tela, quando já está
+  * visível. */
+ document.querySelectorAll('[data-conta]').forEach(function(n){
+  var r = n.getBoundingClientRect();
+  if (r.top < innerHeight && r.bottom > 0) { n.dataset.feito='1'; return; }
+  n.textContent = '0';
+ });
+
  var io = new IntersectionObserver(function(es){
   es.forEach(function(e){
    if(!e.isIntersecting) return;

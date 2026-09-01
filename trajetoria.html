@@ -25,7 +25,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="img/selo-32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="img/selo-180.png">
 <link rel="stylesheet" href="css/fontes.css?v=0481c866">
-<link rel="stylesheet" href="css/trajetoria.css?v=f691f8c0">
+<link rel="stylesheet" href="css/trajetoria.css?v=b2d09c6f">
 </head>
 <body>
 
@@ -38,6 +38,7 @@
 
 <div class="trilho" aria-hidden="true"><div class="trilho__f" id="trilho"></div></div>
 
+<main id="conteudo">
 <section class="cena cena--capa" data-cena>
   <figure class="fundo" aria-hidden="true"><img src="img/wellington-1200.jpg" alt="" width="1200" height="1333"></figure>
   <div class="wrap">
@@ -83,8 +84,7 @@
 <section class="cena cena--num" data-cena>
   <div class="wrap m">
     <p class="m__a" data-an>2024</p>
-    <p class="conta" data-an data-d="1"><span class="num" data-conta="2254">0</span></p>
-    <h2 data-an data-d="2">votos. O mais votado da cidade pela <span class="num num--sm" data-conta="3">0</span>ª vez.</h2>
+    <h2 class="conta-h" data-an data-d="1"><span class="num" data-conta="2254" aria-hidden="true">2.254</span><span class="sr">2.254</span> <span class="conta-h__t">votos. O mais votado da cidade pela <span class="num num--sm" data-conta="3" aria-hidden="true">3</span><span class="sr">3</span>ª vez.</span></h2>
     <p class="m__d" data-an data-d="3">Primeiro entre 17 vereadores eleitos.</p>
   </div>
 </section>
@@ -92,9 +92,8 @@
 <section class="cena cena--num" data-cena>
   <div class="wrap m">
     <p class="m__a" data-an>2025 — 2026</p>
-    <p class="conta" data-an data-d="1"><span class="num" data-marcador="acoes" data-conta="27">0</span></p>
-    <h2 data-an data-d="2">ações registradas,<br>com bairro, data e fonte.</h2>
-    <p class="m__d" data-an data-d="3">Iluminação, praça, trânsito, limpeza, inclusão e a pauta das mulheres — em <span data-marcador="locais">12</span> localidades de Picos.</p>
+    <h2 class="conta-h" data-an data-d="1"><span class="num" data-marcador="acoes" data-conta="27" aria-hidden="true">27</span><span class="sr" data-marcador="acoes-sr">27</span> <span class="conta-h__t">ações registradas, com bairro, data e fonte.</span></h2>
+    <p class="m__d" data-an data-d="3">Iluminação, praça, trânsito, limpeza, inclusão e a pauta das mulheres — em <span data-marcador="locais">9</span> localidades de Picos.</p>
   </div>
 </section>
 
@@ -109,7 +108,13 @@
     </div>
   </div>
 </section>
+</main>
 
-<script src="js/trajetoria.js?v=3dc80a3b" defer></script>
+<footer class="rod-traj">
+  <p>Versão de apresentação · 01/09/2026 · os números vêm do levantamento de ações do mandato, com a fonte de cada linha na <a href="index.html#entregas">lista de entregas</a> · conteúdo sujeito a validação do gabinete</p>
+  <p><a href="index.html">Voltar ao site</a> · Riva&rsquo;s Alexandre</p>
+</footer>
+
+<script src="js/trajetoria.js?v=429656ae" defer></script>
 </body>
 </html>
