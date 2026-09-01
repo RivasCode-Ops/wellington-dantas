@@ -1,0 +1,39 @@
+nome;tipo;origem
+Aerolândia;bairro;lista de bairros de Picos
+Altamira;bairro;lista de bairros de Picos
+Alto da Boa Vista;bairro;lista de bairros de Picos
+Aroeiras;bairro;lista de bairros de Picos
+Bela Vista;bairro;lista de bairros de Picos
+Belo Norte;bairro;lista de bairros de Picos
+Boa Sorte;bairro;lista de bairros de Picos
+Boa Vista;bairro;lista de bairros de Picos
+Bomba;bairro;lista de bairros de Picos
+Canto da Várzea;bairro;lista de bairros de Picos
+Catavento;bairro;lista de bairros de Picos
+Centro;bairro;lista de bairros de Picos
+Conduru;bairro;lista de bairros de Picos
+DNER;bairro;lista de bairros de Picos
+Fátima;bairro;lista de bairros de Picos
+Ipueiras;bairro;lista de bairros de Picos
+Jardim Natal;bairro;lista de bairros de Picos
+Junco;bairro;Boletim CMP — "Praça do bairro Junco"
+Malva;bairro;lista de bairros de Picos
+Morada do Sol;bairro;lista de bairros de Picos
+Morro da Macambira;bairro;Boletim CMP nº 15/2026 — "Bairro Morro da Macambira"
+Paraibinha;bairro;Boletim CMP — "Avenida Doroteu Neres (bairro Paraibinha)"
+Paroquial;bairro;lista de bairros de Picos
+Parque de Exposição;bairro;lista de bairros de Picos
+Parque Industrial;bairro;lista de bairros de Picos
+Passagem das Pedras;bairro;lista de bairros de Picos
+Pedrinhas;bairro;Boletim CMP — "Quadra de esportes do bairro Pedrinhas"
+Samambaia;bairro;lista de bairros de Picos
+São José;bairro;lista de bairros de Picos
+São Sebastião;bairro;lista de bairros de Picos
+Morro da AABB;localidade;Boletim CMP nº 03/2025 — ruas localizadas "(Morro da AABB)", sem a palavra bairro
+Morrinhos;povoado;Boletins CMP nº 07 e 08/2025 — "Povoado Morrinhos"
+Valparaíso;povoado;Boletim CMP nº 06/2025 — "Povoado Valparaíso"
+Residencial Sá Urtiga;conjunto;Boletim CMP nº 05/2025 — "Residencial Deputado Sá Urtiga"
+Zona rural;zona;recorte territorial do município
+Cidade toda;abrangencia;ação que vale para o município inteiro
+Rodovias e acessos;abrangencia;trecho de rodovia federal ou estadual
+Vale do Guaribas;abrangencia;região, não localidade de Picos

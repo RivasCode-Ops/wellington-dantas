@@ -137,6 +137,21 @@
     "filtro": "morada-do-sol",
     "itens": []
   },
+  "morro-da-macambira": {
+    "nome": "Morro da Macambira",
+    "filtro": "morro-da-macambira",
+    "itens": [
+      {
+        "ano": "2026",
+        "titulo": "Capina limpeza geral e recolhimento de entulho em todas as ruas",
+        "local": "Bairro Morro da Macambira",
+        "cat": "Limpeza",
+        "sit": "protocolado",
+        "inst": "Requerimento",
+        "fonte": "Boletim CMP nº 15/2026"
+      }
+    ]
+  },
   "paraibinha": {
     "nome": "Paraibinha",
     "filtro": "paraibinha",
@@ -444,21 +459,6 @@
         "sit": "protocolado",
         "inst": "Requerimento",
         "fonte": "Boletins CMP nº 07 e 08/2025"
-      }
-    ]
-  },
-  "morro-da-macambira": {
-    "nome": "Morro da Macambira",
-    "filtro": "morro-da-macambira",
-    "itens": [
-      {
-        "ano": "2026",
-        "titulo": "Capina limpeza geral e recolhimento de entulho em todas as ruas",
-        "local": "Bairro Morro da Macambira",
-        "cat": "Limpeza",
-        "sit": "protocolado",
-        "inst": "Requerimento",
-        "fonte": "Boletim CMP nº 15/2026"
       }
     ]
   }

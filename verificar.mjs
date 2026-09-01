@@ -236,11 +236,28 @@ if (!/@media \(max-width:\s*7\d\dpx\)/.test(css)) {
  * O site dizia "30 bairros" em três lugares e nenhum dos três media a mesma
  * coisa: a lista tem 30 itens, mas um é "Zona rural"; o desenho tem 29
  * polígonos, 18 com nome. Número de território agora é gerado. */
-if (/\b30 bairros\b|bairros para percorrer/.test(html)) {
-  reprovar('contagem de bairros cravada no HTML. Esse número é gerado — rode: node scripts/gerar.mjs');
+if (/bairros para percorrer/.test(html)) {
+  reprovar('a dobra voltou a trazer a contagem de bairros cravada à mão. Esse número é gerado.');
 }
 if (!/bairros desta lista/.test(html)) {
   reprovar('a nota de território não foi gerada — a página perdeu a contagem que diz o que está medindo.');
+}
+/* O número publicado tem que bater com o arquivo de localidades, que é a única
+ * fonte de território do site. Antes eram três medidas diferentes com o mesmo
+ * rótulo; agora, se divergirem, a régua para a publicação. */
+if (existe('dados/localidades.csv')) {
+  const loc = ler('dados/localidades.csv').trim().split(/\r?\n/).slice(1)
+    .map((l) => l.split(';')[1] && l.split(';')[1].trim());
+  const nBairros = loc.filter((t) => t === 'bairro').length;
+  const publicado = /Dos <b>(\d+) bairros desta lista<\/b>/.exec(html);
+  if (!publicado) reprovar('a nota de território não publica a contagem de bairros.');
+  else if (Number(publicado[1]) !== nBairros) {
+    reprovar(`a página diz ${publicado[1]} bairros e dados/localidades.csv tem ${nBairros}. Rode: node scripts/gerar.mjs`);
+  }
+  const titulo = /Os (\d+) bairros e a zona rural/.exec(html);
+  if (titulo && Number(titulo[1]) !== nBairros) {
+    reprovar(`o título da lista diz ${titulo[1]} e o arquivo tem ${nBairros} bairros.`);
+  }
 }
 
 /* 11b. dado de violência não sai sem porta de saída ----------------------

@@ -25,22 +25,36 @@ const CSV = path.join(RAIZ, 'dados', 'acoes.csv');
 const JSON_SAIDA = path.join(RAIZ, 'dados', 'acoes.json');
 const HTML = path.join(RAIZ, 'index.html');
 
-/* Os bairros que o site cobre, na ordem em que aparecem. São 29 bairros mais
- * a zona rural — que não é bairro, e por isso a contagem publicada separa as
- * duas coisas. A relação oficial de Picos é da Prefeitura e ainda não veio.
- * Território é dado estável: fica aqui, não no CSV, para não se repetir em
- * cada linha. */
-const BAIRROS = [
-  'Aerolândia', 'Altamira', 'Alto da Boa Vista', 'Aroeiras', 'Bela Vista',
-  'Belo Norte', 'Boa Sorte', 'Boa Vista', 'Bomba', 'Canto da Várzea',
-  'Catavento', 'Centro', 'Conduru', 'DNER', 'Fátima',
-  'Ipueiras', 'Jardim Natal', 'Junco', 'Malva', 'Morada do Sol',
-  'Paraibinha', 'Paroquial', 'Parque de Exposição', 'Parque Industrial', 'Passagem das Pedras',
-  'Pedrinhas', 'Samambaia', 'São José', 'São Sebastião', 'Zona rural',
-];
+/* O território saiu do código e virou dado: dados/localidades.csv.
+ *
+ * Ele tem uma coluna `tipo` e uma coluna `origem`, e a origem é a palavra que
+ * a fonte usa. O boletim escreve "Bairro Morro da Macambira" — então Morro da
+ * Macambira é bairro, e estava classificado como povoado porque a lista de 30
+ * do mockup não o trazia. "Povoado Morrinhos" e "Povoado Valparaíso" são
+ * povoados pela mesma razão, e o Morro da AABB entra como localidade porque a
+ * fonte o nomeia entre parênteses, sem chamar de bairro.
+ *
+ * Com a lista em arquivo, todos os números de território do site saem do mesmo
+ * lugar — que era o que faltava para eles pararem de divergir. */
+const LOCALIDADES = fs.readFileSync(path.join(RAIZ, 'dados', 'localidades.csv'), 'utf8')
+  .trim().split(/\r?\n/).slice(1)
+  .map((l) => {
+    const [nome, tipo, origem] = l.split(';').map((c) => (c || '').trim());
+    return { nome, tipo, origem };
+  })
+  .filter((x) => x.nome);
 
-/* Recortes que não são bairro, mas onde a ação acontece. */
-const ABRANGENTES = ['Cidade toda', 'Rodovias e acessos', 'Vale do Guaribas'];
+const porTipo = (t) => LOCALIDADES.filter((x) => x.tipo === t).map((x) => x.nome);
+
+/* A grade principal mostra bairros e a zona rural, na ordem do arquivo. */
+const BAIRROS = [...porTipo('bairro'), ...porTipo('zona')];
+
+/* Recortes que não são lugar: ação que vale para a cidade inteira, trecho de
+ * rodovia, região. Contá-los como localidade inflava o número. */
+const ABRANGENTES = porTipo('abrangencia');
+
+/* Lugar de verdade que não é bairro: povoado, conjunto, localidade nomeada. */
+const OUTROS_LUGARES = [...porTipo('localidade'), ...porTipo('povoado'), ...porTipo('conjunto')];
 
 const semAcento = (s) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 const chave = (s) => semAcento(String(s)).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -109,9 +123,17 @@ function blocoBairros(acoes) {
   }
   let saida = linhas.join('\n');
 
-  if (extras.length || ABRANGENTES.some((a) => conta.get(a))) {
-    const outros = [...ABRANGENTES.filter((a) => conta.get(a)), ...extras];
-    saida += `\n    </ul>\n    <p class="terr__nota">Povoados, conjuntos e recortes que também têm ação registrada:</p>\n    <ul class="terr__g terr__g--sec">\n      ${outros.map(item).join('')}`;
+  /* Duas listas separadas, porque são duas coisas diferentes: povoado e
+   * conjunto são lugar; "cidade toda" e "rodovias" são recorte. Misturar as
+   * duas era o que fazia a contagem de localidades inflar. */
+  const lugares = extras.filter((b) => !ABRANGENTES.includes(b));
+  const recortes = ABRANGENTES.filter((a) => conta.get(a));
+
+  if (lugares.length) {
+    saida += `\n    </ul>\n    <p class="terr__nota">Povoados, conjuntos e outras localidades com ação registrada:</p>\n    <ul class="terr__g terr__g--sec">\n      ${lugares.map(item).join('')}`;
+  }
+  if (recortes.length) {
+    saida += `\n    </ul>\n    <p class="terr__nota">Recortes que não são lugar — a ação vale para a cidade, para um trecho de rodovia ou para a região:</p>\n    <ul class="terr__g terr__g--sec">\n      ${recortes.map(item).join('')}`;
   }
   return saida;
 }
