@@ -1,0 +1,54 @@
+# Publica o site no GitHub Pages a cada push na main.
+#
+# A régua roda antes: se `verificar.mjs` reprovar, o site não vai ao ar e o
+# commit fica marcado com falha. Publicar sem passar na régua exige mudar este
+# arquivo — que é exatamente a intenção.
+#
+# Custo: R$ 0. Actions é gratuito e ilimitado em repositório público.
+name: publicar
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # Gera o HTML a partir de dados/acoes.csv. Editar o CSV pela web do
+      # GitHub e dar commit já publica — é o "painel" que não custa nada.
+      - name: gerar conteúdo a partir do CSV
+        run: node scripts/gerar.mjs
+
+      - name: régua de prova
+        run: node verificar.mjs
+
+      # Se o CSV mudou, o index.html gerado tem que ir junto para o artefato —
+      # o passo acima já reescreveu o arquivo no runner.
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - id: deploy
+        uses: actions/deploy-pages@v4

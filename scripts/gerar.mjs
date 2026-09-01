@@ -112,6 +112,22 @@ function blocoBairros(acoes) {
   return saida;
 }
 
+/* O retrato só entra se o arquivo existir. Enquanto não existe, o hero fica de
+ * uma coluna e a página não referencia imagem que não está no repositório —
+ * que é o que a régua reprovaria. Gerar os arquivos: scripts/foto.ps1 */
+function blocoRetrato() {
+  const grande = path.join(RAIZ, 'img', 'wellington-1200.jpg');
+  const pequeno = path.join(RAIZ, 'img', 'wellington-700.jpg');
+  if (!fs.existsSync(grande)) return '';
+  const srcset = fs.existsSync(pequeno)
+    ? ' srcset="img/wellington-700.jpg 700w, img/wellington-1200.jpg 1200w" sizes="(max-width:900px) 62vw, 390px"'
+    : '';
+  return `    <figure class="hero__retrato">
+      <img src="img/wellington-1200.jpg"${srcset} alt="Wellington Dantas discursando na tribuna da Câmara Municipal de Picos." width="1200" height="1600" fetchpriority="high">
+      <figcaption>Na tribuna da Câmara Municipal de Picos</figcaption>
+    </figure>`;
+}
+
 function blocoResumo(acoes) {
   const anos = acoes.map((a) => a.ano).sort();
   const bairrosAlcancados = new Set();
@@ -152,9 +168,12 @@ const json = acoes.map((a) => ({
 fs.writeFileSync(JSON_SAIDA, JSON.stringify({ atualizado_em: new Date().toISOString().slice(0, 10), acoes: json }, null, 2) + '\n', 'utf8');
 
 let html = fs.readFileSync(HTML, 'utf8');
+const retrato = blocoRetrato();
 html = trocar(html, 'acoes', blocoAcoes(acoes));
 html = trocar(html, 'bairros', blocoBairros(acoes));
 html = trocar(html, 'resumo', blocoResumo(acoes));
+html = trocar(html, 'retrato', retrato);
 fs.writeFileSync(HTML, html, 'utf8');
 
 console.log(`gerar: ${acoes.length} ações → index.html e dados/acoes.json`);
+console.log(retrato ? 'gerar: retrato no hero' : 'gerar: sem retrato (img/wellington-1200.jpg não existe) — hero de uma coluna');

@@ -22,6 +22,44 @@
 }
 .pular:focus { left: 0; }
 
+/* hero com retrato
+ *
+ * Duas colunas quando existe fotografia; uma só quando não existe — o bloco do
+ * retrato é gerado por scripts/gerar.mjs e simplesmente não aparece enquanto o
+ * arquivo não estiver no repositório. `1fr auto` cuida dos dois casos sem
+ * precisar de classe condicional.
+ */
+.hero__in {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: clamp(28px, 5vw, 72px);
+  align-items: end;
+}
+.hero__retrato { margin: 0; }
+.hero__retrato img {
+  display: block;
+  width: clamp(240px, 30vw, 390px);
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  object-position: 50% 22%;
+  border: 1px solid var(--linha);
+  background: var(--papel);
+}
+.hero__retrato figcaption {
+  margin-top: 10px;
+  font-size: 12px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--aco);
+  max-width: 34ch;
+}
+
+@media (max-width: 900px) {
+  .hero__in { grid-template-columns: 1fr; }
+  .hero__retrato { order: -1; }
+  .hero__retrato img { width: min(280px, 62vw); }
+}
+
 /* entregas — resumo, filtro, fonte, vazio */
 .ent__resumo {
   font-size: 16px;

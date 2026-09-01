@@ -67,7 +67,16 @@ nasceu de um defeito real.
 
 ## O que falta, e é decisão do gabinete
 
-1. Retrato oficial — o site está sem fotografia por escolha, não por falta.
+1. **Retrato oficial** — o encaixe já está pronto e esperando o arquivo:
+
+   ```powershell
+   powershell -File scripts\foto.ps1 -Origem "d:\caminho\foto-original.jpg"
+   node scripts\gerar.mjs
+   ```
+
+   `foto.ps1` recorta em 3:4, gera 1200 e 700 de largura dentro do teto de
+   250 KB; `gerar.mjs` põe o retrato no hero. Sem o arquivo, o hero fica de uma
+   coluna e a página não referencia imagem que não existe — a régua garante.
 2. Endereços das matérias do clipping.
 3. Canal de contato: WhatsApp do gabinete, grupo ou comunidade.
 4. Domínio próprio.
