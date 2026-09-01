@@ -15,6 +15,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { conferir } from './scripts/procedencia.mjs';
 
 const RAIZ = path.dirname(fileURLToPath(import.meta.url));
 const ler = (p) => fs.readFileSync(path.join(RAIZ, p), 'utf8');
@@ -93,6 +94,18 @@ for (const dir of ['img', 'fontes']) {
   for (const arq of fs.readdirSync(path.join(RAIZ, dir))) {
     const t = tamanho(path.join(dir, arq));
     if (t > 250 * 1024) reprovar(`${dir}/${arq} tem ${kb(t)} — nenhum arquivo passa de 250 KB.`);
+  }
+}
+
+/* 7b. nenhuma imagem gerada por IA ---------------------------------------
+ * Retrato sintético de pessoa real, num site de mandato, é falsificação — e
+ * uma falsificação assinada, porque o arquivo gerado traz manifesto C2PA e
+ * marca-d'água que qualquer verificador lê. Já chegou uma. */
+for (const arq of fs.readdirSync(path.join(RAIZ, 'img'))) {
+  if (!/\.(png|jpe?g|webp|avif|gif)$/i.test(arq)) continue;
+  const r = conferir(path.join(RAIZ, 'img', arq));
+  if (r.gerada) {
+    reprovar(`img/${arq} é imagem gerada por IA (${r.codigos.join(', ')}${r.gerador ? ', ' + r.gerador : ''}) — não entra.`);
   }
 }
 

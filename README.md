@@ -55,16 +55,24 @@ nasceu de um defeito real.
 
 ## O que falta, e é decisão do gabinete
 
-1. **Retrato oficial** — o encaixe já está pronto e esperando o arquivo:
+1. **Retrato oficial — fotografia, e só fotografia.** O encaixe está pronto e
+   esperando o arquivo:
 
    ```powershell
    powershell -File scripts\foto.ps1 -Origem "d:\caminho\foto-original.jpg"
    node scripts\gerar.mjs
    ```
 
-   `foto.ps1` recorta em 3:4, gera 1200 e 700 de largura dentro do teto de
-   250 KB; `gerar.mjs` põe o retrato no hero. Sem o arquivo, o hero fica de uma
-   coluna e a página não referencia imagem que não existe — a régua garante.
+   `foto.ps1` confere a procedência, recorta em 3:4, gera 1200 e 700 de largura
+   dentro do teto de 250 KB; `gerar.mjs` põe o retrato no hero. Sem o arquivo, o
+   hero fica de uma coluna e a página não referencia imagem que não existe.
+
+   **Imagem gerada por IA não entra.** Retrato sintético de pessoa real, num
+   site de mandato, é falsificação — e falsificação detectável: o arquivo
+   gerado carrega manifesto C2PA assinado e marca-d'água que qualquer
+   verificador lê. `scripts/procedencia.mjs` barra na origem (antes do recorte,
+   porque reencodar apaga o metadado) e a régua barra de novo em `img/`.
+   Já chegou uma, em 01/09/2026.
 2. Endereços das matérias do clipping.
 3. Canal de contato: WhatsApp do gabinete, grupo ou comunidade.
 4. Domínio próprio.

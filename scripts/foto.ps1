@@ -1,4 +1,4 @@
-# Wellington Dantas — prepara o retrato do hero.
+﻿# Wellington Dantas — prepara o retrato do hero.
 #
 #   powershell -File scripts\foto.ps1 -Origem "d:\caminho\foto-original.jpg"
 #   powershell -File scripts\foto.ps1 -Origem "..." -Foco 0.48 -Topo 0.02
@@ -26,6 +26,20 @@ $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Drawing
 
 if (-not (Test-Path $Origem)) { throw "não achei o arquivo: $Origem" }
+
+# Procedência ANTES do recorte, e não depois: reencodar a imagem apaga o
+# manifesto C2PA. Se a conferência ficasse só na régua, um retrato gerado por
+# IA entraria limpo — sem o metadado que o denuncia, mas ainda falso.
+# `Continue` só aqui: com `Stop`, o texto que o node manda para stderr vira
+# erro de terminação do PowerShell e esconde a mensagem que interessa.
+$antes = $ErrorActionPreference
+$ErrorActionPreference = 'Continue'
+& node (Join-Path $PSScriptRoot 'procedencia.mjs') $Origem 2>&1 | ForEach-Object { Write-Output $_.ToString() }
+$reprovou = $LASTEXITCODE -ne 0
+$ErrorActionPreference = $antes
+if ($reprovou) {
+  throw "origem reprovada na conferência de procedência. Nenhum arquivo foi gravado."
+}
 
 $raiz = Split-Path -Parent $PSScriptRoot
 $destino = Join-Path $raiz 'img'
