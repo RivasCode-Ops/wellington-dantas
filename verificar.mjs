@@ -203,6 +203,17 @@ if (!/@media \(max-width:\s*7\d\dpx\)/.test(css)) {
   reprovar('não há ponto de quebra abaixo de 800px — a faixa onde estão os celulares fica sem regra.');
 }
 
+/* 12a. contagem de território cravada na mão -----------------------------
+ * O site dizia "30 bairros" em três lugares e nenhum dos três media a mesma
+ * coisa: a lista tem 30 itens, mas um é "Zona rural"; o desenho tem 29
+ * polígonos, 18 com nome. Número de território agora é gerado. */
+if (/\b30 bairros\b|bairros para percorrer/.test(html)) {
+  reprovar('contagem de bairros cravada no HTML. Esse número é gerado — rode: node scripts/gerar.mjs');
+}
+if (!/bairros desta lista/.test(html)) {
+  reprovar('a nota de território não foi gerada — a página perdeu a contagem que diz o que está medindo.');
+}
+
 /* 12b. o assistente ------------------------------------------------------
  * As três regras que o tornam publicável num site de mandato: nada sem fonte,
  * nada de propaganda eleitoral, e nada que atribua realização onde o CSV

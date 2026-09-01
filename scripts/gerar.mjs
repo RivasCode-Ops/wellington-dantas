@@ -25,8 +25,11 @@ const CSV = path.join(RAIZ, 'dados', 'acoes.csv');
 const JSON_SAIDA = path.join(RAIZ, 'dados', 'acoes.json');
 const HTML = path.join(RAIZ, 'index.html');
 
-/* Os 30 bairros de Picos, na ordem em que aparecem no site. Território é dado
- * estável: fica aqui, não no CSV, para não se repetir em cada linha. */
+/* Os bairros que o site cobre, na ordem em que aparecem. São 29 bairros mais
+ * a zona rural — que não é bairro, e por isso a contagem publicada separa as
+ * duas coisas. A relação oficial de Picos é da Prefeitura e ainda não veio.
+ * Território é dado estável: fica aqui, não no CSV, para não se repetir em
+ * cada linha. */
 const BAIRROS = [
   'Aerolândia', 'Altamira', 'Alto da Boa Vista', 'Aroeiras', 'Bela Vista',
   'Belo Norte', 'Boa Sorte', 'Boa Vista', 'Bomba', 'Canto da Várzea',
@@ -126,11 +129,18 @@ function blocoMapa(acoes) {
   const mapaFonte = path.join(RAIZ, 'dados', 'bairros-mapa.csv');
   if (!fs.existsSync(svgFonte) || !fs.existsSync(mapaFonte)) return '';
 
-  /* k → nome dos polígonos identificados */
+  /* k → nome do polígono, e o bairro da lista com que ele casa.
+   * O desenho e a lista nem sempre usam o mesmo rótulo: o mapa traz
+   * "Pantanal / Parque Industrial" onde a lista traz "Parque Industrial", e
+   * traz "Marco de Sousa", que não é bairro da lista. Sem a coluna de junção,
+   * uma ação em Parque Industrial nunca pintaria o polígono. */
   const nomePorK = new Map();
+  const bairroPorK = new Map();
   fs.readFileSync(mapaFonte, 'utf8').trim().split(/\r?\n/).slice(1).forEach((linha) => {
-    const [k, nome] = linha.split(';').map((c) => c.trim());
-    if (k && nome) nomePorK.set(k, nome);
+    const [k, nome, lista] = linha.split(';').map((c) => (c || '').trim());
+    if (!k || !nome) return;
+    nomePorK.set(k, nome);
+    bairroPorK.set(k, lista !== undefined && lista !== '' ? lista : nome);
   });
 
   /* ações por bairro, pela chave normalizada */
@@ -145,13 +155,13 @@ function blocoMapa(acoes) {
 
   const dados = {};
   for (const [k, nome] of nomePorK) {
-    const itens = (porBairro.get(chave(nome)) || [])
+    const itens = (porBairro.get(chave(bairroPorK.get(k))) || [])
       .sort((x, y) => y.data.localeCompare(x.data))
       .map((a) => ({
         ano: a.ano, titulo: a.acao, local: a.local, cat: a.categoria,
         sit: a.situacao, inst: a.instrumento, fonte: a.fonte,
       }));
-    dados[k] = { nome, filtro: chave(nome), itens };
+    dados[k] = { nome, filtro: chave(bairroPorK.get(k) || nome), itens };
   }
 
   let svg = fs.readFileSync(svgFonte, 'utf8').trim();
@@ -220,6 +230,45 @@ function blocoRetrato() {
     </figure>`;
 }
 
+/* --- as contagens de território -----------------------------------------
+ *
+ * O site dizia "30 bairros" em três lugares, e o número não se sustentava:
+ * a lista tem 30 itens, mas um deles é "Zona rural", que não é bairro — são
+ * 29 bairros. E o desenho do mapa tem 29 polígonos, dos quais só 18 com nome
+ * confirmado. Eram três medidas diferentes com o mesmo rótulo.
+ *
+ * Agora cada número é gerado do dado que ele mede, e o texto diz qual medida
+ * é. A relação oficial de bairros de Picos continua sendo coisa da Prefeitura;
+ * enquanto ela não vem, o site afirma o que pode provar: o que tem na lista.
+ */
+function contagens() {
+  const naLista = BAIRROS.length;
+  const semZonaRural = BAIRROS.filter((b) => b !== 'Zona rural').length;
+  const mapaArq = path.join(RAIZ, 'dados', 'bairros-mapa.csv');
+  let comPoligono = 0;
+  if (fs.existsSync(mapaArq)) {
+    const nomes = fs.readFileSync(mapaArq, 'utf8').trim().split(/\r?\n/).slice(1)
+      .map((l) => (l.split(';')[2] !== undefined && l.split(';')[2].trim() !== '' ? l.split(';')[2] : l.split(';')[1]))
+      .map((n) => (n || '').trim())
+      .filter(Boolean);
+    comPoligono = BAIRROS.filter((b) => nomes.includes(b)).length;
+  }
+  return { naLista, semZonaRural, comPoligono };
+}
+
+function blocoNumeros(acoes) {
+  return `      <li><b>${acoes.length}</b><span>ações registradas</span></li>`;
+}
+
+function blocoTerritorioNota() {
+  const c = contagens();
+  return `    <p class="mapa__nota">O traçado cobre os bairros já vetorizados; o cinza-claro é polígono sem nome confirmado. `
+    + `Dos <b>${c.semZonaRural} bairros desta lista</b>, <b>${c.comPoligono}</b> já têm polígono no mapa — os outros entram nas próximas rodadas, `
+    + `<strong>a começar pelo Junco, que é o bairro com mais ações registradas</strong>. `
+    + `<span>A relação oficial de bairros de Picos ainda precisa ser confirmada com a Prefeitura; esta lista é a que o site cobre hoje.</span></p>\n`
+    + `    <h3 class="terr__t">Os ${c.semZonaRural} bairros e a zona rural</h3>`;
+}
+
 function blocoResumo(acoes) {
   const anos = acoes.map((a) => a.ano).sort();
   const bairrosAlcancados = new Set();
@@ -282,6 +331,8 @@ html = trocar(html, 'bairros', blocoBairros(acoes));
 html = trocar(html, 'resumo', blocoResumo(acoes));
 html = trocar(html, 'retrato', retrato);
 html = trocar(html, 'mapa', blocoMapa(acoes));
+html = trocar(html, 'numeros', blocoNumeros(acoes));
+html = trocar(html, 'terrnota', blocoTerritorioNota());
 html = versionarAssets(html);
 fs.writeFileSync(HTML, html, 'utf8');
 
