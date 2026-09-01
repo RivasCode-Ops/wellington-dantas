@@ -53,6 +53,64 @@ const erro404 = ler('404.html');
   }
 }
 
+/* 0b. a frase de privacidade só vale enquanto for verdade -----------------
+ *
+ * O rodapé afirma que o site não usa cookie, não tem rastreador e não coleta
+ * dado. É a afirmação mais forte que o site faz sobre si mesmo, e é a mais
+ * fácil de quebrar sem perceber: basta alguém colar um snippet de Analytics,
+ * um pixel, uma fonte do Google ou um `localStorage` de conveniência.
+ *
+ * Então a frase passa a ser verificada, e não confiada. Enquanto ela estiver
+ * escrita: nenhum recurso de terceiro carregado e nenhuma API de armazenamento
+ * em uso. Link de saída (Instagram, WhatsApp) não conta — é clique da pessoa,
+ * não carga da página, e o próprio rodapé diz isso. */
+{
+  const paginas = ['index.html', 'gabinete-aberto.html', 'trajetoria.html', 'assistente.html', '404.html']
+    .filter((p) => existe(p));
+  const afirma = paginas.some((p) => /não usa cookies, não tem rastreador/.test(ler(p)));
+  if (afirma) {
+    const servidos = [...paginas, 'css/base.css', 'css/site.css', 'css/fontes.css',
+      'js/app.js', 'js/assistente-launcher.js', 'js/assistente-motor.js', 'js/assistente-ui.js',
+      'js/gabinete.js', 'js/trajetoria.js', 'css/gabinete.css', 'css/trajetoria.css', 'css/assistente.css']
+      .filter((f) => existe(f));
+
+    /* carga de terceiro: só o que o navegador busca sozinho */
+    const carga = /(?:src\s*=\s*["']|@import\s+(?:url\()?["']?|url\(\s*["']?|fetch\s*\(\s*["'])(https?:)?\/\/([a-z0-9.-]+)/gi;
+    for (const f of servidos) {
+      for (const m of ler(f).matchAll(carga)) {
+        const host = m[2].toLowerCase();
+        if (host.endsWith('rivascode-ops.github.io')) continue;
+        reprovar(`${f} carrega recurso de terceiro (${host}) e o rodapé afirma que o site não tem rastreador. Ou o recurso sai, ou a frase sai.`);
+      }
+    }
+    for (const f of servidos) {
+      const m = ler(f).match(/document\.cookie|localStorage|sessionStorage|indexedDB/);
+      if (m) reprovar(`${f} usa ${m[0]} e o rodapé afirma que o site não coleta dados. Ou o armazenamento sai, ou a frase sai.`);
+    }
+  }
+}
+
+/* 0c. o código da demanda não pode se vender como protocolo ---------------
+ *
+ * O código `PIC-AAAA-MM-DD-XXXX` nasce no navegador de quem preencheu e não
+ * existe em lugar nenhum: nem no site, nem no gabinete. Ele vai na primeira
+ * linha do texto, então passa a existir para o gabinete quando a pessoa
+ * enviar a mensagem — e só aí.
+ *
+ * Dizer "é por ele que você cobra a resposta" antes disso é a mesma família do
+ * "responde em até 5 dias úteis": promessa publicada sem dono, que quebra na
+ * mão de quem acreditou. Quem cobrasse por um código não enviado não seria
+ * encontrado por ninguém. */
+for (const arq of ['gabinete-aberto.html', 'js/assistente-ui.js', 'js/gabinete.js', 'dados/assistente-base.json']) {
+  if (!existe(arq)) continue;
+  const t = ler(arq);
+  for (const frase of ['cobra a resposta', 'número de protocolo', 'protocolo da sua demanda']) {
+    if (t.includes(frase)) {
+      reprovar(`${arq} diz "${frase}" sobre o código da demanda. O código nasce no navegador e só existe para o gabinete depois que a pessoa envia a mensagem — cobrar por ele antes disso não leva a lugar nenhum.`);
+    }
+  }
+}
+
 /* 1. o HTML gerado bate com o CSV --------------------------------------- */
 const linhasCsv = ler('dados/acoes.csv').trim().split(/\r?\n/).length - 1;
 const itensHtml = (html.match(/<li data-bairros=/g) || []).length;

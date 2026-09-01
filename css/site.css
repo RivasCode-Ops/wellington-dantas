@@ -654,7 +654,12 @@
  * As duas páginas vêm primeiro no celular (`order`), porque são as que somem
  * quando não há menu. No desktop a ordem do mockup fica intacta.
  * ------------------------------------------------------------------------- */
-@media (max-width: 820px) {
+/* 1024 e nao 820: entre 820 e 1024 a barra ainda cabia numa linha so no papel,
+ * mas espremida — "Gabinete Aberto" e "Na midia" quebravam em duas linhas cada
+ * uma dentro do proprio link, e o cabecalho ficava com cara de erro. A faixa do
+ * meio e a do notebook pequeno e a do tablet deitado; nao da para deixar so
+ * para o telefone. */
+@media (max-width: 1024px) {
   .topo__in { flex-wrap: wrap; height: auto; gap: 12px 20px; padding-top: 12px; padding-bottom: 12px; }
   .nav {
     display: flex;
@@ -684,3 +689,20 @@
 @media (max-width: 560px) {
   .hero .olho { line-height: 1.6; overflow-wrap: anywhere; }
 }
+
+/* A linha de privacidade do rodapé.
+ *
+ * A ausência de rastreador era invisível: quem visita não tem como saber que
+ * não há cookie, pixel nem Analytics — e o que não está escrito não conta a
+ * favor de ninguém. Escrito, vira afirmação. Discreta de propósito: é
+ * informação de rodapé, não faixa.
+ *
+ * A frase só pode existir enquanto for verdade. A régua confere: nenhum
+ * recurso de terceiro carregado, nenhuma API de armazenamento em uso. */
+.rod__pv { max-width: 68ch; color: var(--aco-claro); }
+/* O negrito tem que ser MAIS claro que o texto, nao menos. Escrevi
+ * `color:var(--aco)` por reflexo -- e o rodape e escuro: #6A6B6B sobre #200B0F
+ * ficava mais apagado que o #948C8F em volta, e a enfase virava o contrario
+ * dela. Cor de destaque se escolhe olhando o fundo em que ela cai. */
+.rod__pv b { color: var(--branco); font-weight: 600; }
+.rod-traj .rod__pv { max-width: 68ch; }

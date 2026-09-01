@@ -315,7 +315,8 @@
       + 'De: ' + d['d-nome'] + ' — WhatsApp ' + d['d-zap'] + '\n'
       + 'Canal: assistente do site';
 
-    var m = balaoBot('Pronto. Guarde o código ' + cod + ' — é por ele que você cobra a resposta. '
+    var m = balaoBot('Pronto. O código ' + cod + ' já vai na primeira linha do texto — ele serve para você e o '
+      + 'gabinete falarem da mesma demanda, e passa a existir para eles quando você enviar a mensagem. '
       + 'O texto abaixo já vai com bairro, rua e o seu contato:');
     m.appendChild(no('div', 'balao', msg));
 
