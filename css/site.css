@@ -557,3 +557,88 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* o boneco no bloco Participe
+ *
+ * Ele entra onde tem função — o bloco que pede ação — e não como enfeite de
+ * topo. Caricatura, não retrato: fica claro na primeira olhada que é desenho,
+ * o que é exatamente o que se quer num personagem que convida a falar. */
+/* Três colunas: texto, boneco, chamada. O boneco fica no meio e apoiado na
+ * base da faixa — a margem negativa cancela o respiro de baixo da seção, então
+ * ele pisa na borda em vez de flutuar. Sem sombra e sem contorno: a régua do
+ * projeto é zero sombra, e o desenho já tem traço próprio. */
+.part__in {
+  position: relative;
+  flex-wrap: nowrap;
+  align-items: flex-end;
+  gap: clamp(20px, 4vw, 48px);
+}
+.part__in > div:first-of-type { order: 0; }
+.part__bo {
+  order: 1;
+  display: block;
+  flex: 0 0 auto;
+  width: clamp(130px, 16vw, 210px);
+  height: auto;
+  margin-bottom: calc(-1 * clamp(52px, 7vw, 88px));
+  align-self: flex-end;
+}
+.part__in > div:last-of-type { order: 2; }
+
+@media (max-width: 900px) {
+  .part__in { flex-wrap: wrap; align-items: flex-start; }
+  .part__bo { order: 3; width: 132px; margin: 0 0 calc(-1 * clamp(52px, 7vw, 88px)) auto; }
+}
+
+/* o rosto no lançador */
+.ia-fab__r {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  border-radius: 2px;
+  background: var(--branco);
+  object-fit: cover;
+  object-position: 50% 20%;
+}
+
+/* Carimbo do hero.
+ *
+ * Piso de tamanho e peso, e ele não é estético: #E4142C sobre #F3F5F7 dá 4,33
+ * de contraste. Isso passa como texto grande — 24px em peso 700 ou mais — e
+ * REPROVA como texto normal, que exige 4,5. Baixar o corpo ou tirar o 700 põe
+ * a frase abaixo do mínimo. */
+.carimbo {
+  font-family: var(--sans);
+  font-size: clamp(26px, 2.9vw, 34px);
+  font-weight: 700;
+  letter-spacing: -.02em;
+  color: var(--pt-vermelho);
+  margin: 22px 0 0;
+}
+
+/* nota do bloco Recursos: o papel do mandato dito na primeira pessoa, e o
+ * limite dito junto — nenhuma emenda do quadro é dele */
+.rec .nota {
+  border-left: 3px solid var(--pt-vermelho);
+  padding: 4px 0 4px 16px;
+  margin-bottom: 38px;
+  max-width: 78ch;
+}
+.rec .nota p { font-size: 15.5px; line-height: 1.6; color: var(--aco); }
+.rec .nota p + p { margin-top: 12px; }
+.rec .nota b { color: var(--tinta); font-weight: 600; }
+
+/* O filete vermelho era `h1::after` — pseudo-elemento do próprio título, que
+ * renderiza dentro da caixa dele. Nenhum irmão cabe entre o h1 e o filete.
+ * Para o carimbo entrar ANTES da linha, como pedido, a linha muda de dono:
+ * sai do h1 e passa a ser o `::after` do carimbo. Mesmo desenho, mesma medida,
+ * outra ordem. */
+.hero__txt h1::after { display: none; }
+.carimbo::after {
+  content: "";
+  display: block;
+  width: 96px;
+  height: 4px;
+  background: var(--pt-vermelho);
+  margin-top: 30px;
+}

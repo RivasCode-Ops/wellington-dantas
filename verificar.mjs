@@ -222,6 +222,19 @@ if (!/Enviar uma demanda deste bairro/.test(app)) {
  * O viewBox tem 2146 de largura e o mapa é servido em torno de 740px: cada
  * unidade do desenho vira ~0,35px. Rótulo abaixo de 34 unidades sai menor que
  * 12px na tela. */
+/* O carimbo do hero é vermelho sobre papel: 4,33 de contraste. Isso só passa
+ * como texto grande — 24px em peso 700. Abaixo disso, reprova. */
+if (/class="carimbo"/.test(html)) {
+  const car = /\.carimbo\s*\{[^}]*\}/.exec(css);
+  if (!car) reprovar('o carimbo do hero não tem estilo próprio.');
+  else {
+    const min = /font-size:\s*clamp\(\s*(\d+)px/.exec(car[0]);
+    const peso = /font-weight:\s*(\d+)/.exec(car[0]);
+    if (!min || Number(min[1]) < 24) reprovar(`o carimbo do hero começa em ${min ? min[1] : '?'}px. Vermelho sobre papel dá 4,33 de contraste e só passa a partir de 24px.`);
+    if (!peso || Number(peso[1]) < 700) reprovar('o carimbo do hero perdeu o peso 700 — sem ele, 4,33 de contraste reprova.');
+  }
+}
+
 const lb = /\.lb\s*\{[^}]*font-size:\s*(\d+)px/.exec(css);
 if (!lb) {
   reprovar('não achei o tamanho do rótulo do mapa (.lb font-size).');
@@ -282,11 +295,15 @@ if (existe('dados/emendas.csv')) {
   /* Sem os nomes dos autores na página, este aviso passou a ser a ÚNICA coisa
    * que impede a leitura de que o dinheiro é do vereador. Por isso a régua
    * exige as duas metades da frase: que não é dele e que não passou por ele. */
-  if (!/Nenhum destes recursos é do vereador, e nenhum passou por ele/.test(html)) {
-    reprovar('a seção de recursos perdeu o aviso de que o dinheiro não é do vereador nem passou por ele. Sem os nomes dos autores na página, esse aviso é a única coisa que separa contexto de apropriação.');
+  /* Sem os nomes dos autores na página, o texto da nota é a única coisa que
+   * separa contexto de apropriação. A régua não exige a frase exata — exige as
+   * duas afirmações que fazem o trabalho: que o instrumento não é dele, e que
+   * nenhuma emenda do quadro é dele. */
+  if (!/quem apresenta é deputado e senador|não apresenta emenda parlamentar/.test(html)) {
+    reprovar('a seção de recursos não diz de quem é o instrumento. Sem isso, o quadro de emendas parece do mandato.');
   }
-  if (!/não atribui a ninguém/.test(html)) {
-    reprovar('falta a frase de que o site não atribui os recursos a ninguém.');
+  if (!/Nenhuma emenda deste quadro é minha|Nenhum destes recursos é do vereador/.test(html)) {
+    reprovar('a seção de recursos não nega a posse das emendas. É a frase que impede a leitura de que o dinheiro é dele.');
   }
   const ATRIBUICAO = [
     /emendas?[^.]{0,60}(trazidas?|conquistadas?|garantidas?) por (wellington|ele)/i,
