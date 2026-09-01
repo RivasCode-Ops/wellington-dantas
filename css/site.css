@@ -53,14 +53,18 @@
 .hero__retrato {
   position: relative;
   margin: 0;
-  width: clamp(230px, 27vw, 340px);
+  width: clamp(230px, 27vw, 356px);
 }
+/* A imagem sai do fluxo de propósito. Enquanto ela ocupava altura, era o 3:4
+ * dela que definia a altura da faixa (453px) contra 385px de texto — e a
+ * diferença virava um buraco no meio da coluna da esquerda, entre o filete
+ * vermelho e a linha de apoio. Fora do fluxo, quem define a altura é o texto,
+ * e a foto preenche exatamente essa medida. */
 .hero__retrato img {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
-  /* `height:auto` não serve aqui: o atributo height="1600" do HTML vale como
-     declaração de CSS, e é ele que precisa ser anulado. A altura vem da coluna
-     de texto — é o que faz as duas colunas fecharem na mesma linha. */
   height: 100%;
   object-fit: cover;
   /* o enquadramento fica no alto: corta a base do microfone, não a testa */
@@ -103,7 +107,9 @@
 @media (max-width: 900px) {
   .hero__in { grid-template-columns: 1fr; }
   .hero__retrato { order: -1; width: min(300px, 66vw); }
-  .hero__retrato img { height: auto; aspect-ratio: 5 / 6; }
+  /* em coluna única não há texto ao lado para dar a altura: a imagem volta ao
+     fluxo e leva a proporção consigo */
+  .hero__retrato img { position: static; height: auto; aspect-ratio: 5 / 6; }
   /* em coluna única não há base para alinhar: a legenda volta ao fluxo */
   .hero__retrato figcaption { position: static; margin-top: 10px; }
 }

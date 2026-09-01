@@ -47,7 +47,19 @@ if (mortos > 1) reprovar(`${mortos} links href="#" na página. Link que não lev
 const refs = [...html.matchAll(/(?:src|href)="([^"#:][^":]*)"/g)].map((m) => m[1]);
 for (const ref of new Set(refs)) {
   if (/^(https?:|mailto:|#)/.test(ref)) continue;
-  if (!existe(ref)) reprovar(`index.html aponta para "${ref}", que não existe no repositório.`);
+  const arquivo = ref.split('?')[0];   /* a assinatura de cache não é parte do caminho */
+  if (!existe(arquivo)) reprovar(`index.html aponta para "${arquivo}", que não existe no repositório.`);
+}
+
+/* 3b. CSS e JS têm que sair assinados ------------------------------------
+ * Sem assinatura no endereço, quem já visitou continua com o arquivo antigo em
+ * cache depois de uma correção — e vê um layout que não existe mais. Aconteceu
+ * em 01/09/2026: o alinhamento do retrato estava publicado e o navegador servia
+ * a versão anterior. */
+for (const alvo of ['css/site.css', 'css/base.css', 'js/app.js']) {
+  if (!new RegExp(`${alvo.replace('/', '\\/')}\\?v=[a-f0-9]{8}`).test(html)) {
+    reprovar(`${alvo} está referenciado sem assinatura de conteúdo. Rode: node scripts/gerar.mjs`);
+  }
 }
 
 /* 4. cartão de compartilhamento completo (o erro nº 1 da referência) ----- */

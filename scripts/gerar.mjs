@@ -18,6 +18,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import crypto from 'node:crypto';
 
 const RAIZ = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const CSV = path.join(RAIZ, 'dados', 'acoes.csv');
@@ -253,12 +254,29 @@ const json = acoes.map((a) => ({
 fs.writeFileSync(JSON_SAIDA, JSON.stringify({ atualizado_em: new Date().toISOString().slice(0, 10), acoes: json }, null, 2) + '\n', 'utf8');
 
 let html = fs.readFileSync(HTML, 'utf8');
+/* Assinatura de conteúdo no endereço do CSS e do JS.
+ *
+ * Sem isto, quem já visitou o site continua com o arquivo antigo em cache
+ * depois de uma correção — e vê um layout que não existe mais. É o defeito que
+ * a referência resolvia renomeando o arquivo à mão (`style30.css`); aqui o
+ * nome não muda, muda a assinatura, e ela é calculada do próprio conteúdo. */
+function versionarAssets(html) {
+  return html.replace(/(href|src)="((?:css|js)\/[a-z0-9.-]+\.(?:css|js))(?:\?v=[a-z0-9]+)?"/g,
+    (todo, attr, arquivo) => {
+      const caminho = path.join(RAIZ, arquivo);
+      if (!fs.existsSync(caminho)) return todo;
+      const hash = crypto.createHash('sha256').update(fs.readFileSync(caminho)).digest('hex').slice(0, 8);
+      return `${attr}="${arquivo}?v=${hash}"`;
+    });
+}
+
 const retrato = blocoRetrato();
 html = trocar(html, 'acoes', blocoAcoes(acoes));
 html = trocar(html, 'bairros', blocoBairros(acoes));
 html = trocar(html, 'resumo', blocoResumo(acoes));
 html = trocar(html, 'retrato', retrato);
 html = trocar(html, 'mapa', blocoMapa(acoes));
+html = versionarAssets(html);
 fs.writeFileSync(HTML, html, 'utf8');
 
 console.log(`gerar: ${acoes.length} ações → index.html e dados/acoes.json`);
